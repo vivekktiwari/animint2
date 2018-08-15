@@ -50,8 +50,7 @@ to draw the blue line segments in the bottom plot looks like this:
 and the old animint code looks like this:
 
 #+BEGIN_SRC R
-geom_segment(aes(
-  showSelected.variable=selector.name,
+geom_segment(aes(showSelected.variable=selector.name,
   showSelected.value=peaks,
   clickSelects=problem.name,
   showSelected2=bases.per.problem),
@@ -79,8 +78,7 @@ geom_segment(aes(
 The new syntax uses parameters instead of =a_aes=, so is much more concise:
 
 #+BEGIN_SRC R
-a_geom_segment(
- showSelected=c(selector.name="peaks", "bases.per.problem"),
+a_geom_segment(showSelected=c(selector.name="peaks", "bases.per.problem"),
  clickSelects="problem.name")
 #+END_SRC
 
