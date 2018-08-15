@@ -1,59 +1,59 @@
 #' Connect observations.
 #'
-#' \code{geom_path()} connects the observations in the order in which they appear
-#' in the data. \code{geom_line()} connects them in order of the variable on the
-#' x axis. \code{geom_step()} creates a stairstep plot, highlighting exactly
+#' \code{a_geom_path()} connects the observations in the order in which they appear
+#' in the data. \code{a_geom_line()} connects them in order of the variable on the
+#' x axis. \code{a_geom_step()} creates a stairstep plot, highlighting exactly
 #' when changes occur.
 #'
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "path")}
 #'
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @param lineend Line end style (round, butt, square)
 #' @param linejoin Line join style (round, mitre, bevel)
 #' @param linemitre Line mitre limit (number greater than 1)
 #' @param arrow Arrow specification, as created by \code{\link[grid]{arrow}}
 #' @seealso
-#'  \code{\link{geom_polygon}}: Filled paths (polygons);
-#'  \code{\link{geom_segment}}: Line segments
+#'  \code{\link{a_geom_polygon}}: Filled paths (polygons);
+#'  \code{\link{a_geom_segment}}: Line segments
 #' @export
 #' @examples
-#' # geom_line() is suitable for time series
-#' a_plot(economics, aes(date, unemploy)) + geom_line()
-#' a_plot(economics_long, aes(date, value01, colour = variable)) +
-#'   geom_line()
+#' # a_geom_line() is suitable for time series
+#' a_plot(economics, a_aes(date, unemploy)) + a_geom_line()
+#' a_plot(economics_long, a_aes(date, value01, colour = variable)) +
+#'   a_geom_line()
 #'
-#' # geom_step() is useful when you want to highlight exactly when
+#' # a_geom_step() is useful when you want to highlight exactly when
 #' # the y value chanes
 #' recent <- economics[economics$date > as.Date("2013-01-01"), ]
-#' a_plot(recent, aes(date, unemploy)) + geom_line()
-#' a_plot(recent, aes(date, unemploy)) + geom_step()
+#' a_plot(recent, a_aes(date, unemploy)) + a_geom_line()
+#' a_plot(recent, a_aes(date, unemploy)) + a_geom_step()
 #'
-#' # geom_path lets you explore how two variables are related over time,
+#' # a_geom_path lets you explore how two variables are related over time,
 #' # e.g. unemployment and personal savings rate
-#' m <- a_plot(economics, aes(unemploy/pop, psavert))
-#' m + geom_path()
-#' m + geom_path(aes(colour = as.numeric(date)))
+#' m <- a_plot(economics, a_aes(unemploy/pop, psavert))
+#' m + a_geom_path()
+#' m + a_geom_path(a_aes(colour = as.numeric(date)))
 #'
 #' # Changing parameters ----------------------------------------------
-#' a_plot(economics, aes(date, unemploy)) +
-#'   geom_line(colour = "red")
+#' a_plot(economics, a_aes(date, unemploy)) +
+#'   a_geom_line(colour = "red")
 #'
 #' # Use the arrow parameter to add an arrow to the line
 #' # See ?arrow for more details
-#' c <- a_plot(economics, aes(x = date, y = pop))
-#' c + geom_line(arrow = arrow())
-#' c + geom_line(
+#' c <- a_plot(economics, a_aes(x = date, y = pop))
+#' c + a_geom_line(arrow = arrow())
+#' c + a_geom_line(
 #'   arrow = arrow(angle = 15, ends = "both", type = "closed")
 #' )
 #'
 #' # Control line join parameters
 #' df <- data.frame(x = 1:3, y = c(4, 1, 9))
-#' base <- a_plot(df, aes(x, y))
-#' base + geom_path(size = 10)
-#' base + geom_path(size = 10, lineend = "round")
-#' base + geom_path(size = 10, linejoin = "mitre", lineend = "butt")
+#' base <- a_plot(df, a_aes(x, y))
+#' base + a_geom_path(size = 10)
+#' base + a_geom_path(size = 10, lineend = "round")
+#' base + a_geom_path(size = 10, linejoin = "mitre", lineend = "butt")
 #'
 #' # NAs break the line. Use na.rm = T to suppress the warning message
 #' df <- data.frame(
@@ -62,9 +62,9 @@
 #'   y2 = c(NA, 2, 3, 4, 5),
 #'   y3 = c(1, 2, NA, 4, 5)
 #' )
-#' a_plot(df, aes(x, y1)) + geom_point() + geom_line()
-#' a_plot(df, aes(x, y2)) + geom_point() + geom_line()
-#' a_plot(df, aes(x, y3)) + geom_point() + geom_line()
+#' a_plot(df, a_aes(x, y1)) + a_geom_point() + a_geom_line()
+#' a_plot(df, a_aes(x, y2)) + a_geom_point() + a_geom_line()
+#' a_plot(df, a_aes(x, y3)) + a_geom_point() + a_geom_line()
 #'
 #' \donttest{
 #' # Setting line type vs colour/size
@@ -77,16 +77,16 @@
 #'   group = rep(c("a","b"),
 #'   each = 100)
 #' )
-#' p <- a_plot(df, aes(x=x, y=y, group=group))
+#' p <- a_plot(df, a_aes(x=x, y=y, group=group))
 #' # These work
-#' p + geom_line(linetype = 2)
-#' p + geom_line(aes(colour = group), linetype = 2)
-#' p + geom_line(aes(colour = x))
+#' p + a_geom_line(linetype = 2)
+#' p + a_geom_line(a_aes(colour = group), linetype = 2)
+#' p + a_geom_line(a_aes(colour = x))
 #' # But this doesn't
-#' should_stop(p + geom_line(aes(colour = x), linetype=2))
+#' should_stop(p + a_geom_line(a_aes(colour = x), linetype=2))
 #' }
-geom_path <- function(mapping = NULL, data = NULL,
-                      stat = "identity", position = "identity",
+a_geom_path <- function(mapping = NULL, data = NULL,
+                      a_stat = "identity", a_position = "identity",
                       ...,
                       lineend = "butt",
                       linejoin = "round",
@@ -94,15 +94,15 @@ geom_path <- function(mapping = NULL, data = NULL,
                       arrow = NULL,
                       na.rm = FALSE,
                       show.legend = NA,
-                      inherit.aes = TRUE) {
-  layer(
+                      inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomPath,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomPath,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       lineend = lineend,
       linejoin = linejoin,
@@ -121,7 +121,7 @@ geom_path <- function(mapping = NULL, data = NULL,
 a_GeomPath <- a_ggproto("a_GeomPath", a_Geom,
   required_aes = c("x", "y"),
 
-  default_aes = aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
+  default_aes = a_aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
 
   handle_na = function(data, params) {
     keep <- function(x) {
@@ -143,28 +143,28 @@ a_GeomPath <- a_ggproto("a_GeomPath", a_Geom,
 
     if (!all(kept) && !params$na.rm) {
       warning("Removed ", sum(!kept), " rows containing missing values",
-        " (geom_path).", call. = FALSE)
+        " (a_geom_path).", call. = FALSE)
     }
 
     data
   },
 
-  draw_panel = function(data, panel_scales, coord, arrow = NULL,
+  draw_panel = function(data, panel_scales, a_coord, arrow = NULL,
                         lineend = "butt", linejoin = "round", linemitre = 1,
                         na.rm = FALSE) {
     if (!anyDuplicated(data$group)) {
-      message_wrap("geom_path: Each group consists of only one observation. ",
+      message_wrap("a_geom_path: Each group consists of only one observation. ",
         "Do you need to adjust the group aesthetic?")
     }
 
     # must be sorted on group
     data <- data[order(data$group), , drop = FALSE]
-    munched <- coord_munch(coord, data, panel_scales)
+    munched <- a_coord_munch(a_coord, data, panel_scales)
 
     # Silently drop lines with less than two points, preserving order
     rows <- stats::ave(seq_len(nrow(munched)), munched$group, FUN = length)
     munched <- munched[rows >= 2, ]
-    if (nrow(munched) < 2) return(zeroGrob())
+    if (nrow(munched) < 2) return(a_zeroGrob())
 
     # Work out whether we should use lines or segments
     attr <- plyr::ddply(munched, "group", function(df) {
@@ -177,7 +177,7 @@ a_GeomPath <- a_ggproto("a_GeomPath", a_Geom,
     solid_lines <- all(attr$solid)
     constant <- all(attr$constant)
     if (!solid_lines && !constant) {
-      stop("geom_path: If you are using dotted or dashed lines",
+      stop("a_geom_path: If you are using dotted or dashed lines",
         ", colour, size and linetype must be constant over the line",
         call. = FALSE)
     }
@@ -224,18 +224,18 @@ a_GeomPath <- a_ggproto("a_GeomPath", a_Geom,
 )
 
 #' @export
-#' @rdname geom_path
-geom_line <- function(mapping = NULL, data = NULL, stat = "identity",
-                      position = "identity", na.rm = FALSE,
-                      show.legend = NA, inherit.aes = TRUE, ...) {
-  layer(
+#' @rdname a_geom_path
+a_geom_line <- function(mapping = NULL, data = NULL, a_stat = "identity",
+                      a_position = "identity", na.rm = FALSE,
+                      show.legend = NA, inherit.a_aes = TRUE, ...) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomLine,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomLine,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...
@@ -257,18 +257,18 @@ a_GeomLine <- a_ggproto("a_GeomLine", a_GeomPath,
 #' @param direction direction of stairs: 'vh' for vertical then horizontal, or
 #'   'hv' for horizontal then vertical
 #' @export
-#' @rdname geom_path
-geom_step <- function(mapping = NULL, data = NULL, stat = "identity",
-                      position = "identity", direction = "hv",
-                      na.rm = FALSE, show.legend = NA, inherit.aes = TRUE, ...) {
-  layer(
+#' @rdname a_geom_path
+a_geom_step <- function(mapping = NULL, data = NULL, a_stat = "identity",
+                      a_position = "identity", direction = "hv",
+                      na.rm = FALSE, show.legend = NA, inherit.a_aes = TRUE, ...) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomStep,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomStep,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       direction = direction,
       na.rm = na.rm,
@@ -283,14 +283,14 @@ geom_step <- function(mapping = NULL, data = NULL, stat = "identity",
 #' @export
 #' @include geom-path.r
 a_GeomStep <- a_ggproto("a_GeomStep", a_GeomPath,
-  draw_panel = function(data, panel_scales, coord, direction = "hv") {
+  draw_panel = function(data, panel_scales, a_coord, direction = "hv") {
     data <- plyr::ddply(data, "group", stairstep, direction = direction)
-    a_GeomPath$draw_panel(data, panel_scales, coord)
+    a_GeomPath$draw_panel(data, panel_scales, a_coord)
   }
 )
 
 #' Calculate stairsteps
-#' Used by \code{\link{geom_step}}
+#' Used by \code{\link{a_geom_step}}
 #' @param data ...
 #' @param direction ...
 #' @export

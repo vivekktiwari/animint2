@@ -4,13 +4,13 @@
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "polygon")}
 #'
 #' @seealso
-#'  \code{\link{geom_path}} for an unfilled polygon,
-#'  \code{\link{geom_ribbon}} for a polygon anchored on the x-axis
+#'  \code{\link{a_geom_path}} for an unfilled polygon,
+#'  \code{\link{a_geom_ribbon}} for a polygon anchored on the x-axis
 #' @export
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @examples
-#' # When using geom_polygon, you will typically need two data frames:
+#' # When using a_geom_polygon, you will typically need two data frames:
 #' # one contains the coordinates of each polygon (positions),  and the
 #' # other the values associated with each polygon (values).  An id
 #' # variable links the two together
@@ -33,7 +33,7 @@
 #' # Currently we need to manually merge the two together
 #' datapoly <- merge(values, positions, by = c("id"))
 #'
-#' (p <- a_plot(datapoly, aes(x = x, y = y)) + geom_polygon(aes(fill = value, group = id)))
+#' (p <- a_plot(datapoly, a_aes(x = x, y = y)) + a_geom_polygon(a_aes(fill = value, group = id)))
 #'
 #' # Which seems like a lot of work, but then it's easy to add on
 #' # other features in this coordinate system, e.g.:
@@ -43,24 +43,24 @@
 #'   y = cumsum(runif(50,max = 0.1))
 #' )
 #'
-#' p + geom_line(data = stream, colour = "grey30", size = 5)
+#' p + a_geom_line(data = stream, colour = "grey30", size = 5)
 #'
 #' # And if the positions are in longitude and latitude, you can use
-#' # coord_map to produce different map projections.
-geom_polygon <- function(mapping = NULL, data = NULL,
-                         stat = "identity", position = "identity",
+#' # a_coord_map to produce different map projections.
+a_geom_polygon <- function(mapping = NULL, data = NULL,
+                         a_stat = "identity", a_position = "identity",
                          ...,
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
-  layer(
+                         inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomPolygon,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomPolygon,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...
@@ -73,11 +73,11 @@ geom_polygon <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomPolygon <- a_ggproto("a_GeomPolygon", a_Geom,
-  draw_panel = function(data, panel_scales, coord) {
+  draw_panel = function(data, panel_scales, a_coord) {
     n <- nrow(data)
-    if (n == 1) return(zeroGrob())
+    if (n == 1) return(a_zeroGrob())
 
-    munched <- coord_munch(coord, data, panel_scales)
+    munched <- a_coord_munch(a_coord, data, panel_scales)
     # Sort by group to make sure that colors, fill, etc. come in same order
     munched <- munched[order(munched$group), ]
 
@@ -100,7 +100,7 @@ a_GeomPolygon <- a_ggproto("a_GeomPolygon", a_Geom,
     )
   },
 
-  default_aes = aes(colour = "NA", fill = "grey20", size = 0.5, linetype = 1,
+  default_aes = a_aes(colour = "NA", fill = "grey20", size = 0.5, linetype = 1,
     alpha = NA),
 
   handle_na = function(data, params) {

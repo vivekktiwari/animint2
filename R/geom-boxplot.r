@@ -19,13 +19,13 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "boxplot")}
 #'
-#' @seealso \code{\link{stat_quantile}} to view quantiles conditioned on a
-#'   continuous variable, \code{\link{geom_jitter}} for another way to look
+#' @seealso \code{\link{a_stat_quantile}} to view quantiles conditioned on a
+#'   continuous variable, \code{\link{a_geom_jitter}} for another way to look
 #'   at conditional distributions.
-#' @inheritParams layer
-#' @inheritParams geom_point
-#' @param geom,stat Use to override the default connection between
-#'   \code{geom_boxplot} and \code{stat_boxplot}.
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
+#' @param a_geom,a_stat Use to override the default connection between
+#'   \code{a_geom_boxplot} and \code{a_stat_boxplot}.
 #' @param outlier.colour,outlier.color,outlier.shape,outlier.size,outlier.stroke
 #'   Default aesthetics for outliers. Set to \code{NULL} to inherit from the
 #'   aesthetics used for the box.
@@ -46,31 +46,31 @@
 #' @references McGill, R., Tukey, J. W. and Larsen, W. A. (1978) Variations of
 #'     box plots. The American Statistician 32, 12-16.
 #' @examples
-#' p <- a_plot(mpg, aes(class, hwy))
-#' p + geom_boxplot()
-#' p + geom_boxplot() + geom_jitter(width = 0.2)
-#' p + geom_boxplot() + animint2:::coord_flip()
+#' p <- a_plot(mpg, a_aes(class, hwy))
+#' p + a_geom_boxplot()
+#' p + a_geom_boxplot() + a_geom_jitter(width = 0.2)
+#' p + a_geom_boxplot() + a_coord_flip()
 #'
-#' p + geom_boxplot(notch = TRUE)
-#' p + geom_boxplot(varwidth = TRUE)
-#' p + geom_boxplot(fill = "white", colour = "#3366FF")
+#' p + a_geom_boxplot(notch = TRUE)
+#' p + a_geom_boxplot(varwidth = TRUE)
+#' p + a_geom_boxplot(fill = "white", colour = "#3366FF")
 #' # By default, outlier points match the colour of the box. Use
 #' # outlier.colour to override
-#' p + geom_boxplot(outlier.colour = "red", outlier.shape = 1)
+#' p + a_geom_boxplot(outlier.colour = "red", outlier.shape = 1)
 #'
 #' # Boxplots are automatically dodged when any aesthetic is a factor
-#' p + geom_boxplot(aes(colour = drv))
+#' p + a_geom_boxplot(a_aes(colour = drv))
 #'
 #' # You can also use boxplots with continuous x, as long as you supply
 #' # a grouping variable. cut_width is particularly useful
-#' a_plot(diamonds, aes(carat, price)) +
-#'   geom_boxplot()
-#' a_plot(diamonds, aes(carat, price)) +
-#'   geom_boxplot(aes(group = cut_width(carat, 0.25)))
+#' a_plot(diamonds, a_aes(carat, price)) +
+#'   a_geom_boxplot()
+#' a_plot(diamonds, a_aes(carat, price)) +
+#'   a_geom_boxplot(a_aes(group = cut_width(carat, 0.25)))
 #'
 #' \donttest{
 #' # It's possible to draw a boxplot with your own computations if you
-#' # use stat = "identity":
+#' # use a_stat = "identity":
 #' y <- rnorm(100)
 #' df <- data.frame(
 #'   x = 1,
@@ -80,14 +80,14 @@
 #'   y75 = quantile(y, 0.75),
 #'   y100 = max(y)
 #' )
-#' a_plot(df, aes(x)) +
-#'   geom_boxplot(
-#'    aes(ymin = y0, lower = y25, middle = y50, upper = y75, ymax = y100),
-#'    stat = "identity"
+#' a_plot(df, a_aes(x)) +
+#'   a_geom_boxplot(
+#'    a_aes(ymin = y0, lower = y25, middle = y50, upper = y75, ymax = y100),
+#'    a_stat = "identity"
 #'  )
 #' }
-geom_boxplot <- function(mapping = NULL, data = NULL,
-                         stat = "boxplot", position = "dodge",
+a_geom_boxplot <- function(mapping = NULL, data = NULL,
+                         a_stat = "boxplot", a_position = "dodge",
                          ...,
                          outlier.colour = NULL,
                          outlier.color = NULL,
@@ -99,15 +99,15 @@ geom_boxplot <- function(mapping = NULL, data = NULL,
                          varwidth = FALSE,
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
-  layer(
+                         inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomBoxplot,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomBoxplot,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       outlier.colour = outlier.color %||% outlier.colour,
       outlier.shape = outlier.shape,
@@ -157,7 +157,7 @@ a_GeomBoxplot <- a_ggproto("a_GeomBoxplot", a_Geom,
     data
   },
 
-  draw_group = function(data, panel_scales, coord, fatten = 2,
+  draw_group = function(data, panel_scales, a_coord, fatten = 2,
                         outlier.colour = NULL, outlier.shape = 19,
                         outlier.size = 1.5, outlier.stroke = 0.5,
                         notch = FALSE, notchwidth = 0.5, varwidth = FALSE) {
@@ -207,21 +207,21 @@ a_GeomBoxplot <- a_ggproto("a_GeomBoxplot", a_Geom,
         alpha = NA,
         stringsAsFactors = FALSE
       )
-      outliers_grob <- a_GeomPoint$draw_panel(outliers, panel_scales, coord)
+      outliers_grob <- a_GeomPoint$draw_panel(outliers, panel_scales, a_coord)
     } else {
       outliers_grob <- NULL
     }
 
     ggname("geom_boxplot", grobTree(
       outliers_grob,
-      a_GeomSegment$draw_panel(whiskers, panel_scales, coord),
-      a_GeomCrossbar$draw_panel(box, fatten = fatten, panel_scales, coord)
+      a_GeomSegment$draw_panel(whiskers, panel_scales, a_coord),
+      a_GeomCrossbar$draw_panel(box, fatten = fatten, panel_scales, a_coord)
     ))
   },
 
   draw_key = a_draw_key_boxplot,
 
-  default_aes = aes(weight = 1, colour = "grey20", fill = "white", size = 0.5,
+  default_aes = a_aes(weight = 1, colour = "grey20", fill = "white", size = 0.5,
     alpha = NA, shape = 19, linetype = "solid"),
 
   required_aes = c("x", "lower", "upper", "middle", "ymin", "ymax")

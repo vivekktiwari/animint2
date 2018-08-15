@@ -19,19 +19,19 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "dotplot")}
 #'
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @param stackdir which direction to stack the dots. "up" (default),
 #'   "down", "center", "centerwhole" (centered, but with dots aligned)
 #' @param stackratio how close to stack the dots. Default is 1, where dots just
 #'   just touch. Use smaller values for closer, overlapping dots.
 #' @param dotsize The diameter of the dots relative to \code{binwidth}, default 1.
 #' @param stackgroups should dots be stacked across groups? This has the effect
-#'   that \code{position = "stack"} should have, but can't (because this geom has
+#'   that \code{a_position = "stack"} should have, but can't (because this geom has
 #'   some odd properties).
 #' @param binaxis The axis to bin along, "x" (default) or "y"
 #' @param method "dotdensity" (default) for dot-density binning, or
-#'   "histodot" for fixed bin widths (like stat_bin)
+#'   "histodot" for fixed bin widths (like a_stat_bin)
 #' @param binwidth When \code{method} is "dotdensity", this specifies maximum bin
 #'   width. When \code{method} is "histodot", this specifies bin width.
 #'   Defaults to 1/30 of the range of the data
@@ -61,59 +61,59 @@
 #' @references Wilkinson, L. (1999) Dot plots. The American Statistician,
 #'    53(3), 276-281.
 #' @examples
-#' a_plot(mtcars, aes(x = mpg)) + geom_dotplot()
-#' a_plot(mtcars, aes(x = mpg)) + geom_dotplot(binwidth = 1.5)
+#' a_plot(mtcars, a_aes(x = mpg)) + a_geom_dotplot()
+#' a_plot(mtcars, a_aes(x = mpg)) + a_geom_dotplot(binwidth = 1.5)
 #'
 #' # Use fixed-width bins
-#' a_plot(mtcars, aes(x = mpg)) +
-#'   geom_dotplot(method="histodot", binwidth = 1.5)
+#' a_plot(mtcars, a_aes(x = mpg)) +
+#'   a_geom_dotplot(method="histodot", binwidth = 1.5)
 #'
 #' # Some other stacking methods
-#' a_plot(mtcars, aes(x = mpg)) +
-#'   geom_dotplot(binwidth = 1.5, stackdir = "center")
-#' a_plot(mtcars, aes(x = mpg)) +
-#'   geom_dotplot(binwidth = 1.5, stackdir = "centerwhole")
+#' a_plot(mtcars, a_aes(x = mpg)) +
+#'   a_geom_dotplot(binwidth = 1.5, stackdir = "center")
+#' a_plot(mtcars, a_aes(x = mpg)) +
+#'   a_geom_dotplot(binwidth = 1.5, stackdir = "centerwhole")
 #'
 #' # y axis isn't really meaningful, so hide it
-#' a_plot(mtcars, aes(x = mpg)) + geom_dotplot(binwidth = 1.5) +
-#'   scale_y_continuous(NULL, breaks = NULL)
+#' a_plot(mtcars, a_aes(x = mpg)) + a_geom_dotplot(binwidth = 1.5) +
+#'   a_scale_y_continuous(NULL, breaks = NULL)
 #'
 #' # Overlap dots vertically
-#' a_plot(mtcars, aes(x = mpg)) + geom_dotplot(binwidth = 1.5, stackratio = .7)
+#' a_plot(mtcars, a_aes(x = mpg)) + a_geom_dotplot(binwidth = 1.5, stackratio = .7)
 #'
 #' # Expand dot diameter
-#' a_plot(mtcars, aes(x = mpg)) + geom_dotplot(binwidth = 1.5, dotsize = 1.25)
+#' a_plot(mtcars, a_aes(x = mpg)) + a_geom_dotplot(binwidth = 1.5, dotsize = 1.25)
 #'
 #' \donttest{
 #' # Examples with stacking along y axis instead of x
-#' a_plot(mtcars, aes(x = 1, y = mpg)) +
-#'   geom_dotplot(binaxis = "y", stackdir = "center")
+#' a_plot(mtcars, a_aes(x = 1, y = mpg)) +
+#'   a_geom_dotplot(binaxis = "y", stackdir = "center")
 #'
-#' a_plot(mtcars, aes(x = factor(cyl), y = mpg)) +
-#'   geom_dotplot(binaxis = "y", stackdir = "center")
+#' a_plot(mtcars, a_aes(x = factor(cyl), y = mpg)) +
+#'   a_geom_dotplot(binaxis = "y", stackdir = "center")
 #'
-#' a_plot(mtcars, aes(x = factor(cyl), y = mpg)) +
-#'   geom_dotplot(binaxis = "y", stackdir = "centerwhole")
+#' a_plot(mtcars, a_aes(x = factor(cyl), y = mpg)) +
+#'   a_geom_dotplot(binaxis = "y", stackdir = "centerwhole")
 #'
-#' a_plot(mtcars, aes(x = factor(vs), fill = factor(cyl), y = mpg)) +
-#'   geom_dotplot(binaxis = "y", stackdir = "center", position = "dodge")
+#' a_plot(mtcars, a_aes(x = factor(vs), fill = factor(cyl), y = mpg)) +
+#'   a_geom_dotplot(binaxis = "y", stackdir = "center", a_position = "dodge")
 #'
 #' # binpositions="all" ensures that the bins are aligned between groups
-#' a_plot(mtcars, aes(x = factor(am), y = mpg)) +
-#'   geom_dotplot(binaxis = "y", stackdir = "center", binpositions="all")
+#' a_plot(mtcars, a_aes(x = factor(am), y = mpg)) +
+#'   a_geom_dotplot(binaxis = "y", stackdir = "center", binpositions="all")
 #'
 #' # Stacking multiple groups, with different fill
-#' a_plot(mtcars, aes(x = mpg, fill = factor(cyl))) +
-#'   geom_dotplot(stackgroups = TRUE, binwidth = 1, binpositions = "all")
+#' a_plot(mtcars, a_aes(x = mpg, fill = factor(cyl))) +
+#'   a_geom_dotplot(stackgroups = TRUE, binwidth = 1, binpositions = "all")
 #'
-#' a_plot(mtcars, aes(x = mpg, fill = factor(cyl))) +
-#'   geom_dotplot(stackgroups = TRUE, binwidth = 1, method = "histodot")
+#' a_plot(mtcars, a_aes(x = mpg, fill = factor(cyl))) +
+#'   a_geom_dotplot(stackgroups = TRUE, binwidth = 1, method = "histodot")
 #'
-#' a_plot(mtcars, aes(x = 1, y = mpg, fill = factor(cyl))) +
-#'   geom_dotplot(binaxis = "y", stackgroups = TRUE, binwidth = 1, method = "histodot")
+#' a_plot(mtcars, a_aes(x = 1, y = mpg, fill = factor(cyl))) +
+#'   a_geom_dotplot(binaxis = "y", stackgroups = TRUE, binwidth = 1, method = "histodot")
 #' }
-geom_dotplot <- function(mapping = NULL, data = NULL,
-                         position = "identity",
+a_geom_dotplot <- function(mapping = NULL, data = NULL,
+                         a_position = "identity",
                          ...,
                          binwidth = NULL,
                          binaxis = "x",
@@ -129,25 +129,25 @@ geom_dotplot <- function(mapping = NULL, data = NULL,
                          drop = FALSE,
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
-  # If identical(position, "stack") or position is position_stack(), tell them
+                         inherit.a_aes = TRUE) {
+  # If identical(a_position, "stack") or a_position is a_position_stack(), tell them
   # to use stackgroups=TRUE instead. Need to use identical() instead of ==,
-  # because == will fail if object is position_stack() or position_dodge()
-  if (!is.null(position) &&
-      (identical(position, "stack") || (inherits(position, "PositionStack"))))
-    message("position=\"stack\" doesn't work properly with geom_dotplot. Use stackgroups=TRUE instead.")
+  # because == will fail if object is a_position_stack() or a_position_dodge()
+  if (!is.null(a_position) &&
+      (identical(a_position, "stack") || (inherits(a_position, "a_PositionStack"))))
+    message("a_position=\"stack\" doesn't work properly with a_geom_dotplot. Use stackgroups=TRUE instead.")
 
   if (stackgroups && method == "dotdensity" && binpositions == "bygroup")
-    message('geom_dotplot called with stackgroups=TRUE and method="dotdensity". You probably want to set binpositions="all"')
+    message('a_geom_dotplot called with stackgroups=TRUE and method="dotdensity". You probably want to set binpositions="all"')
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatBindot,
-    geom = a_GeomDotplot,
-    position = position,
+    a_stat = a_StatBindot,
+    a_geom = a_GeomDotplot,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     # Need to make sure that the binaxis goes to both the stat and the geom
     params = list(
       binaxis = binaxis,
@@ -176,7 +176,7 @@ a_GeomDotplot <- a_ggproto("a_GeomDotplot", a_Geom,
   required_aes = c("x", "y"),
   non_missing_aes = c("size", "shape"),
 
-  default_aes = aes(colour = "black", fill = "black", alpha = NA),
+  default_aes = a_aes(colour = "black", fill = "black", alpha = NA),
 
   setup_data = function(data, params) {
     data$width <- data$width %||%
@@ -250,17 +250,17 @@ a_GeomDotplot <- a_ggproto("a_GeomDotplot", a_Geom,
   },
 
 
-  draw_group = function(data, panel_scales, coord, na.rm = FALSE,
+  draw_group = function(data, panel_scales, a_coord, na.rm = FALSE,
                         binaxis = "x", stackdir = "up", stackratio = 1,
                         dotsize = 1, stackgroups = FALSE) {
-    if (!coord$is_linear()) {
-      warning("geom_dotplot does not work properly with non-linear coordinates.")
+    if (!a_coord$is_linear()) {
+      warning("a_geom_dotplot does not work properly with non-linear coordinates.")
     }
 
-    tdata <- coord$transform(data, panel_scales)
+    tdata <- a_coord$transform(data, panel_scales)
 
-    # Swap axes if using coord_flip
-    if (inherits(coord, "CoordFlip"))
+    # Swap axes if using a_coord_flip
+    if (inherits(a_coord, "a_CoordFlip"))
       binaxis <- ifelse(binaxis == "x", "y", "x")
 
     if (binaxis == "x") {

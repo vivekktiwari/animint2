@@ -1,9 +1,9 @@
 acontext("compiler errors")
 
-test_that("aes(showSelected=var1, showSelected2=var2) is an error", {
+test_that("a_aes(showSelected=var1, showSelected2=var2) is an error", {
   viz <- list(
     petals=a_plot()+
-      geom_point(aes(Petal.Width, Petal.Length,
+      a_geom_point(a_aes(Petal.Width, Petal.Length,
                      showSelected=Species,
                      showSelected2=Sepal.Width),
                  data=iris)
@@ -16,7 +16,7 @@ test_that("aes(showSelected=var1, showSelected2=var2) is an error", {
 test_that("informative error for time option with no showSelected", {
   viz <- list(
     petals=a_plot()+
-      geom_point(aes(Petal.Width, Petal.Length),
+      a_geom_point(a_aes(Petal.Width, Petal.Length),
                  data=iris),
     time=list(variable="Species", ms=3000)
   )
@@ -28,7 +28,7 @@ test_that("informative error for time option with no showSelected", {
 test_that("no error for time option with clickSelects", {
   viz <- list(
     petals=a_plot()+
-      geom_point(aes(Petal.Width, Petal.Length),
+      a_geom_point(a_aes(Petal.Width, Petal.Length),
                  clickSelects="Species",
                  data=iris),
     time=list(variable="Species", ms=3000)
@@ -39,7 +39,7 @@ test_that("no error for time option with clickSelects", {
 test_that("no error for time option with showSelected", {
   viz <- list(
     petals=a_plot()+
-      geom_point(aes(Petal.Width, Petal.Length),
+      a_geom_point(a_aes(Petal.Width, Petal.Length),
                  showSelected="Species",
                  data=iris),
     time=list(variable="Species", ms=3000)
@@ -50,7 +50,7 @@ test_that("no error for time option with showSelected", {
 test_that("no error for time option with color", {
   viz <- list(
     petals=a_plot()+
-      geom_point(aes(Petal.Width, Petal.Length, color=Species),
+      a_geom_point(a_aes(Petal.Width, Petal.Length, color=Species),
                  data=iris),
     time=list(variable="Species", ms=3000)
   )
@@ -60,12 +60,12 @@ test_that("no error for time option with color", {
 data("WorldBank", package="animint2")
 viz.no.duration <- list(
   scatter=a_plot()+
-    geom_point(aes(x=life.expectancy, y=fertility.rate, color=region,
+    a_geom_point(a_aes(x=life.expectancy, y=fertility.rate, color=region,
                    key=country),
                showSelected="year",
                clickSelects="country",
                data=WorldBank)+
-    geom_text(aes(x=life.expectancy, y=fertility.rate, label=country),
+    a_geom_text(a_aes(x=life.expectancy, y=fertility.rate, a_label=country),
               data=WorldBank,
               showSelected=c("year", "country", "region"),
               clickSelects="country"),
@@ -82,22 +82,22 @@ test_that("no warning for no duration vars", {
   })
 })
 
-test_that("warn no key for geom_text with showSelected=duration var", {
+test_that("warn no key for a_geom_text with showSelected=duration var", {
   viz.duration <- viz.no.duration
   viz.duration$duration <- list(year=2000)
   expect_warning({
     info <- animint2dir(viz.duration, open.browser=FALSE)
-  }, "to ensure that smooth transitions are interpretable, aes(key) should be specifed for geoms with showSelected=year, problem: geom2_text_scatter", fixed=TRUE)
+  }, "to ensure that smooth transitions are interpretable, aes(key) should be specifed for geoms with showSelected=year, problem: a_geom2_text_scatter", fixed=TRUE)
 })
 
 viz.key.duration <- list(
   scatter=a_plot()+
-    geom_point(aes(x=life.expectancy, y=fertility.rate, color=region,
+    a_geom_point(a_aes(x=life.expectancy, y=fertility.rate, color=region,
                    key=country),
                showSelected="year",
                clickSelects="country",
                data=WorldBank)+
-    geom_text(aes(x=life.expectancy, y=fertility.rate, label=country,
+    a_geom_text(a_aes(x=life.expectancy, y=fertility.rate, a_label=country,
                   key=country),
                   showSelected=c("year", "country", "region"),
                   clickSelects="country",              
@@ -115,7 +115,7 @@ test_that("no warning when key specified", {
   })
 })
 
-test_that("warning for position=stack and showSelected", {
+test_that("warning for a_position=stack and showSelected", {
   set.seed(1)
   df <- data.frame(
     letter = c(replicate(4, LETTERS[1:5])),
@@ -125,14 +125,14 @@ test_that("warning for position=stack and showSelected", {
     )
   df$key <- with(df, paste(stack, letter))
   gg <- a_plot() +
-    theme_bw()+
-    theme(panel.margin=grid::unit(0, "lines"))+
-    geom_bar(
-      aes(letter, count, fill = stack, key=key),
+    a_theme_bw()+
+    a_theme(panel.margin=grid::unit(0, "lines"))+
+    a_geom_bar(
+      a_aes(letter, count, fill = stack, key=key),
       showSelected="a_facet",
       data = df,
-      stat = "identity",
-      position="stack"
+      a_stat = "identity",
+      a_position="stack"
     )
   complicated <- list(
     plot = gg,
@@ -141,10 +141,10 @@ test_that("warning for position=stack and showSelected", {
   )
   expect_warning({
     animint2dir(complicated, open.browser=FALSE)
-  }, "showSelected only works with position=identity, problem: geom1_bar_plot")
+  }, "showSelected only works with a_position=identity, problem: a_geom1_bar_plot")
 })
 
-test_that("no warning for position=stack without showSelected", {
+test_that("no warning for a_position=stack without showSelected", {
   set.seed(1)
   df <- data.frame(
     letter = c(replicate(4, LETTERS[1:5])),
@@ -153,13 +153,13 @@ test_that("no warning for position=stack without showSelected", {
     a_facet = rep(1:2, each = 10)
   )
   gg <- a_plot() +
-    theme_bw()+
-    theme(panel.margin=grid::unit(0, "lines"))+
-    geom_bar(
-      aes(letter, count, fill = stack),
+    a_theme_bw()+
+    a_theme(panel.margin=grid::unit(0, "lines"))+
+    a_geom_bar(
+      a_aes(letter, count, fill = stack),
       data = df,
-      stat = "identity",
-      position="stack"
+      a_stat = "identity",
+      a_position="stack"
     )
   no.show <- list(
     plot = gg

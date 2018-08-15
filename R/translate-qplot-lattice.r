@@ -23,16 +23,16 @@
 #' # ggplot2 has qplot().
 #'
 #' stripplot(~ rating, data = movies, jitter.data = TRUE)
-#' qplot(rating, 1, data = movies, geom = "jitter")
+#' qplot(rating, 1, data = movies, a_geom = "jitter")
 #'
 #' histogram(~ rating, data = movies)
-#' qplot(rating, data = movies, geom = "histogram")
+#' qplot(rating, data = movies, a_geom = "histogram")
 #'
 #' bwplot(Comedy ~ rating ,data = movies)
-#' qplot(factor(Comedy), rating, data = movies, geom = "boxplot")
+#' qplot(factor(Comedy), rating, data = movies, a_geom = "boxplot")
 #'
 #' xyplot(wt ~ mpg, mtcars, type = c("p","smooth"))
-#' qplot(mpg, wt, data = mtcars, geom = c("point","smooth"))
+#' qplot(mpg, wt, data = mtcars, a_geom = c("point","smooth"))
 #' }
 #'
 #' # The capabilities for scale manipulations are similar in both ggplot2 and
@@ -46,8 +46,8 @@
 #'
 #' xyplot(wt ~ mpg | cyl, mtcars, scales = list(log = 2))
 #' qplot(mpg, wt, data = mtcars) +
-#'   scale_x_continuous(trans = scales::log2_trans()) +
-#'   scale_y_continuous(trans = scales::log2_trans())
+#'   a_scale_x_continuous(trans = scales::log2_trans()) +
+#'   a_scale_y_continuous(trans = scales::log2_trans())
 #'
 #' xyplot(wt ~ mpg, mtcars, group = cyl, auto.key = TRUE)
 #' # Map directly to an aesthetic like colour, size, or shape.
@@ -68,8 +68,8 @@
 #' xyplot(wt ~ mpg, mtcars, aspect = 1)
 #' qplot(mpg, wt, data = mtcars, asp = 1)
 #'
-#' # par.settings() is equivalent to + theme() and trellis.options.set()
-#' # and trellis.par.get() to theme_set() and theme_get().
+#' # par.settings() is equivalent to + a_theme() and trellis.options.set()
+#' # and trellis.par.get() to a_theme_set() and a_theme_get().
 #' # More complicated lattice formulas are equivalent to rearranging the data
 #' # before using ggplot2.
 #' }

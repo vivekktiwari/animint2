@@ -32,29 +32,29 @@ getStrips.grid <- function(a_facet, panel, ...) {
 
 #' @format NULL
 #' @export
-build_strip <- function(panel, label_df, labeller, side = "right", ...) {
+build_strip <- function(panel, a_label_df, labeller, side = "right", ...) {
   side <- match.arg(side, c("top", "left", "bottom", "right"))
   labeller <- match.fun(labeller)
   # No labelling data, so return empty string?
-  if (plyr::empty(label_df)) {
+  if (plyr::empty(a_label_df)) {
     return("")
   }
   # Create matrix of labels
-  labels <- matrix(list(), nrow = nrow(label_df), ncol = ncol(label_df))
-  labels <- lapply(labeller(label_df), cbind)
-  labels <- do.call("cbind", labels)
+  a_labels <- matrix(list(), nrow = nrow(a_label_df), ncol = ncol(a_label_df))
+  a_labels <- lapply(labeller(a_label_df), cbind)
+  a_labels <- do.call("cbind", a_labels)
   
   # unlike ggplot2, we collapse "layers" of strips into 1 layer
-  apply(labels, 1, paste, collapse = "; ")
+  apply(a_labels, 1, paste, collapse = "; ")
 }
 
 #' @export
 getStrips.wrap <- function(a_facet, panel, ...) {
-  labels_df <- panel$layout[names(a_facet$facets)]
-  labels_df[] <- plyr::llply(labels_df, format, justify = "none")
-  # facet_wrap labels always go on top
+  a_labels_df <- panel$layout[names(a_facet$facets)]
+  a_labels_df[] <- plyr::llply(a_labels_df, format, justify = "none")
+  # facet_wrap a_labels always go on top
   # we return a list so p_info.strips is always an object (on the JS side)
-  strips <- list(top = apply(labels_df, 1, paste, collapse = ", "), right = list(""))
+  strips <- list(top = apply(a_labels_df, 1, paste, collapse = ", "), right = list(""))
   # strips <- strips[!identical(strips$top, rep("", nrow(panel$layout)))]
   strips$n <- list(top = max(panel$layout$ROW), right = 0)
   strips
@@ -97,7 +97,7 @@ flag_axis.null <- function(a_facet, layout) {
 # https://github.com/hadley/ggplot2/blob/dfcb56ec067910e1a3a04693d8f1e146cc7fb796/R/coord-.r
 
 #' @export
-train_layout <- function(a_facet, coord, layout, ranges) {
+train_layout <- function(a_facet, a_coord, layout, ranges) {
   npanels <- dim(layout)[1]
   nrows <- max(layout$ROW)
   ncols <- max(layout$COL)
@@ -105,11 +105,11 @@ train_layout <- function(a_facet, coord, layout, ranges) {
   xdiffs <- sapply(ranges, function(z) diff(z$x.range))
   # if x or y scale is 'free', then ignore the ratio
   if (length(unique(xdiffs)) > 1 || length(unique(ydiffs)) > 1) 
-    coord$ratio <- NULL
-  has.ratio <- !is.null(coord$ratio)
-  layout$coord_fixed <- has.ratio
+    a_coord$ratio <- NULL
+  has.ratio <- !is.null(a_coord$ratio)
+  layout$a_coord_fixed <- has.ratio
   if (has.ratio) { 
-    spaces <- fixed_spaces(ranges, coord$ratio)
+    spaces <- fixed_spaces(ranges, a_coord$ratio)
     layout <- cbind(layout, width_proportion = spaces$x, height_proportion = spaces$y)
     layout$width_proportion <- layout$width_proportion/ncols
     layout$height_proportion <- layout$height_proportion/nrows
@@ -124,18 +124,18 @@ train_layout <- function(a_facet, coord, layout, ranges) {
       for (xy in vars) {
         u.type <- toupper(xy)
         l.type <- tolower(xy)
-        scale.type <- paste0("SCALE_", u.type)
+        a_scale.type <- paste0("SCALE_", u.type)
         range.type <- paste0(l.type, ".range")
         space.type <- paste0("SPACE_", u.type)
-        vals <- layout[[scale.type]]
+        vals <- layout[[a_scale.type]]
         uv <- unique(vals)
         diffs <- sapply(ranges[which(vals %in% uv)],
                         function(x) { diff(x[[range.type]]) })
         udiffs <- unique(diffs)
         # decide the proportion of the height/width each scale deserves based on the range
         props <- data.frame(tmp1 = uv, tmp2 = udiffs / sum(udiffs))
-        names(props) <- c(scale.type, space.type)
-        layout <- plyr::join(layout, props, by = scale.type)
+        names(props) <- c(a_scale.type, space.type)
+        layout <- plyr::join(layout, props, by = a_scale.type)
       }
       names(layout) <- gsub("SPACE_X", "width_proportion", names(layout), fixed = TRUE)
       names(layout) <- gsub("SPACE_Y", "height_proportion", names(layout), fixed = TRUE)

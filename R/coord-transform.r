@@ -1,6 +1,6 @@
 #' Transformed cartesian coordinate system.
 #'
-#' \code{coord_trans} is different to scale transformations in that it occurs after
+#' \code{a_coord_trans} is different to scale transformations in that it occurs after
 #' statistical transformation and will affect the visual appearance of geoms - there is
 #' no guarantee that straight lines will continue to be straight.
 #'
@@ -15,21 +15,21 @@
 #' @export
 #' @examples
 #' \donttest{
-#' # See ?geom_boxplot for other examples
+#' # See ?a_geom_boxplot for other examples
 #'
 #' # Three ways of doing transformation in ggplot:
 #' #  * by transforming the data
-#' a_plot(diamonds, aes(log10(carat), log10(price))) +
-#'   geom_point()
+#' a_plot(diamonds, a_aes(log10(carat), log10(price))) +
+#'   a_geom_point()
 #' #  * by transforming the scales
-#' a_plot(diamonds, aes(carat, price)) +
-#'   geom_point() +
-#'   scale_x_log10() +
-#'   scale_y_log10()
+#' a_plot(diamonds, a_aes(carat, price)) +
+#'   a_geom_point() +
+#'   a_scale_x_log10() +
+#'   a_scale_y_log10()
 #' #  * by transforming the coordinate system:
-#' a_plot(diamonds, aes(carat, price)) +
-#'   geom_point() +
-#'   coord_trans(x = "log10", y = "log10")
+#' a_plot(diamonds, a_aes(carat, price)) +
+#'   a_geom_point() +
+#'   a_coord_trans(x = "log10", y = "log10")
 #'
 #' # The difference between transforming the scales and
 #' # transforming the coordinate system is that scale
@@ -39,16 +39,16 @@
 #'
 #' d <- subset(diamonds, carat > 0.5)
 #'
-#' a_plot(d, aes(carat, price)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm") +
-#'   scale_x_log10() +
-#'   scale_y_log10()
+#' a_plot(d, a_aes(carat, price)) +
+#'   a_geom_point() +
+#'   a_geom_smooth(method = "lm") +
+#'   a_scale_x_log10() +
+#'   a_scale_y_log10()
 #'
-#' a_plot(d, aes(carat, price)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm") +
-#'   coord_trans(x = "log10", y = "log10")
+#' a_plot(d, a_aes(carat, price)) +
+#'   a_geom_point() +
+#'   a_geom_smooth(method = "lm") +
+#'   a_coord_trans(x = "log10", y = "log10")
 #'
 #' # Here I used a subset of diamonds so that the smoothed line didn't
 #' # drop below zero, which obviously causes problems on the log-transformed
@@ -56,26 +56,26 @@
 #'
 #' # With a combination of scale and coordinate transformation, it's
 #' # possible to do back-transformations:
-#' a_plot(diamonds, aes(carat, price)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm") +
-#'   scale_x_log10() +
-#'   scale_y_log10() +
-#'   coord_trans(x = scales::exp_trans(10), y = scales::exp_trans(10))
+#' a_plot(diamonds, a_aes(carat, price)) +
+#'   a_geom_point() +
+#'   a_geom_smooth(method = "lm") +
+#'   a_scale_x_log10() +
+#'   a_scale_y_log10() +
+#'   a_coord_trans(x = scales::exp_trans(10), y = scales::exp_trans(10))
 #'
 #' # cf.
-#' a_plot(diamonds, aes(carat, price)) +
-#'   geom_point() +
-#'   geom_smooth(method = "lm")
+#' a_plot(diamonds, a_aes(carat, price)) +
+#'   a_geom_point() +
+#'   a_geom_smooth(method = "lm")
 #'
 #' # Also works with discrete scales
 #' df <- data.frame(a = abs(rnorm(26)),letters)
-#' plot <- a_plot(df,aes(a,letters)) + geom_point()
+#' plot <- a_plot(df,a_aes(a,letters)) + a_geom_point()
 #'
-#' plot + coord_trans(x = "log10")
-#' plot + coord_trans(x = "sqrt")
+#' plot + a_coord_trans(x = "log10")
+#' plot + a_coord_trans(x = "sqrt")
 #' }
-coord_trans <- function(x = "identity", y = "identity", limx = NULL, limy = NULL,
+a_coord_trans <- function(x = "identity", y = "identity", limx = NULL, limy = NULL,
   xtrans, ytrans)
 {
   if (!missing(xtrans)) {
@@ -91,7 +91,7 @@ coord_trans <- function(x = "identity", y = "identity", limx = NULL, limy = NULL
   # Now limits are implemented.
   # But for backward compatibility, xlim -> limx, ylim -> ylim
   # Because there are many examples such as
-  # > coord_trans(x = "log10", y = "log10")
+  # > a_coord_trans(x = "log10", y = "log10")
   # Maybe this is changed.
   if (is.character(x)) x <- as.trans(x)
   if (is.character(y)) y <- as.trans(y)
@@ -166,7 +166,7 @@ train_trans <- function(scale_details, limits, trans, name) {
   out$minor_source <- transform_value(trans, out$minor_source, out$range)
 
   out <- list(
-    range = out$range, labels = out$labels,
+    range = out$range, a_labels = out$a_labels,
     major = out$major_source, minor = out$minor_source
   )
   names(out) <- paste(name, names(out), sep = ".")

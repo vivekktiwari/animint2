@@ -6,8 +6,8 @@
 #' @method summary a_plot
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point()
+#' p <- a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point()
 #' summary(p)
 summary.a_plot <- function(object, ...) {
   wrap <- function(x) paste(
@@ -30,7 +30,7 @@ summary.a_plot <- function(object, ...) {
   }
 
   cat("faceting: ")
-  print(object$facet)
+  print(object$a_facet)
 
   if (length(object$layers) > 0)
     cat("-----------------------------------\n")

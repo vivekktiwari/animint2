@@ -1,30 +1,30 @@
 #' Update axis/legend labels
 #'
 #' @param p plot to modify
-#' @param labels named list of new labels
+#' @param a_labels named list of new a_labels
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(mpg, wt)) + geom_point()
-#' update_labels(p, list(x = "New x"))
-#' update_labels(p, list(x = expression(x / y ^ 2)))
-#' update_labels(p, list(x = "New x", y = "New Y"))
-#' update_labels(p, list(colour = "Fail silently"))
-update_labels <- function(p, labels) {
+#' p <- a_plot(mtcars, a_aes(mpg, wt)) + a_geom_point()
+#' update_a_labels(p, list(x = "New x"))
+#' update_a_labels(p, list(x = expression(x / y ^ 2)))
+#' update_a_labels(p, list(x = "New x", y = "New Y"))
+#' update_a_labels(p, list(colour = "Fail silently"))
+update_a_labels <- function(p, a_labels) {
   p <- a_plot_clone(p)
-  p$labels <- defaults(labels, p$labels)
+  p$a_labels <- defaults(a_labels, p$a_labels)
   p
 }
 
-#' Change axis labels, legend titles, plot title/subtitle and below-plot
+#' Change axis a_labels, legend titles, plot title/subtitle and below-plot
 #' caption.
 #'
-#' @param label The text for the axis, plot title or caption below the plot.
+#' @param a_label The text for the axis, plot title or caption below the plot.
 #' @param subtitle the text for the subtitle for the plot which will be
 #'        displayed below the title. Leave \code{NULL} for no subtitle.
 #' @param ... a list of new names in the form aesthetic = "new name"
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(mpg, wt)) + geom_point()
+#' p <- a_plot(mtcars, a_aes(mpg, wt)) + a_geom_point()
 #' p + labs(title = "New plot title")
 #' p + labs(x = "New x label")
 #' p + xlab("New x label")
@@ -46,7 +46,7 @@ update_labels <- function(p, labels) {
 #' p + ylim(2, 4) + ylab("New y label")
 #'
 #' # The labs function also modifies legend labels
-#' p <- a_plot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
+#' p <- a_plot(mtcars, a_aes(mpg, wt, colour = cyl)) + a_geom_point()
 #' p + labs(colour = "Cylinders")
 #'
 #' # Can also pass in a list, if that is more convenient
@@ -55,37 +55,37 @@ labs <- function(...) {
   args <- list(...)
   if (is.list(args[[1]])) args <- args[[1]]
   args <- rename_aes(args)
-  structure(args, class = "labels")
+  structure(args, class = "a_labels")
 }
 
 #' @rdname labs
 #' @export
-xlab <- function(label) {
-  labs(x = label)
+xlab <- function(a_label) {
+  labs(x = a_label)
 }
 
 #' @rdname labs
 #' @export
-ylab <- function(label) {
-  labs(y = label)
+ylab <- function(a_label) {
+  labs(y = a_label)
 }
 
 #' @rdname labs
 #' @export
-ggtitle <- function(label, subtitle = NULL) {
-  labs(title = label, subtitle = subtitle)
+ggtitle <- function(a_label, subtitle = NULL) {
+  labs(title = a_label, subtitle = subtitle)
 }
 
-# Convert aesthetic mapping into text labels
+# Convert aesthetic mapping into text a_labels
 make_labels <- function(mapping) {
   remove_dots <- function(x) {
     gsub(match_calculated_aes, "\\1", x)
   }
 
-  default_label <- function(aesthetic, mapping) {
-    # e.g., geom_smooth(aes(colour = "loess"))
+  default_label <- function(a_aesthetic, mapping) {
+    # e.g., a_geom_smooth(a_aes(colour = "loess"))
     if (is.character(mapping)) {
-      aesthetic
+      a_aesthetic
     } else {
       remove_dots(deparse(mapping))
     }

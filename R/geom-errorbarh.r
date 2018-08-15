@@ -3,9 +3,9 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "errorbarh")}
 #'
-#' @seealso \code{\link{geom_errorbar}}: vertical error bars
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @seealso \code{\link{a_geom_errorbar}}: vertical error bars
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @export
 #' @examples
 #' df <- data.frame(
@@ -17,25 +17,25 @@
 #'
 #' # Define the top and bottom of the errorbars
 #'
-#' p <- a_plot(df, aes(resp, trt, colour = group))
-#' p + geom_point() +
-#'   geom_errorbarh(aes(xmax = resp + se, xmin = resp - se))
-#' p + geom_point() +
-#'   geom_errorbarh(aes(xmax = resp + se, xmin = resp - se, height = .2))
-geom_errorbarh <- function(mapping = NULL, data = NULL,
-                           stat = "identity", position = "identity",
+#' p <- a_plot(df, a_aes(resp, trt, colour = group))
+#' p + a_geom_point() +
+#'   a_geom_errorbarh(a_aes(xmax = resp + se, xmin = resp - se))
+#' p + a_geom_point() +
+#'   a_geom_errorbarh(a_aes(xmax = resp + se, xmin = resp - se, height = .2))
+a_geom_errorbarh <- function(mapping = NULL, data = NULL,
+                           a_stat = "identity", a_position = "identity",
                            ...,
                            na.rm = FALSE,
                            show.legend = NA,
-                           inherit.aes = TRUE) {
-  layer(
+                           inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomErrorbarh,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomErrorbarh,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...
@@ -49,7 +49,7 @@ geom_errorbarh <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomErrorbarh <- a_ggproto("a_GeomErrorbarh", a_Geom,
-  default_aes = aes(colour = "black", size = 0.5, linetype = 1, height = 0.5,
+  default_aes = a_aes(colour = "black", size = 0.5, linetype = 1, height = 0.5,
     alpha = NA),
 
   draw_key = a_draw_key_path,
@@ -65,7 +65,7 @@ a_GeomErrorbarh <- a_ggproto("a_GeomErrorbarh", a_Geom,
     )
   },
 
-  draw_panel = function(data, panel_scales, coord, height = NULL) {
+  draw_panel = function(data, panel_scales, a_coord, height = NULL) {
     a_GeomPath$draw_panel(data.frame(
       x = as.vector(rbind(data$xmax, data$xmax, NA, data$xmax, data$xmin, NA, data$xmin, data$xmin)),
       y = as.vector(rbind(data$ymin, data$ymax, NA, data$y,    data$y,    NA, data$ymin, data$ymax)),
@@ -76,6 +76,6 @@ a_GeomErrorbarh <- a_ggproto("a_GeomErrorbarh", a_Geom,
       group = rep(1:(nrow(data)), each = 8),
       stringsAsFactors = FALSE,
       row.names = 1:(nrow(data) * 8)
-    ), panel_scales, coord)
+    ), panel_scales, a_coord)
   }
 )

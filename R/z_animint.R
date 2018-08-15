@@ -7,16 +7,16 @@
 #' @import plyr
 parsePlot <- function(meta, plot, plot.name){
   ## adding data and mapping to each layer from base plot, if necessary
-  for(layer.i in seq_along(plot$layers)) {
+  for(a_layer.i in seq_along(plot$layers)) {
     
     ## if data is not specified, get it from plot
-    if(length(plot$layers[[layer.i]]$data) == 0){
-      plot$layers[[layer.i]]$data <- plot$data
+    if(length(plot$layers[[a_layer.i]]$data) == 0){
+      plot$layers[[a_layer.i]]$data <- plot$data
     }
     
     ## if mapping is not specified, get it from plot
-    if(is.null(plot$layers[[layer.i]]$mapping)){
-      plot$layers[[layer.i]]$mapping <- plot$mapping
+    if(is.null(plot$layers[[a_layer.i]]$mapping)){
+      plot$layers[[a_layer.i]]$mapping <- plot$mapping
     }
   }
   
@@ -28,24 +28,24 @@ parsePlot <- function(meta, plot, plot.name){
   ## be passed into d3 on the x axis scale instead of on the
   ## grid 0-1 scale). This allows transformations to be used
   ## out of the box, with no additional d3 coding.
-  theme.pars <- plot_theme(plot)
+  a_theme.pars <- plot_a_theme(plot)
 
   ## Interpret panel.margin as the number of lines between facets
   ## (ignoring whatever grid::unit such as cm that was specified).
   
   ## Now ggplot specifies panel.margin in 'pt' instead of 'lines'
-  plot.info$panel_margin_lines <- pt.to.lines(theme.pars$panel.margin)
+  plot.info$panel_margin_lines <- pt.to.lines(a_theme.pars$panel.margin)
   
-  ## No legend if theme(legend.postion="none").
-  plot.info$legend <- if(theme.pars$legend.position != "none"){
+  ## No legend if a_theme(legend.postion="none").
+  plot.info$legend <- if(a_theme.pars$legend.a_position != "none"){
     getLegendList(built)
   }
   
   ## scan for legends in each layer.
-  for(layer.i in seq_along(plot$layers)){
-    ##cat(sprintf("%4d / %4d layers\n", layer.i, length(plot$layers)))
-    ## This is the layer from the original ggplot object.
-    L <- plot$layers[[layer.i]]
+  for(a_layer.i in seq_along(plot$layers)){
+    ##cat(sprintf("%4d / %4d layers\n", a_layer.i, length(plot$layers)))
+    ## This is the a_layer from the original ggplot object.
+    L <- plot$layers[[a_layer.i]]
     
     ## Use original mapping saved before calling parsePlot
     ## This is to handle cases where the plots may share the same layer
@@ -92,27 +92,27 @@ parsePlot <- function(meta, plot, plot.name){
     plot$a_facet, plot$coordinates, plot.info$layout, panel$ranges))
   
   # saving background info
-  plot.info$panel_background <- get_bg(theme.pars$panel.background, theme.pars)
-  plot.info$panel_border <- get_bg(theme.pars$panel.border, theme.pars)
+  plot.info$panel_background <- get_bg(a_theme.pars$panel.background, a_theme.pars)
+  plot.info$panel_border <- get_bg(a_theme.pars$panel.border, a_theme.pars)
   
   # extract major grid lines
-  plot.info$grid_major <- get_grid(theme.pars$panel.grid.major, theme.pars,
+  plot.info$grid_major <- get_grid(a_theme.pars$panel.grid.major, a_theme.pars,
                                    plot.info, meta, built)
   # extract minor grid lines
-  plot.info$grid_minor <- get_grid(theme.pars$panel.grid.minor, theme.pars,
+  plot.info$grid_minor <- get_grid(a_theme.pars$panel.grid.minor, a_theme.pars,
                                    plot.info, meta, built, major = F)
   
   ## Flip labels if coords are flipped - transform does not take care
   ## of this. Do this BEFORE checking if it is blank or not, so that
   ## individual axes can be hidden appropriately, e.g. #1.
   if("a_CoordFlip"%in%attr(plot$coordinates, "class")){
-    temp <- plot$labels$x
-    plot$labels$x <- plot$labels$y
-    plot$labels$y <- temp
+    temp <- plot$a_labels$x
+    plot$a_labels$x <- plot$a_labels$y
+    plot$a_labels$y <- temp
   }
   is.blank <- function(el.name){
-    x <- calc_element(el.name, plot$theme)
-    "element_blank"%in%attr(x,"class")
+    x <- calc_element(el.name, plot$a_theme)
+    "a_element_blank"%in%attr(x,"class")
   }
 
   # Instead of an "axis" JSON object for each plot,
@@ -131,18 +131,18 @@ parsePlot <- function(meta, plot, plot.name){
     plot.info[[s("%stitle")]] <- if(is.blank(s("axis.title.%s"))){
       ""
     } else {
-      scale.i <- which(plot$scales$find(xy))
-      lab.or.null <- if(length(scale.i) == 1){
-        plot$scales$scales[[scale.i]]$name
+      a_scale.i <- which(plot$scales$find(xy))
+      lab.or.null <- if(length(a_scale.i) == 1){
+        plot$scales$scales[[a_scale.i]]$name
       }
       if(is.null(unlist(lab.or.null))){
-        plot$labels[[xy]]
+        plot$a_labels[[xy]]
       }else{
         lab.or.null
       }
     }
-    # theme settings are shared across panels
-    axis.text <- theme.pars[[s("axis.text.%s")]]
+    # a_theme settings are shared across panels
+    axis.text <- a_theme.pars[[s("axis.text.%s")]]
     ## TODO: also look at axis.text! (and text?)
     anchor <- hjust2anchor(axis.text$hjust)
     angle <- if(is.numeric(axis.text$angle)){
@@ -169,7 +169,7 @@ parsePlot <- function(meta, plot, plot.name){
       plot.info[[axis]][[s("%slab")]] <- if(is.blank(s("axis.text.%s"))){
         NULL
       } else {
-        as.list(range[[s("%s.labels")]])
+        as.list(range[[s("%s.a_labels")]])
       }
       plot.info[[axis]][[s("%srange")]] <- range[[s("%s.range")]]
       plot.info[[axis]][[s("%sline")]] <- !is.blank(s("axis.line.%s"))
@@ -180,13 +180,13 @@ parsePlot <- function(meta, plot, plot.name){
   plot.info <- getUniqueAxisLabels(plot.info)
 
   # grab plot title if present
-  plot.info$title <- getPlotTitle(theme.pars$plot.tiltle,
-                                  plot$labels$title)
+  plot.info$title <- getPlotTitle(a_theme.pars$plot.tiltle,
+                                  plot$a_labels$title)
 
   ## Set plot width and height from animint.* options if they are
   ## present.
-  options_list <- getWidthAndHeight(plot$theme)
-  options_list <- setUpdateAxes(plot$theme, options_list)
+  options_list <- getWidthAndHeight(plot$a_theme)
+  options_list <- setUpdateAxes(plot$a_theme, options_list)
   plot.info$options <- options_list
 
   list(
@@ -213,35 +213,38 @@ storeLayer <- function(meta, g, g.data.varied){
 #' @param d one layer of calculated data from a_plot_build(p).
 #' @param meta environment of meta-data.
 #' @param geom_num the number of geom in the plot. Each geom gets an increasing
-#' @param layer_name .....
+#' @param a_layer_name .....
 #' @param a_plot ....
 #' @param built ....
 #' @param AniminationInfo
 #'  ID number starting from 1
 #' @return list representing a layer, with corresponding aesthetics, ranges, and groups.
 #' @export
-saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
+saveLayer <- function(l, d, meta, a_layer_name, a_plot, built, AnimationInfo){
   # Set geom name and layer name
-  g <- list(geom=strsplit(layer_name, "_")[[1]][2])
-  g$classed <- layer_name
+  # Now that a_layer_name have become geom_a_position like we need to spilit with [3] index
+  # ToDO: write a if statement with warning message if correct geom name
+  # and a_layer names are not passed
+  g <- list(a_geom=strsplit(a_layer_name, "_")[[1]][3])
+  g$classed <- a_layer_name
   
   ranges <- built$panel$ranges
   
   ## needed for when group, etc. is an expression:
-  g$aes <- sapply(l$mapping, function(k) as.character(as.expression(k)))
+  g$a_aes <- sapply(l$mapping, function(k) as.character(as.expression(k)))
 
   ## use un-named parameters so that they will not be exported
   ## to JSON as a named object, since that causes problems with
   ## e.g. colour.
-  ## 'colour', 'size' etc. have been moved to aes_params
+  ## 'colour', 'size' etc. have been moved to a_aes_params
   g$params <- getLayerParams(l)
   
   ## Make a list of variables to use for subsetting. subset_order is the
   ## order in which these variables will be accessed in the recursive
   ## JavaScript array structure.
 
-  ## subset_order IS in fact useful with geom_segment! For example, in
-  ## the first plot in the breakpointError example, the geom_segment has
+  ## subset_order IS in fact useful with a_geom_segment! For example, in
+  ## the first plot in the breakpointError example, the a_geom_segment has
   ## the following exported data in plot.json
 
   ## "subset_order": [
@@ -264,42 +267,42 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
   ## plot.Selectors.
 
   ## Separate .variable/.value selectors
-  s.aes <- selectSSandCS(g$aes)
-  meta$selector.aes[[g$classed]] <- s.aes
+  s.a_aes <- selectSSandCS(g$a_aes)
+  meta$selector.a_aes[[g$classed]] <- s.a_aes
 
-  ## Do not copy group unless it is specified in aes, and do not copy
+  ## Do not copy group unless it is specified in a_aes, and do not copy
   ## showSelected variables which are specified multiple times.
-  do.not.copy <- colsNotToCopy(g, s.aes)
+  do.not.copy <- colsNotToCopy(g, s.a_aes)
   copy.cols <- ! names(d) %in% do.not.copy
   
   g.data <- d[copy.cols]
   
-  is.ss <- names(g$aes) %in% s.aes$showSelected$one
-  show.vars <- g$aes[is.ss]
+  is.ss <- names(g$a_aes) %in% s.a_aes$showSelected$one
+  show.vars <- g$a_aes[is.ss]
   pre.subset.order <- as.list(names(show.vars))
 
-  is.cs <- names(g$aes) %in% s.aes$clickSelects$one
-  update.vars <- g$aes[is.ss | is.cs]
+  is.cs <- names(g$a_aes) %in% s.a_aes$clickSelects$one
+  update.vars <- g$a_aes[is.ss | is.cs]
 
   update.var.names <- if(0 < length(update.vars)){
     data.frame(variable=names(update.vars), value=NA)
   }
   
-  interactive.aes <- with(s.aes, {
+  interactive.a_aes <- with(s.a_aes, {
     rbind(clickSelects$several, showSelected$several,
           update.var.names)
   })
 
   ## Construct the selector.
-  for(row.i in seq_along(interactive.aes$variable)){
-    aes.row <- interactive.aes[row.i, ]
-    is.variable.value <- !is.na(aes.row$value)
+  for(row.i in seq_along(interactive.a_aes$variable)){
+    a_aes.row <- interactive.a_aes[row.i, ]
+    is.variable.value <- !is.na(a_aes.row$value)
     selector.df <- if(is.variable.value){
-      selector.vec <- g.data[[paste(aes.row$variable)]]
-      data.frame(value.col=aes.row$value,
+      selector.vec <- g.data[[paste(a_aes.row$variable)]]
+      data.frame(value.col=a_aes.row$value,
                  selector.name=unique(paste(selector.vec)))
     }else{
-      value.col <- paste(aes.row$variable)
+      value.col <- paste(a_aes.row$variable)
       data.frame(value.col,
                  selector.name=update.vars[[value.col]])
     }
@@ -307,7 +310,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
       sel.row <- selector.df[sel.i,]
       value.col <- paste(sel.row$value.col)
       selector.name <- paste(sel.row$selector.name)
-      ## If this selector was defined by .variable .value aes, then we
+      ## If this selector was defined by .variable .value a_aes, then we
       ## will not generate selectize widgets.
       meta$selectors[[selector.name]]$is.variable.value <- is.variable.value
       ## If this selector has no defined type yet, we define it once
@@ -324,7 +327,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
       ## If this selector does not have any clickSelects then we show
       ## the selectize widgets by default.
       for(look.for in c("showSelected", "clickSelects")){
-        if(grepl(look.for, aes.row$variable)){
+        if(grepl(look.for, a_aes.row$variable)){
           meta$selectors[[selector.name]][[look.for]] <- TRUE
         }
       }
@@ -338,22 +341,22 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     }
   }
 
-  is.show <- grepl("showSelected", names(g$aes))
+  is.show <- grepl("showSelected", names(g$a_aes))
   has.show <- any(is.show)
   ## Error if non-identity stat is used with showSelected, since
   ## typically the stats will delete the showSelected column from the
-  ## built data set. For example geom_bar + stat_bin doesn't make
+  ## built data set. For example a_geom_bar + a_stat_bin doesn't make
   ## sense with clickSelects/showSelected, since two
   ## clickSelects/showSelected values may show up in the same bin.
-  stat.type <- class(l$stat)[[1]]
-  checkForNonIdentityAndSS(stat.type, has.show, is.show, l,
-                           g$classed, names(g.data), names(g$aes))
+  a_stat.type <- class(l$a_stat)[[1]]
+  checkForNonIdentityAndSS(a_stat.type, has.show, is.show, l,
+                           g$classed, names(g.data), names(g$a_aes))
   
-  ## Warn if non-identity position is used with animint aes.
-  position.type <- class(l$position)[[1]]
-  if(has.show && position.type != "a_PositionIdentity"){
+  ## Warn if non-identity position is used with animint a_aes.
+  a_position.type <- class(l$a_position)[[1]]
+  if(has.show && a_position.type != "a_PositionIdentity"){
     print(l)
-    warning("showSelected only works with position=identity, problem: ",
+    warning("showSelected only works with a_position=identity, problem: ",
             g$classed)
   }
 
@@ -362,7 +365,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
   ## Pre-process some complex geoms so that they are treated as
   ## special cases of basic geoms. In ggplot2, this processing is done
   ## in the draw method of the geoms.
-  if(g$geom=="abline"){
+  if(g$a_geom=="abline"){
     ## loop through each set of slopes/intercepts
     
     ## TODO: vectorize this code!
@@ -384,12 +387,12 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
         g.data$xend[i] <- (g.data$yend[i] - g.data$intercept[i]) / g.data$slope[i]
       }
     }
-    ## ggplot2 defaults to adding a group aes for ablines!
+    ## ggplot2 defaults to adding a group a_aes for ablines!
     ## Remove it since it is meaningless.
-    g$aes <- g$aes[names(g$aes)!="group"]
+    g$a_aes <- g$a_aes[names(g$a_aes)!="group"]
     g.data <- g.data[! names(g.data) %in% c("slope", "intercept")]
-    g$geom <- "segment"
-  } else if(g$geom=="point"){
+    g$a_geom <- "segment"
+  } else if(g$a_geom=="point"){
     # Fill set to match ggplot2 default of filled in circle.
     # Check for fill in both data and params
     fill.in.data <- ("fill" %in% names(g.data) && any(!is.na(g.data[["fill"]])))
@@ -398,7 +401,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     if(!fill.specified & "colour" %in% names(g.data)){
       g.data[["fill"]] <- g.data[["colour"]]
     }
-  } else if(g$geom=="text"){
+  } else if(g$a_geom=="text"){
     ## convert hjust to anchor.
     hjustRemove <- function(df.or.list){
       df.or.list$anchor <- hjust2anchor(df.or.list$hjust)
@@ -419,31 +422,31 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     } 
     if("vjust" %in% names(g$params)) {
       vjustWarning(g$params$vjust)
-    } else if ("vjust" %in% names(g$aes)) {
+    } else if ("vjust" %in% names(g$a_aes)) {
       vjustWarning(g.data$vjust)
     } 
-  } else if(g$geom=="ribbon"){
+  } else if(g$a_geom=="ribbon"){
     # Color set to match ggplot2 default of fill with no outside border.
     if("fill"%in%names(g.data) & !"colour"%in%names(g.data)){
       g.data[["colour"]] <- g.data[["fill"]]
     }
-  } else if(g$geom=="density" | g$geom=="area"){
-    g$geom <- "ribbon"
-  } else if(g$geom=="tile" | g$geom=="raster" | g$geom=="histogram" ){
+  } else if(g$a_geom=="density" | g$a_geom=="area"){
+    g$a_geom <- "ribbon"
+  } else if(g$a_geom=="tile" | g$a_geom=="raster" | g$a_geom=="histogram" ){
     # Color set to match ggplot2 default of tile with no outside border.
     if(!"colour"%in%names(g.data) & "fill"%in%names(g.data)){
       g.data[["colour"]] <- g.data[["fill"]]
       # Make outer border of 0 size if size isn't already specified.
       if(!"size"%in%names(g.data)) g.data[["size"]] <- 0
     }
-    g$geom <- "rect"
-  } else if(g$geom=="bar"){
+    g$a_geom <- "rect"
+  } else if(g$a_geom=="bar"){
     is.xy <- names(g.data) %in% c("x", "y")
     g.data <- g.data[!is.xy]
-    g$geom <- "rect"
-  } else if(g$geom=="bin2d"){
-    stop("bin2d is not supported in animint. Try using geom_tile() and binning the data yourself.")
-  } else if(g$geom=="boxplot"){
+    g$a_geom <- "rect"
+  } else if(g$a_geom=="bin2d"){
+    stop("bin2d is not supported in animint. Try using a_geom_tile() and binning the data yourself.")
+  } else if(g$a_geom=="boxplot"){
     stop("boxplots are not supported. Workaround: rects, lines, and points")
     ## TODO: boxplot support. But it is hard since boxplots are drawn
     ## using multiple geoms and it is not straightforward to deal with
@@ -454,7 +457,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     # outliers are specified as a list... change so that they are specified
     # as a single string which can then be parsed in JavaScript.
     # there has got to be a better way to do this!!
-  } else if(g$geom=="violin"){
+  } else if(g$a_geom=="violin"){
     g.data$xminv <- with(g.data, x - violinwidth * (x - xmin))
     g.data$xmaxv <- with(g.data, x + violinwidth * (xmax - x))
     newdata <- plyr::ddply(g.data, "group", function(df){
@@ -463,26 +466,26 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
                 })
     newdata <- plyr::ddply(newdata, "group", function(df) rbind(df, df[1,]))
     g.data <- newdata
-    g$geom <- "polygon"
-  } else if(g$geom=="step"){
+    g$a_geom <- "polygon"
+  } else if(g$a_geom=="step"){
     datanames <- names(g.data)
     g.data <- plyr::ddply(g.data, "group", function(df) stairstep(df))
-    g$geom <- "path"
-  } else if(g$geom=="contour" | g$geom=="density2d"){
-    g$aes[["group"]] <- "piece"
-    g$geom <- "path"
-  } else if(g$geom=="freqpoly"){
-    g$geom <- "line"
-  } else if(g$geom=="quantile"){
-    g$geom <- "path"
-  } else if(g$geom=="hex"){
-    g$geom <- "polygon"
+    g$a_geom <- "path"
+  } else if(g$a_geom=="contour" | g$a_geom=="density2d"){
+    g$a_aes[["group"]] <- "piece"
+    g$a_geom <- "path"
+  } else if(g$a_geom=="freqpoly"){
+    g$a_geom <- "line"
+  } else if(g$a_geom=="quantile"){
+    g$a_geom <- "path"
+  } else if(g$a_geom=="hex"){
+    g$a_geom <- "polygon"
     ## TODO: for interactivity we will run into the same problems as
     ## we did with histograms. Again, if we put several
     ## clickSelects/showSelected values in the same hexbin, then
     ## clicking/hiding hexbins doesn't really make sense. Need to stop
     ## with an error if showSelected/clickSelects is used with hex.
-    g$aes[["group"]] <- "group"
+    g$a_aes[["group"]] <- "group"
     dx <- resolution(g.data$x, FALSE)
     dy <- resolution(g.data$y, FALSE) / sqrt(3) / 2 * 1.15
     hex <- as.data.frame(hexbin::hexcoords(dx, dy))[,1:2]
@@ -510,7 +513,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
   }
 
   ## Some geoms need their data sorted before saving to tsv.
-  if(g$geom %in% c("ribbon", "line")){
+  if(g$a_geom %in% c("ribbon", "line")){
     g.data <- g.data[order(g.data$x), ]
   }
 
@@ -524,13 +527,13 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     }
   }
 
-  has.no.fill <- g$geom %in% c("path", "line")
+  has.no.fill <- g$a_geom %in% c("path", "line")
   zero.size <- any(g.data$size == 0, na.rm=TRUE)
   if(zero.size && has.no.fill){
-    warning(sprintf("geom_%s with size=0 will be invisible",g$geom))
+    warning(sprintf("a_geom_%s with size=0 will be invisible",g$a_geom))
   }
-  ## TODO: coord_transform maybe won't work for
-  ## geom_dotplot|rect|segment and polar/log transformations, which
+  ## TODO: a_coord_transform maybe won't work for
+  ## a_geom_dotplot|rect|segment and polar/log transformations, which
   ## could result in something nonlinear. For the time being it is
   ## best to just ignore this, but you can look at the source of
   ## e.g. geom-rect.r in ggplot2 to see how they deal with this by
@@ -571,10 +574,10 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
   time.col <- NULL
   if(is.list(AnimationInfo$time)){ # if this is an animation,
     g.time.list <- list()
-    for(c.or.s in names(s.aes)){
-      cs.info <- s.aes[[c.or.s]]
+    for(c.or.s in names(s.a_aes)){
+      cs.info <- s.a_aes[[c.or.s]]
       for(a in cs.info$one){
-        if(g$aes[[a]] == AnimationInfo$time$var){
+        if(g$a_aes[[a]] == AnimationInfo$time$var){
           g.time.list[[a]] <- g.data[[a]]
           time.col <- a
         }
@@ -608,14 +611,14 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
       stop("chunk_vars must be a character vector; ",
            "use chunk_vars=character() to specify 1 chunk")
     }
-    not.subset <- !designer.chunks %in% g$aes[subset.vec]
+    not.subset <- !designer.chunks %in% g$a_aes[subset.vec]
     if(any(not.subset)){
       stop("invalid chunk_vars ",
            paste(designer.chunks[not.subset], collapse=" "),
            "; possible showSelected variables: ",
-           paste(g$aes[subset.vec], collapse=" "))
+           paste(g$a_aes[subset.vec], collapse=" "))
     }
-    is.chunk <- g$aes[subset.vec] %in% designer.chunks
+    is.chunk <- g$a_aes[subset.vec] %in% designer.chunks
     chunk.cols <- subset.vec[is.chunk]
     nest.cols <- subset.vec[!is.chunk]
   }else{ #infer a default, either 0 or 1 chunk vars:
@@ -625,7 +628,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
       chunk.cols <- NULL
     }else{
       selector.types <- sapply(meta$selectors, "[[", "type")
-      selector.names <- g$aes[subset.vec]
+      selector.names <- g$a_aes[subset.vec]
       subset.types <- selector.types[selector.names]
       can.chunk <- subset.types != "multiple"
       names(can.chunk) <- subset.vec
@@ -707,7 +710,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     
   ## Also add pointers to these chunks from the related selectors.
   if(length(chunk.cols)){
-    selector.names <- as.character(g$aes[chunk.cols])
+    selector.names <- as.character(g$a_aes[chunk.cols])
     chunk.name <- paste(selector.names, collapse="_")
     g$chunk_order <- as.list(selector.names)
     for(selector.name in selector.names){
@@ -729,24 +732,24 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
     g$nest_order <- c(g$nest_order, "PANEL")
   }
 
-  ## nest_order should contain both .variable .value aesthetics, but
+  ## nest_order should contain both .variable .value a_aesthetics, but
   ## subset_order should contain only .variable.
-  if((nrow(s.aes$showSelected$several) > 0)){
-    g$nest_order <- with(s.aes$showSelected$several, {
+  if((nrow(s.a_aes$showSelected$several) > 0)){
+    g$nest_order <- with(s.a_aes$showSelected$several, {
       c(g$nest_order, paste(variable), paste(value))
     })
     g$subset_order <-
-      c(g$subset_order, paste(s.aes$showSelected$several$variable))
+      c(g$subset_order, paste(s.a_aes$showSelected$several$variable))
   }
     
   ## group should be the last thing in nest_order, if it is present.
   data.object.geoms <- c("line", "path", "ribbon", "polygon")
-  if("group" %in% names(g$aes) && g$geom %in% data.object.geoms){
+  if("group" %in% names(g$a_aes) && g$a_geom %in% data.object.geoms){
     g$nest_order <- c(g$nest_order, "group")
   }
 
   ## Some geoms should be split into separate groups if there are NAs.
-  if(any(is.na(g.data)) && "group" %in% names(g$aes)){
+  if(any(is.na(g.data)) && "group" %in% names(g$a_aes)){
     sp.cols <- unlist(c(chunk.cols, g$nest_order))
     order.args <- list()
     for(sp.col in sp.cols){
@@ -768,7 +771,7 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
 
   ## Determine if there are any "common" data that can be saved
   ## separately to reduce disk usage.
-  data.or.null <- getCommonChunk(g.data, chunk.cols, g$aes)
+  data.or.null <- getCommonChunk(g.data, chunk.cols, g$a_aes)
   g.data.varied <- if(is.null(data.or.null)){
     split.x(na.omit(g.data), chunk.cols)
   }else{
@@ -792,10 +795,10 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
 #' Several new aesthetics control interactivity.
 #' The most important two are
 #' \itemize{
-#' \item \code{aes(showSelected=variable)} means that
+#' \item \code{a_aes(showSelected=variable)} means that
 #'   only the subset of the data that corresponds to
 #'   the selected value of variable will be shown.
-#' \item \code{aes(clickSelects=variable)} means that clicking
+#' \item \code{a_aes(clickSelects=variable)} means that clicking
 #'   this geom will change the currently selected value of variable.
 #' }
 #' The others are described on https://github.com/tdhock/animint/wiki/Advanced-features-present-animint-but-not-in-ggplot2
@@ -834,20 +837,20 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
 #' \item rug
 #' \item dotplot
 #' \item quantile - should *theoretically* work but in practice does not work
-#' \item smooth - can be created using geom_line and geom_ribbon
-#' \item boxplot - can be created using geom_rect and geom_segment
-#' \item crossbar - can be created using geom_rect and geom_segment
-#' \item pointrange - can be created using geom_linerange and geom_point
-#' \item bin2d - bin using ddply() and then use geom_tile()
-#' \item map - can be created using geom_polygon or geom_path
+#' \item smooth - can be created using a_geom_line and a_geom_ribbon
+#' \item boxplot - can be created using a_geom_rect and a_geom_segment
+#' \item crossbar - can be created using a_geom_rect and a_geom_segment
+#' \item pointrange - can be created using a_geom_linerange and a_geom_point
+#' \item bin2d - bin using ddply() and then use a_geom_tile()
+#' \item map - can be created using a_geom_polygon or a_geom_path
 #'}
 #' Supported scales:
 #' \itemize{
 #' \item alpha,
 #' \item fill/colour (brewer, gradient, identity, manual)
 #' \item linetype
-#' \item x and y axis scales, manual break specification, label formatting
-#' \item x and y axis theme elements: axis.line, axis.ticks, axis.text, axis.title can be set to element_blank(); other theme modifications not supported at this time, but would be possible with custom css files.
+#' \item x and y axis scales, manual break specification, a_label formatting
+#' \item x and y axis a_theme elements: axis.line, axis.ticks, axis.text, axis.title can be set to a_element_blank(); other a_theme modifications not supported at this time, but would be possible with custom css files.
 #' \item area
 #' \item size
 #' }
@@ -864,7 +867,6 @@ saveLayer <- function(l, d, meta, layer_name, a_plot, built, AnimationInfo){
 #' @param css.file character string for non-empty css file to include. Provided file will be copied to the output directory as styles.css
 #' @return invisible list of ggplots in list format.
 #' @export
-#' @seealso \code{\link{ggplot2Animint}}
 #' @example inst/examples/animint.R
 animint2dir <- function(plot.list, out.dir = tempfile(),
                         json.file = "plot.json", open.browser = interactive(),
@@ -910,20 +912,20 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
       ## This is required because we edit the original plot list created for the
       ## animint2dir function. See the discussion here:
       ## https://github.com/tdhock/animint2/pull/5#issuecomment-323072502
-      for(layer_i in seq_along(p$layers)){
+      for(a_layer_i in seq_along(p$layers)){
         ## Viz has not been used before
-        if(is.null(p$layers[[layer_i]]$orig_mapping)){
-          p$layers[[layer_i]]$orig_mapping <- 
-            if(is.null(p$layers[[layer_i]]$mapping)){
+        if(is.null(p$layers[[a_layer_i]]$orig_mapping)){
+          p$layers[[a_layer_i]]$orig_mapping <- 
+            if(is.null(p$layers[[a_layer_i]]$mapping)){
               ## Get mapping from plot if not defined in layer
               p$mapping
             }else{
-              p$layers[[layer_i]]$mapping
+              p$layers[[a_layer_i]]$mapping
             }
         }else{
           ## This is not the first time this layer is being processed, so we replace
           ## the mapping with the original mapping here
-          p$layers[[layer_i]]$mapping <- p$layers[[layer_i]]$orig_mapping
+          p$layers[[a_layer_i]]$mapping <- p$layers[[a_layer_i]]$orig_mapping
         }
       }
       
@@ -957,19 +959,19 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
   g.list <- list()
   for(p.name in names(a_plot.list)){
     a_plot.info <- a_plot.list[[p.name]]
-    for(layer.i in seq_along(a_plot.info$a_plot$layers)){
-      L <- a_plot.info$a_plot$layers[[layer.i]]
-      df <- a_plot.info$built$data[[layer.i]]
+    for(a_layer.i in seq_along(a_plot.info$a_plot$layers)){
+      L <- a_plot.info$a_plot$layers[[a_layer.i]]
+      df <- a_plot.info$built$data[[a_layer.i]]
       
       ## cat(sprintf(
-      ##   "saving layer %4d / %4d of a_plot %s\n",
-      ##   layer.i, length(a_plot.info$built$data),
+      ##   "saving a_layer %4d / %4d of a_plot %s\n",
+      ##   a_layer.i, length(a_plot.info$built$data),
       ##   p.name))
       
       ## Data now contains columns with fill, alpha, colour etc.
       ## Remove from data if they have a single unique value and
       ## are NOT used in mapping to reduce tsv file size
-      redundant.cols <- names(L$geom$default_aes)
+      redundant.cols <- names(L$a_geom$default_aes)
       for(col.name in names(df)){
         if(col.name %in% redundant.cols){
           all.vals <- unique(df[[col.name]])
@@ -983,8 +985,8 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
         }
       }
       geom_num <- geom_num + 1
-      layer_name <- getLayerName(L, geom_num, p.name)
-      gl <- saveLayer(L, df, meta, layer_name,
+      a_layer_name <- getLayerName(L, geom_num, p.name)
+      gl <- saveLayer(L, df, meta, a_layer_name,
                       a_plot.info$a_plot, a_plot.info$built, AnimationInfo)
       
       ## Save Animation Info separately
@@ -993,7 +995,7 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
       ## Save to a list before saving to tsv
       ## Helps during axis updates and Inf values
       g.list[[p.name]][[gl$g$classed]] <- gl
-    }#layer.i
+    }#a_layer.i
   }
   
   ## Selector levels and update were stored in saveLayer, so now
@@ -1014,7 +1016,7 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
       selectize[1]
     }else{
       ## If the designer did not set selectize, then we set a default
-      ## (if .variable .value aes, then no selectize; otherwise if
+      ## (if .variable .value a_aes, then no selectize; otherwise if
       ## there are less than 1000 values then yes).
       if(isTRUE(meta$selectors[[selector.name]]$is.variable.value)){
         FALSE
@@ -1038,7 +1040,7 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
       as.list(unique(unlist(lapply(values.update, "[[", "update"))))
   }
   
-  ## For a static data viz with no interactive aes, no need to check
+  ## For a static data viz with no interactive a_aes, no need to check
   ## for trivial showSelected variables with only 1 level.
   checkSingleShowSelectedValue(meta$selectors)
 
@@ -1049,7 +1051,7 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
   ## Set plot sizes.
   setPlotSizes(meta, AllPlotsInfo)
   
-  ## Get domains of data subsets if theme_animint(update_axes) is used
+  ## Get domains of data subsets if a_theme_animint(update_axes) is used
   for(p.name in names(a_plot.list)){
     axes_to_update <- AllPlotsInfo[[p.name]]$options$update_axes
     if(!is.null(axes_to_update)){
@@ -1068,10 +1070,10 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
           # If there is a geom where the axes updates have non numeric values,
           # we stop and throw an informative warning
           # It does not make sense to have axes updates for non numeric values
-          aesthetic_names <- names(g.list[[p.name]][[num]]$g$aes)
+          a_aesthetic_names <- names(g.list[[p.name]][[num]]$g$a_aes)
           
-          axis_col_name <- aesthetic_names[grepl(axis, aesthetic_names)]
-          axis_col <- g.list[[p.name]][[num]]$g$aes[[ axis_col_name[[1]] ]]
+          axis_col_name <- a_aesthetic_names[grepl(axis, a_aesthetic_names)]
+          axis_col <- g.list[[p.name]][[num]]$g$a_aes[[ axis_col_name[[1]] ]]
           axis_is_numeric <- is.numeric(a_plot.list[[p.name]]$built$plot$layers[[num]]$data[[axis_col]])
           if(!axis_is_numeric){
             stop(paste0("'update_axes' specified for '", toupper(axis),
@@ -1082,8 +1084,8 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
           
           # handle cases for showSelected: showSelectedlegendfill,
           # showSelectedlegendcolour etc.
-          choose_ss <- grepl("^showSelected", aesthetic_names)
-          ss_selectors <- g.list[[p.name]][[num]]$g$aes[choose_ss]
+          choose_ss <- grepl("^showSelected", a_aesthetic_names)
+          ss_selectors <- g.list[[p.name]][[num]]$g$a_aes[choose_ss]
           # Do not calculate domains for multiple selectors
           remove_ss <- c()
           for(j in seq_along(ss_selectors)){
@@ -1102,12 +1104,12 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
           ## Set up built_data to compute domains
           built_data <- a_plot.list[[p.name]]$built$plot$layers[[num]]$data
           built_data$PANEL <- a_plot.list[[p.name]]$built$data[[num]]$PANEL
-
+          ## since geom names are now like geom_a_point strsplit changes to [[1]][[3]]
           if(length(ss_selectors) > 0){
             subset_domains[num] <- compute_domains(
               built_data,
-              axis, strsplit(names(g.list[[p.name]])[[num]], "_")[[1]][[2]],
-              names(sort(ss_selectors)), split_by_panel, g.list[[p.name]][[num]]$g$aes)
+              axis, strsplit(names(g.list[[p.name]])[[num]], "_")[[1]][[3]],
+              names(sort(ss_selectors)), split_by_panel, g.list[[p.name]][[num]]$g$a_aes)
           }
         }
         subset_domains <- subset_domains[!sapply(subset_domains, is.null)]
@@ -1155,7 +1157,7 @@ animint2dir <- function(plot.list, out.dir = tempfile(),
   
   ## Now that selectors are all defined, go back through geoms to
   ## check if there are any warnings to issue.
-  issueSelectorWarnings(meta$geoms, meta$selector.aes, meta$duration)
+  issueSelectorWarnings(meta$geoms, meta$selector.a_aes, meta$duration)
   
   ## These geoms need to be updated when the time.var is animated, so
   ## let's make a list of all possible values to cycle through, from
@@ -1260,9 +1262,9 @@ servr::httd("', normalizePath( out.dir,winslash="/" ), '")')
   ## See this comment:
   ## https://github.com/tdhock/animint2/pull/5#issuecomment-323074518
   for(plot_i in a_plot.list){
-    for(layer_i in seq_along(plot_i$a_plot$layers)){
-      plot_i$a_plot$layers[[layer_i]]$mapping <-
-        plot_i$a_plot$layers[[layer_i]]$orig_mapping
+    for(a_layer_i in seq_along(plot_i$a_plot$layers)){
+      plot_i$a_plot$layers[[a_layer_i]]$mapping <-
+        plot_i$a_plot$layers[[a_layer_i]]$orig_mapping
     } 
   }
   invisible(meta)
@@ -1279,71 +1281,71 @@ getLegendList <- function(plistextra){
   scales <- plot$scales
   layers <- plot$layers
   default_mapping <- plot$mapping
-  theme <- plot_theme(plot)
-  position <- theme$legend.position
+  a_theme <- plot_a_theme(plot)
+  a_position <- a_theme$legend.a_position
   # by default, guide boxes are vertically aligned
-  if(is.null(theme$legend.box)) theme$legend.box <- "vertical" else theme$legend.box
+  if(is.null(a_theme$legend.box)) a_theme$legend.box <- "vertical" else a_theme$legend.box
 
   # size of key (also used for bar in colorbar guide)
-  if(is.null(theme$legend.key.width)) theme$legend.key.width <- theme$legend.key.size
-  if(is.null(theme$legend.key.height)) theme$legend.key.height <- theme$legend.key.size
+  if(is.null(a_theme$legend.key.width)) a_theme$legend.key.width <- a_theme$legend.key.size
+  if(is.null(a_theme$legend.key.height)) a_theme$legend.key.height <- a_theme$legend.key.size
   # by default, direction of each guide depends on the position of the guide.
-  if(is.null(theme$legend.direction)){
-    theme$legend.direction <- 
-      if (length(position) == 1 && position %in% c("top", "bottom", "left", "right"))
-        switch(position[1], top =, bottom = "horizontal", left =, right = "vertical")
+  if(is.null(a_theme$legend.direction)){
+    a_theme$legend.direction <- 
+      if (length(a_position) == 1 && a_position %in% c("top", "bottom", "left", "right"))
+        switch(a_position[1], top =, bottom = "horizontal", left =, right = "vertical")
     else
       "vertical"
   }
   # justification of legend boxes
-  theme$legend.box.just <-
-    if(is.null(theme$legend.box.just)) {
-      if (length(position) == 1 && position %in% c("top", "bottom", "left", "right"))
-        switch(position, bottom =, top = c("center", "top"), left =, right = c("left", "top"))
+  a_theme$legend.box.just <-
+    if(is.null(a_theme$legend.box.just)) {
+      if (length(a_position) == 1 && a_position %in% c("top", "bottom", "left", "right"))
+        switch(a_position, bottom =, top = c("center", "top"), left =, right = c("left", "top"))
       else
         c("center", "center")
     }
 
-  position <- theme$legend.position
-  # locate guide argument in scale_*, and use that for a default.
+  a_position <- a_theme$legend.a_position
+  # locate guide argument in a_scale_*, and use that for a default.
   # Note, however, that guides(colour = ...) has precendence! See https://gist.github.com/cpsievert/ece28830a6c992b29ab6
-  guides.args <- list()
-  for(aes.name in c("colour", "fill")){
-    aes.loc <- which(scales$find(aes.name))
-    guide.type <- if (length(aes.loc) == 1){
-      scales$scales[[aes.loc]][["guide"]]
+  a_guides.args <- list()
+  for(a_aes.name in c("colour", "fill")){
+    a_aes.loc <- which(scales$find(a_aes.name))
+    a_guide.type <- if (length(a_aes.loc) == 1){
+      scales$scales[[a_aes.loc]][["a_guide"]]
     }else{
       "legend"
     }
-    if(guide.type=="colourbar")guide.type <- "legend"
-    guides.args[[aes.name]] <- guide.type
+    if(a_guide.type=="colourbar")a_guide.type <- "legend"
+    a_guides.args[[a_aes.name]] <- a_guide.type
   }
-  guides.result <- do.call(guides, guides.args)
-  guides.list <- plyr::defaults(plot$guides, guides.result)
-  gdefs <- guides_train(scales = scales,
-                           theme = theme,
-                           guides = guides.list,
-                           labels = plot$labels)
+  a_guides.result <- do.call(a_guides, a_guides.args)
+  a_guides.list <- plyr::defaults(plot$a_guides, a_guides.result)
+  gdefs <- a_guides_train(scales = scales,
+                           a_theme = a_theme,
+                           a_guides = a_guides.list,
+                           a_labels = plot$a_labels)
   if (length(gdefs) != 0) {
-    gdefs <- guides_merge(gdefs)
-    gdefs <- guides_geom(gdefs, layers, default_mapping)
-  } else (zeroGrob())
+    gdefs <- a_guides_merge(gdefs)
+    gdefs <- a_guides_geom(gdefs, layers, default_mapping)
+  } else (a_zeroGrob())
   names(gdefs) <- sapply(gdefs, function(i) i$title)
   
   ## adding the variable used to each LegendList
   for(leg in seq_along(gdefs)) {
     legend_type <- names(gdefs[[leg]]$key)
-    legend_type <- legend_type[legend_type != ".label"]
+    legend_type <- legend_type[legend_type != ".a_label"]
     gdefs[[leg]]$legend_type <- legend_type
-    scale.list <- scales$scales[which(scales$find(legend_type))]
-    discrete.vec <- sapply(scale.list, inherits, "a_ScaleDiscrete")
+    a_scale.list <- scales$scales[which(scales$find(legend_type))]
+    discrete.vec <- sapply(a_scale.list, inherits, "a_ScaleDiscrete")
     is.discrete <- all(discrete.vec)
     gdefs[[leg]]$is.discrete <- is.discrete
     ## get the name of the legend/selection variable.
     var.list <- list()
-    for(layer.i in seq_along(plot$layers)) {
-      L <- plot$layers[[layer.i]]
-      var.list[[layer.i]] <- L$mapping[legend_type]
+    for(a_layer.i in seq_along(plot$layers)) {
+      L <- plot$layers[[a_layer.i]]
+      var.list[[a_layer.i]] <- L$mapping[legend_type]
     }
     unique.var.list <- unique(unlist(var.list))
     if(is.discrete){
@@ -1360,37 +1362,37 @@ getLegendList <- function(plistextra){
     }
     
     ## do not draw geoms which are constant:
-    geom.list <- gdefs[[leg]]$geoms
-    geom.data.list <- lapply(geom.list, "[[", "data")
-    geom.data.rows <- sapply(geom.data.list, nrow)
-    geom.unique.list <- lapply(geom.data.list, unique)
-    geom.unique.rows <- sapply(geom.unique.list, nrow)
-    is.ignored <- 1 < geom.data.rows & geom.unique.rows == 1
-    gdefs[[leg]]$geoms <- geom.list[!is.ignored]
+    a_geom.list <- gdefs[[leg]]$geoms
+    a_geom.data.list <- lapply(a_geom.list, "[[", "data")
+    a_geom.data.rows <- sapply(a_geom.data.list, nrow)
+    a_geom.unique.list <- lapply(a_geom.data.list, unique)
+    a_geom.unique.rows <- sapply(a_geom.unique.list, nrow)
+    is.ignored <- 1 < a_geom.data.rows & a_geom.unique.rows == 1
+    gdefs[[leg]]$geoms <- a_geom.list[!is.ignored]
     
-    ## Pass a geom.legend.list to be used by the
+    ## Pass a a_geom.legend.list to be used by the
     ## GetLegend function
-    geom.legend.list <- list()
-    for(geom.i in seq_along(gdefs[[leg]]$geoms)){
-      data.geom.i <- gdefs[[leg]]$geoms[[geom.i]]$data
-      params.geom.i <- gdefs[[leg]]$geoms[[geom.i]]$params
-      size.geom.i <- gdefs[[leg]]$geoms[[geom.i]]$size
+    a_geom.legend.list <- list()
+    for(a_geom.i in seq_along(gdefs[[leg]]$geoms)){
+      data.a_geom.i <- gdefs[[leg]]$geoms[[a_geom.i]]$data
+      params.a_geom.i <- gdefs[[leg]]$geoms[[a_geom.i]]$params
+      size.a_geom.i <- gdefs[[leg]]$geoms[[a_geom.i]]$size
       
       suppressWarnings(draw.key.used <- 
-                         gdefs[[leg]]$geoms[[geom.i]]$draw_key(
-                           data.geom.i, params.geom.i, size.geom.i)
+                         gdefs[[leg]]$geoms[[a_geom.i]]$draw_key(
+                           data.a_geom.i, params.a_geom.i, size.a_geom.i)
       )
-      geom.legend <- class(draw.key.used)[[1]]
-      geom.legend.list <- c(geom.legend.list, geom.legend)
+      a_geom.legend <- class(draw.key.used)[[1]]
+      a_geom.legend.list <- c(a_geom.legend.list, a_geom.legend)
     }
     
     ## Process names to be used by the CleanData function
     convert.names.list <- list(points="point", segments="path", rect="polygon")
-    names.to.change <- geom.legend.list %in% names(convert.names.list)
-    geom.legend.list[names.to.change] <- 
-      convert.names.list[unlist(geom.legend.list[names.to.change])]
+    names.to.change <- a_geom.legend.list %in% names(convert.names.list)
+    a_geom.legend.list[names.to.change] <- 
+      convert.names.list[unlist(a_geom.legend.list[names.to.change])]
     
-    gdefs[[leg]]$geom.legend.list <- geom.legend.list
+    gdefs[[leg]]$a_geom.legend.list <- a_geom.legend.list
   }
   
   ## Add a flag to specify whether or not breaks was manually
@@ -1398,10 +1400,10 @@ getLegendList <- function(plistextra){
   ## the legend shows a numeric variable, then it should be reversed.
   for(legend.name in names(gdefs)){
     key.df <- gdefs[[legend.name]]$key
-    aes.name <- names(key.df)[1]
-    scale.i <- which(scales$find(aes.name))
-    if(length(scale.i) == 1){
-      sc <- scales$scales[[scale.i]]
+    a_aes.name <- names(key.df)[1]
+    a_scale.i <- which(scales$find(a_aes.name))
+    if(length(a_scale.i) == 1){
+      sc <- scales$scales[[a_scale.i]]
       gdefs[[legend.name]]$breaks <- sc$breaks
     }
   }

@@ -10,13 +10,13 @@ NULL
 #'
 #' @export
 #' @param map Data frame that contains the map coordinates.  This will
-#'   typically be created using \code{\link{fortify}} on a spatial object.
+#'   typically be created using \code{\link{a_fortify}} on a spatial object.
 #'   It must contain columns \code{x} or \code{long}, \code{y} or
 #'   \code{lat}, and \code{region} or \code{id}.
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @examples
-#' # When using geom_polygon, you will typically need two data frames:
+#' # When using a_geom_polygon, you will typically need two data frames:
 #' # one contains the coordinates of each polygon (positions),  and the
 #' # other the values associated with each polygon (values).  An id
 #' # variable links the two together
@@ -36,37 +36,37 @@ NULL
 #'   2.2, 2.1, 1.7, 2.1, 3.2, 2.8, 2.1, 2.2, 3.3, 3.2)
 #' )
 #'
-#' a_plot(values) + geom_map(aes(map_id = id), map = positions) +
-#'   animint2:::expand_limits(positions)
-#' a_plot(values, aes(fill = value)) +
-#'   geom_map(aes(map_id = id), map = positions) +
-#'   animint2:::expand_limits(positions)
-#' a_plot(values, aes(fill = value)) +
-#'   geom_map(aes(map_id = id), map = positions) +
-#'   animint2:::expand_limits(positions) + ylim(0, 3)
+#' a_plot(values) + a_geom_map(a_aes(map_id = id), map = positions) +
+#'   expand_limits(positions)
+#' a_plot(values, a_aes(fill = value)) +
+#'   a_geom_map(a_aes(map_id = id), map = positions) +
+#'   expand_limits(positions)
+#' a_plot(values, a_aes(fill = value)) +
+#'   a_geom_map(a_aes(map_id = id), map = positions) +
+#'   expand_limits(positions) + ylim(0, 3)
 #'
 #' # Better example
 #' crimes <- data.frame(state = tolower(rownames(USArrests)), USArrests)
 #' crimesm <- reshape2::melt(crimes, id = 1)
 #' if (require(maps)) {
 #'   states_map <- map_data("state")
-#'   a_plot(crimes, aes(map_id = state)) +
-#'     geom_map(aes(fill = Murder), map = states_map) +
-#'     animint2:::expand_limits(x = states_map$long, y = states_map$lat)
+#'   a_plot(crimes, a_aes(map_id = state)) +
+#'     a_geom_map(a_aes(fill = Murder), map = states_map) +
+#'     expand_limits(x = states_map$long, y = states_map$lat)
 #'
-#'   last_plot() + animint2:::coord_map()
-#'   a_plot(crimesm, aes(map_id = state)) +
-#'     geom_map(aes(fill = value), map = states_map) +
-#'     animint2:::expand_limits(x = states_map$long, y = states_map$lat) +
-#'     animint2:::a_facet_wrap( ~ variable)
+#'   last_plot() + a_coord_map()
+#'   a_plot(crimesm, a_aes(map_id = state)) +
+#'     a_geom_map(a_aes(fill = value), map = states_map) +
+#'     expand_limits(x = states_map$long, y = states_map$lat) +
+#'     a_facet_wrap( ~ variable)
 #' }
-geom_map <- function(mapping = NULL, data = NULL,
-                     stat = "identity",
+a_geom_map <- function(mapping = NULL, data = NULL,
+                     a_stat = "identity",
                      ...,
                      map,
                      na.rm = FALSE,
                      show.legend = NA,
-                     inherit.aes = TRUE) {
+                     inherit.a_aes = TRUE) {
   # Get map input into correct form
   stopifnot(is.data.frame(map))
   if (!is.null(map$lat)) map$y <- map$lat
@@ -74,14 +74,14 @@ geom_map <- function(mapping = NULL, data = NULL,
   if (!is.null(map$region)) map$id <- map$region
   stopifnot(all(c("x", "y", "id") %in% names(map)))
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomMap,
-    position = a_PositionIdentity,
+    a_stat = a_stat,
+    a_geom = a_GeomMap,
+    a_position = a_PositionIdentity,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       map = map,
       na.rm = na.rm,
@@ -95,7 +95,7 @@ geom_map <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomMap <- a_ggproto("a_GeomMap", a_GeomPolygon,
-  draw_panel = function(data, panel_scales, coord, map) {
+  draw_panel = function(data, panel_scales, a_coord, map) {
     # Only use matching data and map ids
     common <- intersect(data$map_id, map$id)
     data <- data[data$map_id %in% common, , drop = FALSE]
@@ -103,7 +103,7 @@ a_GeomMap <- a_ggproto("a_GeomMap", a_GeomPolygon,
 
     # Munch, then set up id variable for polygonGrob -
     # must be sequential integers
-    coords <- coord_munch(coord, map, panel_scales)
+    coords <- a_coord_munch(a_coord, map, panel_scales)
     coords$group <- coords$group %||% coords$id
     grob_id <- match(coords$group, unique(coords$group))
 

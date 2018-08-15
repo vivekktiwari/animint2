@@ -1,25 +1,25 @@
 #' @export
-#' @rdname geom_histogram
-geom_freqpoly <- function(mapping = NULL, data = NULL,
-                          stat = "bin", position = "identity",
+#' @rdname a_geom_histogram
+a_geom_freqpoly <- function(mapping = NULL, data = NULL,
+                          a_stat = "bin", a_position = "identity",
                           ...,
                           na.rm = FALSE,
                           show.legend = NA,
-                          inherit.aes = TRUE) {
+                          inherit.a_aes = TRUE) {
 
   params <- list(na.rm = na.rm, ...)
-  if (identical(stat, "bin")) {
+  if (identical(a_stat, "bin")) {
     params$pad <- TRUE
   }
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomPath,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomPath,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = params
   )
 }

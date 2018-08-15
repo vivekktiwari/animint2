@@ -1,18 +1,18 @@
 acontext("facet-strips")
 
-p <- a_plot(mtcars, aes(mpg, wt)) + 
-  geom_point(colour='grey50', size = 4) + 
-  geom_point(aes(colour = cyl)) 
+p <- a_plot(mtcars, a_aes(mpg, wt)) + 
+  a_geom_point(colour='grey50', size = 4) + 
+  a_geom_point(a_aes(colour = cyl)) 
 
 gridViz <-
   list(gridPlot=p +
-         a_facet_grid(cyl~am, labeller = label_both))
+         a_facet_grid(cyl~am, labeller = a_label_both))
 
 wrapViz <-
   list(wrapPlot=p +
          a_facet_wrap(~cyl+am))
 
-test_that("facet_grid() strip labels are placed correctly", {
+test_that("facet_grid() strip a_labels are placed correctly", {
   info <- animint2HTML(gridViz)
   top <- getNodeSet(info$html, "//g[@class='topStrip']")
   # there should one be one 'top_strip' group (their children contain the vital info)
@@ -38,7 +38,7 @@ test_that("facet_grid() strip labels are placed correctly", {
   transforms <- as.character(sapply(attrs, "[[", "transform"))
 })
 
-test_that("facet_wrap() strip labels are placed correctly", {
+test_that("facet_wrap() strip a_labels are placed correctly", {
   info <- animint2HTML(wrapViz)
   top <- getNodeSet(info$html, "//g[@class='topStrip']")
   kids <- xmlChildren(top[[1]])

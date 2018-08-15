@@ -29,20 +29,20 @@ xlim(20, 15)
 xlim(c(10, 20))
 xlim("a", "b", "c")
 
-a_plot(mtcars, aes(mpg, wt)) +
-  geom_point() +
+a_plot(mtcars, a_aes(mpg, wt)) +
+  a_geom_point() +
   xlim(15, 20)
 # with automatic lower limit
-a_plot(mtcars, aes(mpg, wt)) +
-  geom_point() +
+a_plot(mtcars, a_aes(mpg, wt)) +
+  a_geom_point() +
   xlim(NA, 20)
 
 # Change both xlim and ylim
-a_plot(mtcars, aes(mpg, wt)) +
-  geom_point() +
+a_plot(mtcars, a_aes(mpg, wt)) +
+  a_geom_point() +
   lims(x = c(10, 20), y = c(3, 5))
 }
 \seealso{
 For changing x or y axis limits \strong{without} dropping data
-  observations, see \code{\link{coord_cartesian}}.
+  observations, see \code{\link{a_coord_cartesian}}.
 }

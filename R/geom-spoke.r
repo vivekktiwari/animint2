@@ -3,35 +3,35 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "spoke")}
 #'
-#' @inheritParams layer
-#' @inheritParams geom_segment
+#' @inheritParams a_layer
+#' @inheritParams a_geom_segment
 #' @export
 #' @examples
 #' df <- expand.grid(x = 1:10, y=1:10)
 #' df$angle <- runif(100, 0, 2*pi)
 #' df$speed <- runif(100, 0, sqrt(0.1 * df$x))
 #'
-#' a_plot(df, aes(x, y)) +
-#'   geom_point() +
-#'   geom_spoke(aes(angle = angle), radius = 0.5)
+#' a_plot(df, a_aes(x, y)) +
+#'   a_geom_point() +
+#'   a_geom_spoke(a_aes(angle = angle), radius = 0.5)
 #'
-#' a_plot(df, aes(x, y)) +
-#'   geom_point() +
-#'   geom_spoke(aes(angle = angle, radius = speed))
-geom_spoke <- function(mapping = NULL, data = NULL,
-                       stat = "identity", position = "identity",
+#' a_plot(df, a_aes(x, y)) +
+#'   a_geom_point() +
+#'   a_geom_spoke(a_aes(angle = angle, radius = speed))
+a_geom_spoke <- function(mapping = NULL, data = NULL,
+                       a_stat = "identity", a_position = "identity",
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
-                       inherit.aes = TRUE) {
-  layer(
+                       inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    geom = a_GeomSpoke,
-    stat = stat,
-    position = position,
+    a_geom = a_GeomSpoke,
+    a_stat = a_stat,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...
@@ -40,11 +40,11 @@ geom_spoke <- function(mapping = NULL, data = NULL,
 }
 
 #' @export
-#' @rdname geom_spoke
+#' @rdname a_geom_spoke
 #' @usage NULL
-stat_spoke <- function(...) {
-  message("stat_spoke is deprecated, please use geom_spoke")
-  geom_spoke(...)
+a_stat_spoke <- function(...) {
+  message("a_stat_spoke is deprecated, please use a_geom_spoke")
+  a_geom_spoke(...)
 }
 
 #' @rdname animint2-ggproto

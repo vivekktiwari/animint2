@@ -1,4 +1,4 @@
-acontext("geom_widerect")
+acontext("a_geom_widerect")
 
 recommendation <- data.frame(
   min.C=21,
@@ -10,26 +10,26 @@ temp.time <- data.frame(
 
 viz <- list(
   gg=a_plot()+
-    theme_bw()+
-    theme_animint(height=200, width=2000)+
-    geom_widerect(aes(ymin=min.C, ymax=max.C),
+    a_theme_bw()+
+    a_theme_animint(height=200, width=2000)+
+    a_geom_widerect(a_aes(ymin=min.C, ymax=max.C),
                   color=NA,
                   fill="grey",
                   data=recommendation)+
-    geom_line(aes(time, temp.C),
+    a_geom_line(a_aes(time, temp.C),
               data=temp.time)
   )
 
 info <- animint2HTML(viz)
 
-getBounds <- function(geom.class){
-  script.txt <- sprintf('return document.getElementsByClassName("%s")[0].getBoundingClientRect()', geom.class)
+getBounds <- function(a_geom.class){
+  script.txt <- sprintf('return document.getElementsByClassName("%s")[0].getBoundingClientRect()', a_geom.class)
   remDr$executeScript(script.txt)
 }
 
 test_that("bottom of widerect is above line", {
-  rect.bounds <- getBounds("geom1_widerect_gg")
-  line.bounds <- getBounds("geom2_line_gg")
+  rect.bounds <- getBounds("a_geom1_widerect_gg")
+  line.bounds <- getBounds("a_geom2_line_gg")
   expect_less_than(rect.bounds$bottom, line.bounds$top)
 })
 
@@ -48,58 +48,58 @@ years$status <- ifelse(years$year %% 2, "odd", "even")
 wb.facets <-
   list(ts=a_plot()+
        xlab("")+
-       geom_tallrect(aes(xmin=year-1/2, xmax=year+1/2,
+       a_geom_tallrect(a_aes(xmin=year-1/2, xmax=year+1/2,
                          linetype=status),
                      clickSelects="year",
                      data=TS(years), alpha=1/2)+
-       theme_bw()+
-       theme_animint(width=1000, height=800)+
-       theme(panel.margin=grid::unit(0, "lines"))+
-       geom_line(aes(year, life.expectancy, group=country, colour=region,
+       a_theme_bw()+
+       a_theme_animint(width=1000, height=800)+
+       a_theme(panel.margin=grid::unit(0, "lines"))+
+       a_geom_line(a_aes(year, life.expectancy, group=country, colour=region,
                      id = country),
                  clickSelects="country",
                  data=TS(not.na), size=4, alpha=3/5)+
-       geom_point(aes(year, life.expectancy, color=region, size=population),
+       a_geom_point(a_aes(year, life.expectancy, color=region, size=population),
                   clickSelects="country",
                   showSelected="country",
                   data=TS(not.na))+
 
-       geom_path(aes(fertility.rate, year, group=country, colour=region),
+       a_geom_path(a_aes(fertility.rate, year, group=country, colour=region),
                  clickSelects="country",
                  data=TS2(not.na), size=4, alpha=3/5)+
-       geom_point(aes(fertility.rate, year, color=region, size=population),
+       a_geom_point(a_aes(fertility.rate, year, color=region, size=population),
                   showSelected="country", clickSelects="country",
                   data=TS2(not.na))+
-       geom_widerect(aes(ymin=year-1/2, ymax=year+1/2,
+       a_geom_widerect(a_aes(ymin=year-1/2, ymax=year+1/2,
                          linetype=status,
                          id=paste0("year", year)),
                      clickSelects="year",
                      data=TS2(years), alpha=1/2)+
 
-       geom_point(aes(fertility.rate, life.expectancy,
+       a_geom_point(a_aes(fertility.rate, life.expectancy,
                       colour=region, size=population,
                       key=country), # key aesthetic for animated transitions!
                   clickSelects="country",
                   showSelected="year",
                   data=SCATTER(not.na))+
-       geom_text(aes(fertility.rate, life.expectancy, label=country,
+       a_geom_text(a_aes(fertility.rate, life.expectancy, a_label=country,
                      key=country), #also use key here!
                  showSelected=c("country", "year"),
                  clickSelects="country",
                  data=SCATTER(not.na))+
-       scale_size_animint(breaks=10^(5:9))+
+       a_scale_size_animint(breaks=10^(5:9))+
        a_facet_grid(side ~ top, scales="free")+
-       geom_text(aes(5, 85, label=paste0("year = ", year)),
+       a_geom_text(a_aes(5, 85, a_label=paste0("year = ", year)),
                  showSelected="year",
                  data=SCATTER(years)),
 
        bar=a_plot()+
-       theme_animint(height=2400)+
-       geom_bar(aes(country, life.expectancy, fill=region,
+       a_theme_animint(height=2400)+
+       a_geom_bar(a_aes(country, life.expectancy, fill=region,
                     key=country, id=gsub(" ", "_", country)),
                 showSelected="year", clickSelects="country",
-                data=not.na, stat="identity", position="identity")+
-       coord_flip(),
+                data=not.na, a_stat="identity", a_position="identity")+
+       a_coord_flip(),
 
        time=list(variable="year", ms=2000),
        duration=list(year=2000),
@@ -130,7 +130,7 @@ test_that("three unique border_rect y values (no vert space)", {
   expect_equal(length(y.values), 3)
 })
 
-line.xpath <- '//g[@class="geom2_line_ts"]//g[@class="PANEL4"]//path'
+line.xpath <- '//g[@class="a_geom2_line_ts"]//g[@class="PANEL4"]//path'
 opacityPattern <-
   paste0("opacity:",
          "(?<value>.*?)",
@@ -167,8 +167,8 @@ dasharrayPattern <-
          ";")
 
 rect.xpaths <-
-  c('//g[@class="geom6_widerect_ts"]//g[@class="PANEL1"]//rect',
-    '//g[@class="geom1_tallrect_ts"]//g[@class="PANEL4"]//rect')
+  c('//g[@class="a_geom6_widerect_ts"]//g[@class="PANEL1"]//rect',
+    '//g[@class="a_geom1_tallrect_ts"]//g[@class="PANEL4"]//rect')
 
 test_that("wide/tallrect renders a <rect> for every year", {
   for(rect.xpath in rect.xpaths){
@@ -192,7 +192,7 @@ test_that("wide/tallrect renders a <rect> for every year", {
 })
 
 getYear <- function(){
-  node.set <- getNodeSet(getHTML(), '//g[@class="geom9_text_ts"]//text')
+  node.set <- getNodeSet(getHTML(), '//g[@class="a_geom9_text_ts"]//text')
   expect_equal(length(node.set), 1)
   value <- xmlValue(node.set[[1]])
   sub("year = ", "", value)
@@ -245,7 +245,7 @@ test_that("clicking status legend hides tallrects", {
 test_that("clicking status legend does not hide text", {
   node.set <-
     getNodeSet(html.no.rects,
-               '//g[@class="geom9_text_ts"]//text[@class="geom"]')
+               '//g[@class="a_geom9_text_ts"]//text[@class="a_geom"]')
   expect_equal(length(node.set), 1)
 })
 
@@ -283,7 +283,7 @@ test_that("play restarts animation (second time)", {
 })
 
 legend.td.xpath <-
-  '//tr[@class="region_variable"]//td[@class="legend_entry_label"]'
+  '//tr[@class="region_variable"]//td[@class="legend_entry_a_label"]'
 rects_and_legends <- function(){
   html <- getHTML()
   list(rects=getNodeSet(html, '//rect[@id="United_States"]'),
@@ -347,7 +347,7 @@ test_that("down arrow key changes year to 1963", {
 })
 
 getCountries <- function(){
-  country.labels <- getNodeSet(getHTML(), '//g[@class="geom8_text_ts"]//text')
+  country.labels <- getNodeSet(getHTML(), '//g[@class="a_geom8_text_ts"]//text')
   sapply(country.labels, xmlValue)
 }
 
@@ -384,7 +384,7 @@ test_that("backspace removes US from selected countries", {
 
 getWidth <- function(){
   node.set <-
-    getNodeSet(getHTML(), '//g[@class="geom10_bar_bar"]//rect[@id="Vietnam"]')
+    getNodeSet(getHTML(), '//g[@class="a_geom10_bar_bar"]//rect[@id="Vietnam"]')
   expect_equal(length(node.set), 1)
   alist <- xmlAttrs(node.set[[1]])
   alist[["width"]]

@@ -13,50 +13,50 @@
 #'   \code{"norm"} assumes a multivariate normal distribution.
 #'   \code{"euclid"} draws a circle with the radius equal to \code{level},
 #'   representing the euclidean distance from the center.
-#'   This ellipse probably won't appear circular unless \code{coord_fixed()} is applied.
+#'   This ellipse probably won't appear circular unless \code{a_coord_fixed()} is applied.
 #' @param segments The number of segments to be used in drawing the ellipse.
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @export
 #' @examples
-#' a_plot(faithful, aes(waiting, eruptions)) +
-#'   geom_point() +
-#'   stat_ellipse()
+#' a_plot(faithful, a_aes(waiting, eruptions)) +
+#'   a_geom_point() +
+#'   a_stat_ellipse()
 #'
-#' a_plot(faithful, aes(waiting, eruptions, color = eruptions > 3)) +
-#'   geom_point() +
-#'   stat_ellipse()
+#' a_plot(faithful, a_aes(waiting, eruptions, color = eruptions > 3)) +
+#'   a_geom_point() +
+#'   a_stat_ellipse()
 #'
-#' a_plot(faithful, aes(waiting, eruptions, color = eruptions > 3)) +
-#'   geom_point() +
-#'   stat_ellipse(type = "norm", linetype = 2) +
-#'   stat_ellipse(type = "t")
+#' a_plot(faithful, a_aes(waiting, eruptions, color = eruptions > 3)) +
+#'   a_geom_point() +
+#'   a_stat_ellipse(type = "norm", linetype = 2) +
+#'   a_stat_ellipse(type = "t")
 #'
-#' a_plot(faithful, aes(waiting, eruptions, color = eruptions > 3)) +
-#'   geom_point() +
-#'   stat_ellipse(type = "norm", linetype = 2) +
-#'   stat_ellipse(type = "euclid", level = 3) +
-#'   coord_fixed()
+#' a_plot(faithful, a_aes(waiting, eruptions, color = eruptions > 3)) +
+#'   a_geom_point() +
+#'   a_stat_ellipse(type = "norm", linetype = 2) +
+#'   a_stat_ellipse(type = "euclid", level = 3) +
+#'   a_coord_fixed()
 #'
-#' a_plot(faithful, aes(waiting, eruptions, fill = eruptions > 3)) +
-#'   stat_ellipse(geom = "polygon")
-stat_ellipse <- function(mapping = NULL, data = NULL,
-                         geom = "path", position = "identity",
+#' a_plot(faithful, a_aes(waiting, eruptions, fill = eruptions > 3)) +
+#'   a_stat_ellipse(a_geom = "polygon")
+a_stat_ellipse <- function(mapping = NULL, data = NULL,
+                         a_geom = "path", a_position = "identity",
                          ...,
                          type = "t",
                          level = 0.95,
                          segments = 51,
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
-  layer(
+                         inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatEllipse,
-    geom = geom,
-    position = position,
+    a_stat = a_StatEllipse,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       type = type,
       level = level,

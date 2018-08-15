@@ -3,34 +3,34 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "rug")}
 #'
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @param sides A string that controls which sides of the plot the rugs appear on.
 #'   It can be set to a string containing any of \code{"trbl"}, for top, right,
 #'   bottom, and left.
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(wt, mpg))
-#' p + geom_point()
-#' p + geom_point() + geom_rug()
-#' p + geom_point() + geom_rug(sides="b")    # Rug on bottom only
-#' p + geom_point() + geom_rug(sides="trbl") # All four sides
-#' p + geom_point() + geom_rug(position='jitter')
-geom_rug <- function(mapping = NULL, data = NULL,
-                     stat = "identity", position = "identity",
+#' p <- a_plot(mtcars, a_aes(wt, mpg))
+#' p + a_geom_point()
+#' p + a_geom_point() + a_geom_rug()
+#' p + a_geom_point() + a_geom_rug(sides="b")    # Rug on bottom only
+#' p + a_geom_point() + a_geom_rug(sides="trbl") # All four sides
+#' p + a_geom_point() + a_geom_rug(a_position='jitter')
+a_geom_rug <- function(mapping = NULL, data = NULL,
+                     a_stat = "identity", a_position = "identity",
                      ...,
                      sides = "bl",
                      na.rm = FALSE,
                      show.legend = NA,
-                     inherit.aes = TRUE) {
-  layer(
+                     inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomRug,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomRug,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       sides = sides,
       na.rm = na.rm,
@@ -45,9 +45,9 @@ geom_rug <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomRug <- a_ggproto("a_GeomRug", a_Geom,
-  draw_panel = function(data, panel_scales, coord, sides = "bl") {
+  draw_panel = function(data, panel_scales, a_coord, sides = "bl") {
     rugs <- list()
-    data <- coord$transform(data, panel_scales)
+    data <- a_coord$transform(data, panel_scales)
 
     gp <- gpar(col = alpha(data$colour, data$alpha), lty = data$linetype, lwd = data$size * .pt)
     if (!is.null(data$x)) {
@@ -89,7 +89,7 @@ a_GeomRug <- a_ggproto("a_GeomRug", a_Geom,
     gTree(children = do.call("gList", rugs))
   },
 
-  default_aes = aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
+  default_aes = a_aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
 
   draw_key = a_draw_key_path
 )

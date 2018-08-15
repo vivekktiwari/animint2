@@ -15,8 +15,8 @@
 Displays a useful description of a ggplot object
 }
 \examples{
-p <- a_plot(mtcars, aes(mpg, wt)) +
-  geom_point()
+p <- a_plot(mtcars, a_aes(mpg, wt)) +
+  a_geom_point()
 summary(p)
 }
 \keyword{internal}

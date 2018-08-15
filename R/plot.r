@@ -14,7 +14,7 @@
 #'
 #' There are three common ways to invoke \code{a_plot}:
 #' \itemize{
-#'    \item \code{a_plot(df, aes(x, y, <other aesthetics>))}
+#'    \item \code{a_plot(df, a_aes(x, y, <other a_aesthetics>))}
 #'    \item \code{a_plot(df)}
 #'    \item \code{a_plot()}
 #'   }
@@ -32,7 +32,7 @@
 #' is often the case in complex graphics.
 #'
 #' @param data Default dataset to use for plot. If not already a data.frame,
-#'   will be converted to one by \code{\link{fortify}}. If not specified,
+#'   will be converted to one by \code{\link{a_fortify}}. If not specified,
 #'   must be suppled in each layer added to the plot.
 #' @param mapping Default list of aesthetic mappings to use for plot.
 #'   If not specified, must be suppled in each layer added to the plot.
@@ -49,29 +49,29 @@
 #'
 #' # Declare the data frame and common aesthetics.
 #' # The summary data frame ds is used to plot
-#' # larger red points in a second geom_point() layer.
+#' # larger red points in a second a_geom_point() layer.
 #' # If the data = argument is not specified, it uses the
 #' # declared data frame from a_plot(); ditto for the aesthetics.
-#' a_plot(df, aes(x = gp, y = y)) +
-#'    geom_point() +
-#'    geom_point(data = ds, aes(y = mean),
+#' a_plot(df, a_aes(x = gp, y = y)) +
+#'    a_geom_point() +
+#'    a_geom_point(data = ds, a_aes(y = mean),
 #'               colour = 'red', size = 3)
 #' # Same plot as above, declaring only the data frame in a_plot().
 #' # Note how the x and y aesthetics must now be declared in
-#' # each geom_point() layer.
+#' # each a_geom_point() layer.
 #' a_plot(df) +
-#'    geom_point(aes(x = gp, y = y)) +
-#'    geom_point(data = ds, aes(x = gp, y = mean),
+#'    a_geom_point(a_aes(x = gp, y = y)) +
+#'    a_geom_point(data = ds, a_aes(x = gp, y = mean),
 #'                  colour = 'red', size = 3)
 #' # Set up a skeleton a_plot object and add layers:
 #' a_plot() +
-#'   geom_point(data = df, aes(x = gp, y = y)) +
-#'   geom_point(data = ds, aes(x = gp, y = mean),
+#'   a_geom_point(data = df, a_aes(x = gp, y = y)) +
+#'   a_geom_point(data = ds, a_aes(x = gp, y = mean),
 #'                         colour = 'red', size = 3) +
-#'   geom_errorbar(data = ds, aes(x = gp, y = mean,
+#'   a_geom_errorbar(data = ds, a_aes(x = gp, y = mean,
 #'                     ymin = mean - sd, ymax = mean + sd),
 #'                     colour = 'red', width = 0.4)
-a_plot <- function(data = NULL, mapping = aes(), ...,
+a_plot <- function(data = NULL, mapping = a_aes(), ...,
                    environment = parent.frame()) {
   UseMethod("a_plot")
 }
@@ -79,18 +79,18 @@ a_plot <- function(data = NULL, mapping = aes(), ...,
 #' @export
 #' @rdname a_plot
 #' @usage NULL
-a_plot.default <- function(data = NULL, mapping = aes(), ...,
+a_plot.default <- function(data = NULL, mapping = a_aes(), ...,
                            environment = parent.frame()) {
-  a_plot.data.frame(fortify(data, ...), mapping, environment = environment)
+  a_plot.data.frame(a_fortify(data, ...), mapping, environment = environment)
 }
 
 #' @export
 #' @rdname a_plot
 #' @usage NULL
-a_plot.data.frame <- function(data, mapping = aes(), ...,
+a_plot.data.frame <- function(data, mapping = a_aes(), ...,
                               environment = parent.frame()) {
   if (!missing(mapping) && !inherits(mapping, "uneval")) {
-    stop("Mapping should be created with `aes() or `aes_()`.", call. = FALSE)
+    stop("Mapping should be created with `a_aes() or `a_aes_()`.", call. = FALSE)
   }
 
   p <- structure(list(
@@ -98,13 +98,13 @@ a_plot.data.frame <- function(data, mapping = aes(), ...,
     layers = list(),
     scales = a_scales_list(),
     mapping = mapping,
-    theme = list(),
-    coordinates = coord_cartesian(),
+    a_theme = list(),
+    coordinates = a_coord_cartesian(),
     a_facet = a_facet_null(),
     plot_env = environment
   ), class = c("aaa", "a_plot"))
 
-  p$labels <- make_labels(mapping)
+  p$a_labels <- make_labels(mapping)
 
   set_last_plot(p)
   p

@@ -27,9 +27,9 @@ test_that("knit_print.animint renders five x axis titles", {
 })
 
 test_that("segments and breakpoints are rendered", {
-  seg.list <- getNodeSet(html, "//g[@class='geom3_segment_signal']//line")
+  seg.list <- getNodeSet(html, "//g[@class='a_geom3_segment_signal']//line")
   expect_equal(length(seg.list), 6)
-  break.list <- getNodeSet(html, "//g[@class='geom4_vline_signal']//line")
+  break.list <- getNodeSet(html, "//g[@class='a_geom4_vline_signal']//line")
   expect_equal(length(break.list), 5)
 })
 
@@ -71,7 +71,7 @@ get_circles <- function(html=getHTML()) {
   plot.names <- c("plot1top", "plot1bottom")
   count.vec <- c()
   for(i in seq_along(plot.names)){
-    xpath <- sprintf("//div[@id='%s']//circle[@class='geom']", plot.names[[i]])
+    xpath <- sprintf("//div[@id='%s']//circle[@class='a_geom']", plot.names[[i]])
     circle.list <- getNodeSet(html, xpath)
     count.vec[[i]] <- length(circle.list)
   }
@@ -84,13 +84,13 @@ get_elements <- function(id){
   ## For debugging a NoSuchElement error I insert print statements.
   ##print("before css selector")
   tr.list <- div$findChildElements(
-    "css selector", "table.legend tr.label_variable")
+    "css selector", "table.legend tr.a_label_variable")
   a <- tr.list[[1]]
   b <- tr.list[[2]]
   ##print("before show_hide")
   show_hide <- div$findChildElement("class name", "show_hide_selector_widgets")
   ##print("before col_selector_widget")
-  widget <- div$findChildElement("class name", "label_variable_selector_widget")
+  widget <- div$findChildElement("class name", "a_label_variable_selector_widget")
   list(a178=a,
        b934=b,
        show_hide=show_hide,

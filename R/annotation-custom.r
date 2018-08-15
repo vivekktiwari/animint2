@@ -16,38 +16,37 @@ NULL
 #' @param ymin,ymax y location (in data coordinates) giving vertical
 #'   location of raster
 #' @export
-#' @note \code{annotation_custom} expects the grob to fill the entire viewport
+#' @note \code{a_annotation_custom} expects the grob to fill the entire viewport
 #' defined by xmin, xmax, ymin, ymax. Grobs with a different (absolute) size
 #' will be center-justified in that region.
 #' Inf values can be used to fill the full plot panel (see examples).
 #' @examples
 #' # Dummy plot
 #' df <- data.frame(x = 1:10, y = 1:10)
-#' base <- a_plot(df, aes(x, y)) +
-#'   geom_blank() +
-#'   theme_bw()
+#' base <- a_plot(df, a_aes(x, y)) +
+#'   a_geom_blank() +
+#'   a_theme_bw()
 #'
-#' # Full panel annotation
-#' base + annotation_custom(
+#' # Full panel a_annotation
+#' base + a_annotation_custom(
 #'   grob = grid::roundrectGrob(),
 #'   xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
 #' )
 #'
 #' # Inset plot
 #' df2 <- data.frame(x = 1 , y = 1)
-#' g <- ggplotGrob(a_plot(df2, aes(x, y)) +
-#'   geom_point() +
-#'   theme(plot.background = element_rect(colour = "black")))
-#' base + annotation_custom(grob = g, xmin = 1, xmax = 10, ymin = 8, ymax = 10)
-annotation_custom <- function(grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) {
-  layer(
+#' g <- ggplotGrob(a_plot(df2, a_aes(x, y)) +
+#'   a_geom_point() +
+#'   a_theme(plot.background = a_element_rect(colour = "black")))
+#' base + a_annotation_custom(grob = g, xmin = 1, xmax = 10, ymin = 8, ymax = 10)
+a_annotation_custom <- function(grob, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) {
+  a_layer(
     data = NULL,
-    stat = a_StatIdentity,
-    position = a_PositionIdentity,
-    geom = a_GeomCustomAnn,
-    inherit.aes = TRUE,
+    a_stat = a_StatIdentity,
+    a_position = a_PositionIdentity,
+    a_geom = a_GeomCustomAnn,
+    inherit.a_aes = TRUE,
     params = list(
-
       grob = grob,
       xmin = xmin,
       xmax = xmax,
@@ -67,14 +66,14 @@ a_GeomCustomAnn <- a_ggproto("a_GeomCustomAnn", a_Geom,
     data
   },
 
-  draw_panel = function(data, panel_scales, coord, grob, xmin, xmax,
+  draw_panel = function(data, panel_scales, a_coord, grob, xmin, xmax,
                         ymin, ymax) {
-    if (!inherits(coord, "a_CoordCartesian")) {
-      stop("annotation_custom only works with Cartesian coordinates",
+    if (!inherits(a_coord, "a_CoordCartesian")) {
+      stop("a_annotation_custom only works with Cartesian coordinates",
         call. = FALSE)
     }
     corners <- data.frame(x = c(xmin, xmax), y = c(ymin, ymax))
-    data <- coord$transform(corners, panel_scales)
+    data <- a_coord$transform(corners, panel_scales)
 
     x_rng <- range(data$x, na.rm = TRUE)
     y_rng <- range(data$y, na.rm = TRUE)
@@ -82,13 +81,13 @@ a_GeomCustomAnn <- a_ggproto("a_GeomCustomAnn", a_Geom,
     vp <- viewport(x = mean(x_rng), y = mean(y_rng),
                    width = diff(x_rng), height = diff(y_rng),
                    just = c("center","center"))
-    editGrob(grob, vp = vp, name = paste(grob$name, annotation_id()))
+    editGrob(grob, vp = vp, name = paste(grob$name, a_annotation_id()))
   },
 
-  default_aes = aes_(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
+  default_aes = a_aes_(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
 )
 
-annotation_id <- local({
+a_annotation_id <- local({
   i <- 1
   function() {
     i <<- i + 1

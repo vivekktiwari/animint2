@@ -18,40 +18,40 @@ map_flu <- do.call(rbind, map.by.weekend)
 # visualize CDC FluView data
 # activity level heatmap
 level.heatmap <- a_plot() + 
-  geom_tile(aes(x = WEEKEND, y = STATENAME, fill = level),
+  a_geom_tile(a_aes(x = WEEKEND, y = STATENAME, fill = level),
             data = state_flu) + 
-  geom_tallrect(aes(xmin = WEEKEND - 3, xmax = WEEKEND + 3), 
+  a_geom_tallrect(a_aes(xmin = WEEKEND - 3, xmax = WEEKEND + 3), 
                 data = state_flu, alpha = .5,
                     clickSelects = "WEEKEND") + 
-  scale_x_date(expand = c(0, 0)) + 
-  scale_fill_gradient2(low = "white", high = "red", breaks = 0:10) + 
-  theme_animint(width = 1200, height = 700) + 
+  a_scale_x_date(expand = c(0, 0)) + 
+  a_scale_fill_gradient2(low = "white", high = "red", breaks = 0:10) + 
+  a_theme_animint(width = 1200, height = 700) + 
   ggtitle("CDC ILI Activity Level in Lower 48 States")
 
 # state map
-theme_opts <- list(theme(panel.grid.minor = element_blank(), 
-                         panel.grid.major = element_blank(), 
-                         panel.background = element_blank(), 
-                         panel.border = element_blank(), 
-                         plot.background = element_rect(fill = "#E6E8Ed"), 
-                         axis.line = element_blank(), 
-                         axis.text.x = element_blank(), 
-                         axis.text.y = element_blank(), 
-                         axis.ticks = element_blank(), 
-                         axis.title.x = element_blank(), 
-                         axis.title.y = element_blank()))
+a_theme_opts <- list(a_theme(panel.grid.minor = a_element_blank(), 
+                         panel.grid.major = a_element_blank(), 
+                         panel.background = a_element_blank(), 
+                         panel.border = a_element_blank(), 
+                         plot.background = a_element_rect(fill = "#E6E8Ed"), 
+                         axis.line = a_element_blank(), 
+                         axis.text.x = a_element_blank(), 
+                         axis.text.y = a_element_blank(), 
+                         axis.ticks = a_element_blank(), 
+                         axis.title.x = a_element_blank(), 
+                         axis.title.y = a_element_blank()))
 
 p <- a_plot() + 
   make_text(map_flu, -100, 50, "WEEKEND",
             "CDC FluView in Lower 48 States ending %s") + 
-  scale_fill_gradient2(low = "white", high = "red", breaks = 0:10,
-                       guide = "none") + 
-  theme_opts + 
-  theme_animint(width = 750, height= 500)
+  a_scale_fill_gradient2(low = "white", high = "red", breaks = 0:10,
+                       a_guide = "none") + 
+  a_theme_opts + 
+  a_theme_animint(width = 750, height= 500)
 
-test_that("save separate chunks for geom_polygon", {
+test_that("save separate chunks for a_geom_polygon", {
   state.map <- p + 
-    geom_polygon(aes(x = long, y = lat, group = group, fill = level),
+    a_geom_polygon(a_aes(x = long, y = lat, group = group, fill = level),
                  data = map_flu, 
                    showSelected = "WEEKEND",                  
                  colour = "black", size = 1)
@@ -64,10 +64,10 @@ test_that("save separate chunks for geom_polygon", {
   animint2dir(viz, out.dir = out.dir, open.browser = FALSE)
   
   common.chunk <-
-    list.files(path = out.dir, pattern = "geom.+polygon.+chunk_common.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+polygon.+chunk_common.tsv", 
                full.names = TRUE)
   varied.chunks <-
-    list.files(path = out.dir, pattern = "geom.+polygon.+chunk[0-9]+.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+polygon.+chunk[0-9]+.tsv", 
                full.names = TRUE)
   ## number of chunks
   expect_equal(length(common.chunk), 1L)
@@ -97,11 +97,11 @@ flu.points <- ldply(unique(state_flu$WEEKEND), function(we) {
   merge(USdots, df, by.x = "region", by.y = "state")
 })
 
-test_that("save separate chunks for geom_point without specifying group", {
+test_that("save separate chunks for a_geom_point without specifying group", {
   # the compiler will not break a geom into chunks if any of the resulting 
   # chunk tsv files is estimated to be less than 4KB.
   state.map <- p + 
-    geom_point(aes(x = mean.long, y = mean.lat, fill = level),
+    a_geom_point(a_aes(x = mean.long, y = mean.lat, fill = level),
                data = flu.points, 
                    showSelected = "WEEKEND",
                color = "black",
@@ -115,10 +115,10 @@ test_that("save separate chunks for geom_point without specifying group", {
   animint2dir(viz, out.dir = out.dir, open.browser = FALSE)
   
   common.chunk <-
-    list.files(path = out.dir, pattern = "geom.+point.+chunk_common.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+point.+chunk_common.tsv", 
                full.names = TRUE)
   varied.chunks <-
-    list.files(path = out.dir, pattern = "geom.+point.+chunk[0-9]+.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+point.+chunk[0-9]+.tsv", 
         full.names = TRUE)
   ## number of chunks
   expect_equal(length(common.chunk), 0L)
@@ -132,7 +132,7 @@ test_that("save separate chunks for geom_point without specifying group", {
   
   ## force to split into chunks
   state.map <- p + 
-    geom_point(aes(x = mean.long, y = mean.lat, fill = level),
+    a_geom_point(a_aes(x = mean.long, y = mean.lat, fill = level),
                data = flu.points, 
                    showSelected = "WEEKEND",                
                color = "black",
@@ -146,10 +146,10 @@ test_that("save separate chunks for geom_point without specifying group", {
   animint2dir(viz, out.dir = out.dir, open.browser = FALSE)
   
   common.chunk <-
-    list.files(path = out.dir, pattern = "geom.+point.+chunk_common.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+point.+chunk_common.tsv", 
                full.names = TRUE)
   varied.chunks <-
-    list.files(path = out.dir, pattern = "geom.+point.+chunk[0-9]+.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+point.+chunk[0-9]+.tsv", 
                full.names = TRUE)
   # number of chunks
   expect_equal(length(common.chunk), 1L)
@@ -199,25 +199,25 @@ unique.year.vec <- unique(points.not.na$year)
 unique.country.vec <- unique(no.israel$country)
 
 scatter <- a_plot()+
-  geom_point(aes(life.expectancy, fertility.rate,
+  a_geom_point(a_aes(life.expectancy, fertility.rate,
                  colour=region, size=population,
                  tooltip=paste(country, "population", population),
                  key=country), # key aesthetic for animated transitions!
              clickSelects="country",
              showSelected="year",
              data=no.israel)+
-  geom_text(aes(life.expectancy, fertility.rate, label=country,
+  a_geom_text(a_aes(life.expectancy, fertility.rate, a_label=country,
                 key=country), # also use key here!
             data=no.israel,
             showSelected=c("country", "year"),
             chunk_vars=c("year", "country"),
             validate_params = FALSE)+
-  scale_size_animint(breaks=10^(5:9))+
+  a_scale_size_animint(breaks=10^(5:9))+
   make_text(no.israel, 55, 9, "year")
 
 ts <- a_plot()+
   make_tallrect(no.israel, "year")+
-  geom_line(aes(year, life.expectancy, group=country, colour=region),
+  a_geom_line(a_aes(year, life.expectancy, group=country, colour=region),
             data=no.israel, size=4, alpha=3/5,
                 clickSelects="country")
 
@@ -235,10 +235,10 @@ test_that("save separate chunks for non-spatial geoms with repetitive field, mul
   
   ## multiple vars selected
   common.chunk <-
-    list.files(path = out.dir, pattern = "geom2_text.+chunk_common.tsv", 
+    list.files(path = out.dir, pattern = "a_geom2_text.+chunk_common.tsv", 
                full.names = TRUE)
   varied.chunks <-
-    list.files(path = out.dir, pattern = "geom2_text.+chunk[0-9]+.tsv", 
+    list.files(path = out.dir, pattern = "a_geom2_text.+chunk[0-9]+.tsv", 
                full.names = TRUE)
   ## number of chunks
   expect_equal(length(common.chunk), 0L)
@@ -246,14 +246,14 @@ test_that("save separate chunks for non-spatial geoms with repetitive field, mul
   ## choose first varied.chunk to test
   varied.data <- read.csv(varied.chunks[1], sep = "\t", comment.char = "")
   expect_equal(nrow(varied.data), 1)
-  expect_true(all(c("x", "y", "label", "key") %in% names(varied.data)))
+  expect_true(all(c("x", "y", "a_label", "key") %in% names(varied.data)))
   
   ## single var selected
   common.chunk <-
-    list.files(path = out.dir, pattern = "geom.+point.+chunk_common.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+point.+chunk_common.tsv", 
                full.names = TRUE)
   varied.chunks <-
-    list.files(path = out.dir, pattern = "geom.+point.+chunk[0-9]+.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+point.+chunk[0-9]+.tsv", 
                full.names = TRUE)
   ## number of chunks
   expect_equal(length(common.chunk), 1L)
@@ -264,12 +264,12 @@ test_that("save separate chunks for non-spatial geoms with repetitive field, mul
   common.must.have <- c("colour", "clickSelects", "key", "showSelectedlegendcolour", "fill", "group")
   expect_true(all(common.must.have %in% names(common.data)))
   ## choose first varied.chunk to test
-  chunk.info <- info$geoms$geom1_point_scatter$chunks
+  chunk.info <- info$geoms$a_geom1_point_scatter$chunks
   year.str <- names(chunk.info)[[1]]
   year.num <- as.numeric(year.str)
   expected.data <- subset(points.not.na, year == year.num)
   chunk.num <- chunk.info[[year.str]]
-  tsv.name <- sprintf("geom1_point_scatter_chunk%d.tsv", chunk.num)
+  tsv.name <- sprintf("a_geom1_point_scatter_chunk%d.tsv", chunk.num)
   tsv.path <- file.path(out.dir, tsv.name)
   varied.data <- read.csv(tsv.path, sep = "\t", comment.char = "")
   expect_equal(nrow(varied.data), nrow(expected.data))
@@ -288,15 +288,15 @@ only.segments <- subset(only.error, samples==samples[1])
 signal.colors <- c(estimate="#0adb0a", latent="#0098ef")
 
 signal <- a_plot()+
-  geom_point(aes(position, signal),
+  a_geom_point(a_aes(position, signal),
              data=breakpoints$signals, showSelected="samples")+
-  geom_line(aes(position, signal), colour=signal.colors[["latent"]],
+  a_geom_line(a_aes(position, signal), colour=signal.colors[["latent"]],
             data=breakpoints$imprecision)+
-  geom_segment(aes(first.base, mean, xend=last.base, yend=mean),
+  a_geom_segment(a_aes(first.base, mean, xend=last.base, yend=mean),
                colour=signal.colors[["estimate"]],
                    showSelected=c("segments", "samples"),
                data=breakpoints$segments)+
-  geom_vline(aes(xintercept=base),
+  a_geom_vline(a_aes(xintercept=base),
              colour=signal.colors[["estimate"]],
                  showSelected=c("segments", "samples"),
              linetype="dashed",
@@ -311,10 +311,10 @@ test_that("save separate chunks for non-spatial geoms with nest_order not being 
   animint2dir(viz, out.dir = out.dir, open.browser = FALSE)
   
   common.chunk <-
-    list.files(path = out.dir, pattern = "geom.+segment.+chunk_common.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+segment.+chunk_common.tsv", 
                full.names = TRUE)
   varied.chunks <-
-    list.files(path = out.dir, pattern = "geom.+segment.+chunk[0-9]+.tsv", 
+    list.files(path = out.dir, pattern = "a_geom.+segment.+chunk[0-9]+.tsv", 
                full.names = TRUE)
   # number of chunks
   expect_equal(length(common.chunk), 1L)

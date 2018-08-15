@@ -15,79 +15,79 @@
 #'   long tick marks. In base 10, these are the "1" (or "10") ticks.
 #' @param scaled is the data already log-scaled? This should be \code{TRUE}
 #'   (default) when the data is already transformed with \code{log10()} or when
-#'   using \code{scale_y_log10}. It should be \code{FALSE} when using
-#'   \code{coord_trans(y = "log10")}.
+#'   using \code{a_scale_y_log10}. It should be \code{FALSE} when using
+#'   \code{a_coord_trans(y = "log10")}.
 #' @param colour Colour of the tick marks.
 #' @param size Thickness of tick marks, in mm.
 #' @param linetype Linetype of tick marks (\code{solid}, \code{dashed}, etc.)
 #' @param alpha The transparency of the tick marks.
 #' @param color An alias for \code{colour}.
-#' @param ... Other parameters passed on to the layer
+#' @param ... Other parameters passed on to the a_layer
 #'
 #' @export
-#' @seealso \code{\link{scale_y_continuous}}, \code{\link{scale_y_log10}} for log scale
+#' @seealso \code{\link{a_scale_y_continuous}}, \code{\link{a_scale_y_log10}} for log scale
 #'   transformations.
-#' @seealso \code{\link{coord_trans}} for log coordinate transformations.
+#' @seealso \code{\link{a_coord_trans}} for log coordinate transformations.
 #'
 #' @examples
 #' # Make a log-log plot (without log ticks)
-#' a <- a_plot(msleep, aes(bodywt, brainwt)) +
-#'  geom_point(na.rm = TRUE) +
-#'  scale_x_log10(
+#' a <- a_plot(msleep, a_aes(bodywt, brainwt)) +
+#'  a_geom_point(na.rm = TRUE) +
+#'  a_scale_x_log10(
 #'    breaks = scales::trans_breaks("log10", function(x) 10^x),
-#'    labels = scales::trans_format("log10", scales::math_format(10^.x))
+#'    a_labels = scales::trans_format("log10", scales::math_format(10^.x))
 #'  ) +
-#'  scale_y_log10(
+#'  a_scale_y_log10(
 #'    breaks = scales::trans_breaks("log10", function(x) 10^x),
-#'    labels = scales::trans_format("log10", scales::math_format(10^.x))
+#'    a_labels = scales::trans_format("log10", scales::math_format(10^.x))
 #'  ) +
-#'  theme_bw()
+#'  a_theme_bw()
 #'
-#' a + annotation_logticks()                # Default: log ticks on bottom and left
-#' a + annotation_logticks(sides = "lr")    # Log ticks for y, on left and right
-#' a + annotation_logticks(sides = "trbl")  # All four sides
+#' a + a_annotation_logticks()                # Default: log ticks on bottom and left
+#' a + a_annotation_logticks(sides = "lr")    # Log ticks for y, on left and right
+#' a + a_annotation_logticks(sides = "trbl")  # All four sides
 #'
 #' # Hide the minor grid lines because they don't align with the ticks
-#' a + annotation_logticks(sides = "trbl") + theme(panel.grid.minor = element_blank())
+#' a + a_annotation_logticks(sides = "trbl") + a_theme(panel.grid.minor = a_element_blank())
 #'
 #' # Another way to get the same results as 'a' above: log-transform the data before
 #' # plotting it. Also hide the minor grid lines.
-#' b <- a_plot(msleep, aes(log10(bodywt), log10(brainwt))) +
-#'  geom_point(na.rm = TRUE) +
-#'  scale_x_continuous(name = "body", labels = scales::math_format(10^.x)) +
-#'  scale_y_continuous(name = "brain", labels = scales::math_format(10^.x)) +
-#'  theme_bw() + theme(panel.grid.minor = element_blank())
+#' b <- a_plot(msleep, a_aes(log10(bodywt), log10(brainwt))) +
+#'  a_geom_point(na.rm = TRUE) +
+#'  a_scale_x_continuous(name = "body", a_labels = scales::math_format(10^.x)) +
+#'  a_scale_y_continuous(name = "brain", a_labels = scales::math_format(10^.x)) +
+#'  a_theme_bw() + a_theme(panel.grid.minor = a_element_blank())
 #'
-#' b + annotation_logticks()
+#' b + a_annotation_logticks()
 #'
 #' # Using a coordinate transform requires scaled = FALSE
-#' t <- a_plot(msleep, aes(bodywt, brainwt)) +
-#'   geom_point() +
-#'   coord_trans(x = "log10", y = "log10") +
-#'   theme_bw()
-#' t + annotation_logticks(scaled = FALSE)
+#' t <- a_plot(msleep, a_aes(bodywt, brainwt)) +
+#'   a_geom_point() +
+#'   a_coord_trans(x = "log10", y = "log10") +
+#'   a_theme_bw()
+#' t + a_annotation_logticks(scaled = FALSE)
 #'
 #' # Change the length of the ticks
-#' a + annotation_logticks(
+#' a + a_annotation_logticks(
 #'   short = unit(.5,"mm"),
 #'   mid = unit(3,"mm"),
 #'   long = unit(4,"mm")
 #' )
-annotation_logticks <- function(base = 10, sides = "bl", scaled = TRUE,
+a_annotation_logticks <- function(base = 10, sides = "bl", scaled = TRUE,
       short = unit(0.1, "cm"), mid = unit(0.2, "cm"), long = unit(0.3, "cm"),
       colour = "black", size = 0.5, linetype = 1, alpha = 1, color = NULL, ...)
 {
   if (!is.null(color))
     colour <- color
 
-  layer(
+  a_layer(
     data = data.frame(x = NA),
     mapping = NULL,
-    stat = a_StatIdentity,
-    geom = a_GeomLogticks,
-    position = a_PositionIdentity,
+    a_stat = a_StatIdentity,
+    a_geom = a_GeomLogticks,
+    a_position = a_PositionIdentity,
     show.legend = FALSE,
-    inherit.aes = FALSE,
+    inherit.a_aes = FALSE,
     params = list(
       base = base,
       sides = sides,
@@ -114,7 +114,7 @@ a_GeomLogticks <- a_ggproto("a_GeomLogticks", a_Geom,
     data
   },
 
-  draw_panel = function(data, panel_scales, coord, base = 10, sides = "bl",
+  draw_panel = function(data, panel_scales, a_coord, base = 10, sides = "bl",
     scaled = TRUE, short = unit(0.1, "cm"), mid = unit(0.2, "cm"),
     long = unit(0.3, "cm"))
   {
@@ -143,7 +143,7 @@ a_GeomLogticks <- a_ggproto("a_GeomLogticks", a_Geom,
         xticks$value <- log(xticks$value, base)
 
       names(xticks)[names(xticks) == "value"] <- "x"   # Rename to 'x' for coordinates$transform
-      xticks <- coord$transform(xticks, panel_scales)
+      xticks <- a_coord$transform(xticks, panel_scales)
 
       # Make the grobs
       if (grepl("b", sides)) {
@@ -178,7 +178,7 @@ a_GeomLogticks <- a_ggproto("a_GeomLogticks", a_Geom,
         yticks$value <- log(yticks$value, base)
 
       names(yticks)[names(yticks) == "value"] <- "y"   # Rename to 'y' for coordinates$transform
-      yticks <- coord$transform(yticks, panel_scales)
+      yticks <- a_coord$transform(yticks, panel_scales)
 
       # Make the grobs
       if (grepl("l", sides)) {
@@ -200,7 +200,7 @@ a_GeomLogticks <- a_ggproto("a_GeomLogticks", a_Geom,
     gTree(children = do.call("gList", ticks))
   },
 
-  default_aes = aes(colour = "black", size = 0.5, linetype = 1, alpha = 1)
+  default_aes = a_aes(colour = "black", size = 0.5, linetype = 1, alpha = 1)
 )
 
 

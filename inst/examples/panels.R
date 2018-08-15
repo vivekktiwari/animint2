@@ -2,11 +2,11 @@ library(animint2)
 
 # sepal plot
 p1 <- a_plot() + 
-  geom_point(aes(Sepal.Length, Sepal.Width, colour = Species, size = Sepal.Width), 
+  a_geom_point(a_aes(Sepal.Length, Sepal.Width, colour = Species, size = Sepal.Width), 
              clickSelects = "Species", 
              data = iris) + 
-  theme(panel.background = element_rect(fill = "lightblue"), 
-        panel.border = element_rect(fill = NA, 
+  a_theme(panel.background = a_element_rect(fill = "lightblue"), 
+        panel.border = a_element_rect(fill = NA, 
                                     color = "black", 
                                     size = 2, 
                                     linetype = "dashed"), 
@@ -15,10 +15,10 @@ p1 <- a_plot() +
 
 # panel plot
 p2 <- a_plot() + 
-  geom_point(aes(Petal.Length, Petal.Width, colour = Species), 
+  a_geom_point(a_aes(Petal.Length, Petal.Width, colour = Species), 
              showSelected = "Species", data = iris) + 
   ggtitle("Petal Data") + 
-  theme_bw()
+  a_theme_bw()
 viz <- list(sepal = p1, 
             petal = p2, 
             title = "Different Panel Styles", 

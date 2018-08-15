@@ -5,24 +5,24 @@ WorldBank$region <-
 wb.paper <-
   list(ts=a_plot()+
        make_tallrect(WorldBank, "year")+
-       guides(color="none")+
-       geom_line(aes(year, life.expectancy, group=country, colour=region),
+       a_guides(color="none")+
+       a_geom_line(a_aes(year, life.expectancy, group=country, colour=region),
                  showSelected="region",
                  clickSelects="country",
                  data=WorldBank, size=4, alpha=3/5),
        scatter=a_plot()+
-       geom_point(aes(fertility.rate, life.expectancy, colour=region, size=population,
+       a_geom_point(a_aes(fertility.rate, life.expectancy, colour=region, size=population,
                       tooltip=paste(country, "population", population),
                       key=country), # key aesthetic for animated transitions!
                   clickSelects="country",
                   showSelected="year",
                   data=WorldBank)+
-       geom_text(aes(fertility.rate, life.expectancy, label=country,
+       a_geom_text(a_aes(fertility.rate, life.expectancy, a_label=country,
                      key=country), #also use key here!
                  clickSelects="country",
                  showSelected=c("country", "year", "region"),
                  data=WorldBank)+
-       scale_size_animint(breaks=10^(9:5))+
+       a_scale_size_animint(breaks=10^(9:5))+
        make_text(WorldBank, 5, 80, "year"),
        time=list(variable="year",ms=3000),
        duration=list(year=1000),

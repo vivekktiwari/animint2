@@ -5,7 +5,7 @@
 \title{Generic labeller function for facets}
 \usage{
 labeller(..., .rows = NULL, .cols = NULL, keep.as.numeric = NULL,
-  .multi_line = TRUE, .default = label_value)
+  .multi_line = TRUE, .default = a_label_value)
 }
 \arguments{
 \item{...}{Named arguments of the form \code{variable =
@@ -49,22 +49,22 @@ functions taking a character vector such as
 }
 \examples{
 \donttest{
-p1 <- a_plot(mtcars, aes(x = mpg, y = wt)) + geom_point()
+p1 <- a_plot(mtcars, a_aes(x = mpg, y = wt)) + a_geom_point()
 
 # You can assign different labellers to variables:
 p1 + facet_grid(vs + am ~ gear,
-  labeller = labeller(vs = label_both, am = label_value))
+  labeller = labeller(vs = a_label_both, am = a_label_value))
 
 # Or whole margins:
 p1 + facet_grid(vs + am ~ gear,
-  labeller = labeller(.rows = label_both, .cols = label_value))
+  labeller = labeller(.rows = a_label_both, .cols = a_label_value))
 
 # You can supply functions operating on strings:
 capitalize <- function(string) {
   substr(string, 1, 1) <- toupper(substr(string, 1, 1))
   string
 }
-p2 <- a_plot(msleep, aes(x = sleep_total, y = awake)) + geom_point()
+p2 <- a_plot(msleep, a_aes(x = sleep_total, y = awake)) + a_geom_point()
 p2 + facet_grid(vore ~ conservation, labeller = labeller(vore = capitalize))
 
 # Or use character vectors as lookup tables:
@@ -91,7 +91,7 @@ msleep$conservation2 <- plyr::revalue(msleep$conservation,
 p2 \%+\% msleep + facet_grid(vore ~ conservation2)
 p2 \%+\% msleep +
   facet_grid(vore ~ conservation2,
-    labeller = labeller(conservation2 = label_wrap_gen(10))
+    labeller = labeller(conservation2 = a_label_wrap_gen(10))
   )
 
 # labeller() is especially useful to act as a global labeller. You
@@ -101,8 +101,8 @@ p2 \%+\% msleep +
 global_labeller <- labeller(
   vore = capitalize,
   conservation = conservation_status,
-  conservation2 = label_wrap_gen(10),
-  .default = label_both
+  conservation2 = a_label_wrap_gen(10),
+  .default = a_label_both
 )
 
 p2 + facet_grid(vore ~ conservation, labeller = global_labeller)

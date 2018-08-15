@@ -1,5 +1,5 @@
-#' \code{stat_bin} is suitable only for continuous x data. If your x data is
-#'   discrete, you probably want to use \code{\link{stat_count}}.
+#' \code{a_stat_bin} is suitable only for continuous x data. If your x data is
+#'   discrete, you probably want to use \code{\link{a_stat_count}}.
 #'
 #' @param binwidth The width of the bins. The default is to use \code{bins}
 #'   bins that cover the range of the data. You should always override
@@ -32,13 +32,13 @@
 #'   \item{ndensity}{density, scaled to maximum of 1}
 #' }
 #'
-#' @seealso \code{\link{stat_count}}, which counts the number of cases at each x
+#' @seealso \code{\link{a_stat_count}}, which counts the number of cases at each x
 #'   posotion, without binning. It is suitable for both discrete and continuous
-#'   x data, whereas \link{stat_bin} is suitable only for continuous x data.
+#'   x data, whereas \link{a_stat_bin} is suitable only for continuous x data.
 #' @export
-#' @rdname geom_histogram
-stat_bin <- function(mapping = NULL, data = NULL,
-                     geom = "bar", position = "stack",
+#' @rdname a_geom_histogram
+a_stat_bin <- function(mapping = NULL, data = NULL,
+                     a_geom = "bar", a_position = "stack",
                      ...,
                      binwidth = NULL,
                      bins = NULL,
@@ -48,16 +48,16 @@ stat_bin <- function(mapping = NULL, data = NULL,
                      pad = FALSE,
                      na.rm = FALSE,
                      show.legend = NA,
-                     inherit.aes = TRUE) {
+                     inherit.a_aes = TRUE) {
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatBin,
-    geom = geom,
-    position = position,
+    a_stat = a_StatBin,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       binwidth = binwidth,
       bins = bins,
@@ -103,7 +103,7 @@ a_StatBin <- a_ggproto("a_StatBin", a_Stat,
       params$right <- NULL
     }
     if (!is.null(params$width)) {
-      stop("`width` is deprecated. Do you want `geom_bar()`?", call. = FALSE)
+      stop("`width` is deprecated. Do you want `a_geom_bar()`?", call. = FALSE)
     }
     if (!is.null(params$boundary) && !is.null(params$center)) {
       stop("Only one of `boundary` and `center` may be specified.", call. = FALSE)
@@ -137,7 +137,7 @@ a_StatBin <- a_ggproto("a_StatBin", a_Stat,
     bin_vector(data$x, bins, weight = data$weight, pad = pad)
   },
 
-  default_aes = aes(y = ..count..),
+  default_aes = a_aes(y = ..count..),
   required_aes = c("x")
 )
 

@@ -2,8 +2,8 @@
 NULL
 
 #' @export
-#' @rdname geom_abline
-geom_hline <- function(mapping = NULL, data = NULL,
+#' @rdname a_geom_abline
+a_geom_hline <- function(mapping = NULL, data = NULL,
                        ...,
                        yintercept,
                        na.rm = FALSE,
@@ -12,18 +12,18 @@ geom_hline <- function(mapping = NULL, data = NULL,
   # Act like an annotation
   if (!missing(yintercept)) {
     data <- data.frame(yintercept = yintercept)
-    mapping <- aes(yintercept = yintercept)
+    mapping <- a_aes(yintercept = yintercept)
     show.legend <- FALSE
   }
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatIdentity,
-    geom = a_GeomHline,
-    position = a_PositionIdentity,
+    a_stat = a_StatIdentity,
+    a_geom = a_GeomHline,
+    a_position = a_PositionIdentity,
     show.legend = show.legend,
-    inherit.aes = FALSE,
+    inherit.a_aes = FALSE,
     params = list(
       na.rm = na.rm,
       ...
@@ -36,18 +36,18 @@ geom_hline <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomHline <- a_ggproto("a_GeomHline", a_Geom,
-  draw_panel = function(data, panel_scales, coord) {
-    ranges <- coord$range(panel_scales)
+  draw_panel = function(data, panel_scales, a_coord) {
+    ranges <- a_coord$range(panel_scales)
 
     data$x    <- ranges$x[1]
     data$xend <- ranges$x[2]
     data$y    <- data$yintercept
     data$yend <- data$yintercept
 
-    a_GeomSegment$draw_panel(unique(data), panel_scales, coord)
+    a_GeomSegment$draw_panel(unique(data), panel_scales, a_coord)
   },
 
-  default_aes = aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
+  default_aes = a_aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
   required_aes = "yintercept",
 
   draw_key = a_draw_key_path

@@ -6,16 +6,16 @@
 #' such as \code{~first + second}) should be displayed on a single
 #' line separated with commas, or each on their own line.
 #'
-#' \code{label_value()} only displays the value of a factor while
-#' \code{label_both()} displays both the variable name and the factor
-#' value. \code{label_context()} is context-dependent and uses
-#' \code{label_value()} for single factor facetting and
-#' \code{label_both()} when multiple factors are
-#' involved. \code{label_wrap_gen()} uses \code{\link[base]{strwrap}()}
+#' \code{a_label_value()} only displays the value of a factor while
+#' \code{a_label_both()} displays both the variable name and the factor
+#' value. \code{a_label_context()} is context-dependent and uses
+#' \code{a_label_value()} for single factor facetting and
+#' \code{a_label_both()} when multiple factors are
+#' involved. \code{a_label_wrap_gen()} uses \code{\link[base]{strwrap}()}
 #' for line wrapping.
 #'
-#' \code{label_parsed()} interprets the labels as plotmath
-#' expressions. \code{\link{label_bquote}()} offers a more flexible
+#' \code{a_label_parsed()} interprets the labels as plotmath
+#' expressions. \code{\link{a_label_bquote}()} offers a more flexible
 #' way of constructing plotmath expressions. See examples and
 #' \code{\link{bquote}()} for details on the syntax of the
 #' argument.
@@ -55,7 +55,7 @@
 #'   For compatibility with \code{\link{labeller}()}, each labeller
 #'   function must have the \code{labeller} S3 class.
 #'
-#' @param labels Data frame of labels. Usually contains only one
+#' @param a_labels Data frame of labels. Usually contains only one
 #'   element, but facetting over multiple factors entails multiple
 #'   label variables.
 #' @param multi_line Whether to display the labels of multiple factors
@@ -64,65 +64,65 @@
 #' @param width Maximum number of characters before wrapping the strip.
 #' @family a_facet
 #' @seealso \code{\link{labeller}()}, \code{\link{as_labeller}()},
-#'   \code{\link{label_bquote}()}
+#'   \code{\link{a_label_bquote}()}
 #' @name labellers
 #' @examples
 #' mtcars$cyl2 <- factor(mtcars$cyl, labels = c("alpha", "beta", "gamma"))
-#' p <- a_plot(mtcars, aes(wt, mpg)) + geom_point()
+#' p <- a_plot(mtcars, a_aes(wt, mpg)) + a_geom_point()
 #'
 #' # Displaying only the values
 #' p + a_facet_grid(. ~ cyl)
-#' p + a_facet_grid(. ~ cyl, labeller = label_value)
+#' p + a_facet_grid(. ~ cyl, labeller = a_label_value)
 #'
 #' \donttest{
 #' # Displaying both the values and the variables
-#' p + facet_grid(. ~ cyl, labeller = label_both)
+#' p + facet_grid(. ~ cyl, labeller = a_label_both)
 #'
 #' # Displaying only the values or both the values and variables
 #' # depending on whether multiple factors are facetted over
-#' p + facet_grid(am ~ vs+cyl, labeller = label_context)
+#' p + facet_grid(am ~ vs+cyl, labeller = a_label_context)
 #'
 #' # Interpreting the labels as plotmath expressions
 #' p + a_facet_grid(. ~ cyl2)
-#' p + a_facet_grid(. ~ cyl2, labeller = label_parsed)
-#' p + a_facet_wrap(~vs + cyl2, labeller = label_parsed)
+#' p + a_facet_grid(. ~ cyl2, labeller = a_label_parsed)
+#' p + a_facet_wrap(~vs + cyl2, labeller = a_label_parsed)
 #' }
 NULL
 
-collapse_labels_lines <- function(labels) {
-  out <- do.call("Map", c(list(paste, sep = ", "), labels))
+collapse_labels_lines <- function(a_labels) {
+  out <- do.call("Map", c(list(paste, sep = ", "), a_labels))
   list(unname(unlist(out)))
 }
 
 #' @rdname labellers
 #' @export
-label_value <- function(labels, multi_line = TRUE) {
-  labels <- lapply(labels, as.character)
+a_label_value <- function(a_labels, multi_line = TRUE) {
+  a_labels <- lapply(a_labels, as.character)
   if (multi_line) {
-    labels
+    a_labels
   } else {
-    collapse_labels_lines(labels)
+    collapse_labels_lines(a_labels)
   }
 }
 # Should ideally not have the 'function' class here, but this is
 # currently needed for Roxygen
-class(label_value) <- c("function", "labeller")
+class(a_label_value) <- c("function", "labeller")
 
-# Helper for label_both
-label_variable <- function(labels, multi_line = TRUE) {
+# Helper for a_label_both
+a_label_variable <- function(a_labels, multi_line = TRUE) {
   if (multi_line) {
-    row <- as.list(names(labels))
+    row <- as.list(names(a_labels))
   } else {
-    row <- list(paste(names(labels), collapse = ", "))
+    row <- list(paste(names(a_labels), collapse = ", "))
   }
-  lapply(row, rep, nrow(labels) %||% length(labels[[1]]))
+  lapply(row, rep, nrow(a_labels) %||% length(a_labels[[1]]))
 }
 
 #' @rdname labellers
 #' @export
-label_both <- function(labels, multi_line = TRUE, sep = ": ") {
-  value <- label_value(labels, multi_line = multi_line)
-  variable <- label_variable(labels, multi_line = multi_line)
+a_label_both <- function(a_labels, multi_line = TRUE, sep = ": ") {
+  value <- a_label_value(a_labels, multi_line = multi_line)
+  variable <- a_label_variable(a_labels, multi_line = multi_line)
 
   if (multi_line) {
     out <- vector("list", length(value))
@@ -138,37 +138,37 @@ label_both <- function(labels, multi_line = TRUE, sep = ": ") {
 
   out
 }
-class(label_both) <- c("function", "labeller")
+class(a_label_both) <- c("function", "labeller")
 
 #' @rdname labellers
 #' @export
-label_context <- function(labels, multi_line = TRUE, sep = ": ") {
-  if (length(labels) == 1) {
-    label_value(labels, multi_line)
+a_label_context <- function(a_labels, multi_line = TRUE, sep = ": ") {
+  if (length(a_labels) == 1) {
+    a_label_value(a_labels, multi_line)
   } else {
-    label_both(labels, multi_line)
+    a_label_both(a_labels, multi_line)
   }
 }
-class(label_context) <- c("function", "labeller")
+class(a_label_context) <- c("function", "labeller")
 
 #' @rdname labellers
 #' @export
-label_parsed <- function(labels, multi_line = TRUE) {
-  labels <- label_value(labels, multi_line = multi_line)
+a_label_parsed <- function(a_labels, multi_line = TRUE) {
+  a_labels <- a_label_value(a_labels, multi_line = multi_line)
   if (multi_line) {
     # Using unname() and c() to return a cleaner and easily testable
     # object structure
-    lapply(unname(labels), lapply, function(values) {
+    lapply(unname(a_labels), lapply, function(values) {
       c(parse(text = as.character(values)))
     })
   } else {
-    lapply(labels, function(values) {
+    lapply(a_labels, function(values) {
       values <- paste0("list(", values, ")")
       lapply(values, function(expr) c(parse(text = expr)))
     })
   }
 }
-class(label_parsed) <- c("function", "labeller")
+class(a_label_parsed) <- c("function", "labeller")
 
 find_names <- function(expr) {
   if (is.call(expr)) {
@@ -180,7 +180,7 @@ find_names <- function(expr) {
 
 #' Backquoted labeller
 #'
-#' \code{\link{label_bquote}()} offers a flexible way of labelling
+#' \code{\link{a_label_bquote}()} offers a flexible way of labelling
 #' facet rows or columns with plotmath expressions. Backquoted
 #' variables will be replaced with their value in the facet.
 #' @param rows Backquoted labelling expression for rows.
@@ -192,20 +192,20 @@ find_names <- function(expr) {
 #' @examples
 #' # The variables mentioned in the plotmath expression must be
 #' # backquoted and referred to by their names.
-#' p <- a_plot(mtcars, aes(wt, mpg)) + geom_point()
-#' p + a_facet_grid(vs ~ ., labeller = label_bquote(alpha ^ .(vs)))
-#' p + a_facet_grid(. ~ vs, labeller = label_bquote(cols = .(vs) ^ .(vs)))
-#' p + a_facet_grid(. ~ vs + am, labeller = label_bquote(cols = .(am) ^ .(vs)))
-label_bquote <- function(rows = NULL, cols = NULL,
-                         default = label_value) {
+#' p <- a_plot(mtcars, a_aes(wt, mpg)) + a_geom_point()
+#' p + a_facet_grid(vs ~ ., labeller = a_label_bquote(alpha ^ .(vs)))
+#' p + a_facet_grid(. ~ vs, labeller = a_label_bquote(cols = .(vs) ^ .(vs)))
+#' p + a_facet_grid(. ~ vs + am, labeller = a_label_bquote(cols = .(am) ^ .(vs)))
+a_label_bquote <- function(rows = NULL, cols = NULL,
+                         default = a_label_value) {
   cols_quoted <- substitute(cols)
   rows_quoted <- substitute(rows)
   has_warned <- FALSE
 
-  fun <- function(labels) {
-    quoted <- resolve_labeller(rows_quoted, cols_quoted, labels)
+  fun <- function(a_labels) {
+    quoted <- resolve_labeller(rows_quoted, cols_quoted, a_labels)
     if (is.null(quoted)) {
-      return(label_value(labels))
+      return(a_label_value(a_labels))
     }
 
     evaluate <- function(...) {
@@ -226,7 +226,7 @@ label_bquote <- function(rows = NULL, cols = NULL,
 
       eval(substitute(bquote(expr, params), list(expr = quoted)))
     }
-    list(do.call("Map", c(list(f = evaluate), labels)))
+    list(do.call("Map", c(list(f = evaluate), a_labels)))
   }
 
   structure(fun, class = "labeller")
@@ -235,10 +235,10 @@ globalVariables(c("x", "."))
 
 #' @rdname labellers
 #' @export
-label_wrap_gen <- function(width = 25, multi_line = TRUE) {
-  fun <- function(labels) {
-    labels <- label_value(labels, multi_line = multi_line)
-    lapply(labels, function(x) {
+a_label_wrap_gen <- function(width = 25, multi_line = TRUE) {
+  fun <- function(a_labels) {
+    a_labels <- a_label_value(a_labels, multi_line = multi_line)
+    lapply(a_labels, function(x) {
       x <- strwrap(x, width = width, simplify = FALSE)
       vapply(x, paste, character(1), collapse = "\n")
     })
@@ -248,18 +248,18 @@ label_wrap_gen <- function(width = 25, multi_line = TRUE) {
 
 is_labeller <- function(x) inherits(x, "labeller")
 
-resolve_labeller <- function(rows, cols, labels) {
+resolve_labeller <- function(rows, cols, a_labels) {
   if (is.null(cols) && is.null(rows)) {
     stop("Supply one of rows or cols", call. = FALSE)
   }
-  if (attr(labels, "a_facet") == "wrap") {
+  if (attr(a_labels, "a_facet") == "wrap") {
     # Return either rows or cols for facet_wrap()
     if (!is.null(cols) && !is.null(rows)) {
       stop("Cannot supply both rows and cols to a_facet_wrap()", call. = FALSE)
     }
     cols %||% rows
   } else {
-    if (attr(labels, "type") == "rows") {
+    if (attr(a_labels, "type") == "rows") {
       rows
     } else {
       cols
@@ -283,7 +283,7 @@ resolve_labeller <- function(rows, cols, labels) {
 #' @seealso \code{\link{labeller}()}, \link{labellers}
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(disp, drat)) + geom_point()
+#' p <- a_plot(mtcars, a_aes(disp, drat)) + a_geom_point()
 #' p + a_facet_wrap(~am)
 #'
 #' # Rename labels on the fly with a lookup character vector
@@ -298,10 +298,10 @@ resolve_labeller <- function(rows, cols, labels) {
 #' # If you have more than one facetting variable, be sure to dispatch
 #' # your labeller to the right variable with labeller()
 #' p + a_facet_grid(cyl ~ am, labeller = labeller(am = to_string))
-as_labeller <- function(x, default = label_value, multi_line = TRUE) {
+as_labeller <- function(x, default = a_label_value, multi_line = TRUE) {
   force(x)
-  fun <- function(labels) {
-    labels <- lapply(labels, as.character)
+  fun <- function(a_labels) {
+    a_labels <- lapply(a_labels, as.character)
 
     # Dispatch multi_line argument to the labeller function instead of
     # supplying it to the labeller call because some labellers do not
@@ -310,13 +310,13 @@ as_labeller <- function(x, default = label_value, multi_line = TRUE) {
 
     if (is_labeller(x)) {
       x <- dispatch_args(x, multi_line = multi_line)
-      x(labels)
+      x(a_labels)
     } else if (is.function(x)) {
-      default(lapply(labels, x))
+      default(lapply(a_labels, x))
     } else if (is.character(x)) {
-      default(lapply(labels, function(label) x[label]))
+      default(lapply(a_labels, function(a_label) x[a_label]))
     } else {
-      default(labels)
+      default(a_labels)
     }
   }
   structure(fun, class = "labeller")
@@ -359,22 +359,22 @@ as_labeller <- function(x, default = label_value, multi_line = TRUE) {
 #' @export
 #' @examples
 #' \donttest{
-#' p1 <- a_plot(mtcars, aes(x = mpg, y = wt)) + geom_point()
+#' p1 <- a_plot(mtcars, a_aes(x = mpg, y = wt)) + a_geom_point()
 #'
 #' # You can assign different labellers to variables:
 #' p1 + facet_grid(vs + am ~ gear,
-#'   labeller = labeller(vs = label_both, am = label_value))
+#'   labeller = labeller(vs = a_label_both, am = a_label_value))
 #'
 #' # Or whole margins:
 #' p1 + facet_grid(vs + am ~ gear,
-#'   labeller = labeller(.rows = label_both, .cols = label_value))
+#'   labeller = labeller(.rows = a_label_both, .cols = a_label_value))
 #'
 #' # You can supply functions operating on strings:
 #' capitalize <- function(string) {
 #'   substr(string, 1, 1) <- toupper(substr(string, 1, 1))
 #'   string
 #' }
-#' p2 <- a_plot(msleep, aes(x = sleep_total, y = awake)) + geom_point()
+#' p2 <- a_plot(msleep, a_aes(x = sleep_total, y = awake)) + a_geom_point()
 #' p2 + facet_grid(vore ~ conservation, labeller = labeller(vore = capitalize))
 #'
 #' # Or use character vectors as lookup tables:
@@ -401,7 +401,7 @@ as_labeller <- function(x, default = label_value, multi_line = TRUE) {
 #' p2 %+% msleep + facet_grid(vore ~ conservation2)
 #' p2 %+% msleep +
 #'   facet_grid(vore ~ conservation2,
-#'     labeller = labeller(conservation2 = label_wrap_gen(10))
+#'     labeller = labeller(conservation2 = a_label_wrap_gen(10))
 #'   )
 #'
 #' # labeller() is especially useful to act as a global labeller. You
@@ -411,8 +411,8 @@ as_labeller <- function(x, default = label_value, multi_line = TRUE) {
 #' global_labeller <- labeller(
 #'   vore = capitalize,
 #'   conservation = conservation_status,
-#'   conservation2 = label_wrap_gen(10),
-#'   .default = label_both
+#'   conservation2 = a_label_wrap_gen(10),
+#'   .default = a_label_both
 #' )
 #'
 #' p2 + facet_grid(vore ~ conservation, labeller = global_labeller)
@@ -421,16 +421,16 @@ as_labeller <- function(x, default = label_value, multi_line = TRUE) {
 #' }
 labeller <- function(..., .rows = NULL, .cols = NULL,
                      keep.as.numeric = NULL, .multi_line = TRUE,
-                     .default = label_value) {
+                     .default = a_label_value) {
   if (!is.null(keep.as.numeric)) {
     .Deprecated(old = "keep.as.numeric")
   }
   dots <- list(...)
   .default <- as_labeller(.default)
 
-  function(labels) {
+  function(a_labels) {
     if (!is.null(.rows) || !is.null(.cols)) {
-      margin_labeller <- resolve_labeller(.rows, .cols, labels)
+      margin_labeller <- resolve_labeller(.rows, .cols, a_labels)
     } else {
       margin_labeller <- NULL
     }
@@ -443,8 +443,8 @@ labeller <- function(..., .rows = NULL, .cols = NULL,
 
       # Check that variable-specific labellers do not overlap with
       # margin-wide labeller
-      if (any(names(dots) %in% names(labels))) {
-        stop("Conflict between .", attr(labels, "type"), " and ",
+      if (any(names(dots) %in% names(a_labels))) {
+        stop("Conflict between .", attr(a_labels, "type"), " and ",
           paste(names(dots), collapse = ", "), call. = FALSE)
       }
     }
@@ -452,41 +452,41 @@ labeller <- function(..., .rows = NULL, .cols = NULL,
     # Apply relevant labeller
     if (is.null(margin_labeller)) {
       # Apply named labeller one by one
-      out <- lapply(names(labels), function(label) {
-        if (label %in% names(labellers)) {
-          labellers[[label]](labels[label])[[1]]
+      out <- lapply(names(a_labels), function(a_label) {
+        if (a_label %in% names(labellers)) {
+          labellers[[a_label]](a_labels[a_label])[[1]]
         } else {
-          .default(labels[label])[[1]]
+          .default(a_labels[a_label])[[1]]
         }
       })
-      names(out) <- names(labels)
+      names(out) <- names(a_labels)
       if (.multi_line) {
         out
       } else {
         collapse_labels_lines(out)
       }
     } else {
-      margin_labeller(labels)
+      margin_labeller(a_labels)
     }
   }
 }
 
 #' a_build strip function
 #' @param panel ....
-#' @param label_df ....
+#' @param a_label_df ....
 #' @param labeller ....
-#' @param theme .....
+#' @param a_theme .....
 #' @param side .....
 #' @param switch ....
 #' @export
 ## TODO: define params in detail
-a_build_strip <- function(panel, label_df, labeller, theme, side = "right", switch = NULL) {
+a_build_strip <- function(panel, a_label_df, labeller, a_theme, side = "right", switch = NULL) {
   side <- match.arg(side, c("top", "left", "bottom", "right"))
   horizontal <- side %in% c("top", "bottom")
   labeller <- match.fun(labeller)
 
   # No labelling data, so return empty row/col
-  if (empty(label_df)) {
+  if (empty(a_label_df)) {
     if (horizontal) {
       widths <- unit(rep(0, max(panel$layout$COL)), "null")
       return(gtable_row_spacer(widths))
@@ -496,17 +496,17 @@ a_build_strip <- function(panel, label_df, labeller, theme, side = "right", swit
     }
   }
 
-  # Create matrix of labels
-  labels <- lapply(labeller(label_df), cbind)
-  labels <- do.call("cbind", labels)
+  # Create matrix of a_labels
+  a_labels <- lapply(labeller(a_label_df), cbind)
+  a_labels <- do.call("cbind", a_labels)
 
-  # Display the mirror of the y strip labels if switched
+  # Display the mirror of the y strip a_labels if switched
   if (!is.null(switch) && switch %in% c("both", "y")) {
-    theme$strip.text.y$angle <- adjust_angle(theme$strip.text.y$angle)
+    a_theme$strip.text.y$angle <- adjust_angle(a_theme$strip.text.y$angle)
   }
 
   # Render as grobs
-  grobs <- apply(labels, c(1, 2), ggstrip, theme = theme,
+  grobs <- apply(a_labels, c(1, 2), ggstrip, a_theme = a_theme,
     horizontal = horizontal)
 
   # Create layout
@@ -526,29 +526,29 @@ a_build_strip <- function(panel, label_df, labeller, theme, side = "right", swit
   gtable_matrix(name, grobs, heights = heights, widths = widths)
 }
 
-# Grob for strip labels
-ggstrip <- function(text, horizontal = TRUE, theme) {
-  text_theme <- if (horizontal) "strip.text.x" else "strip.text.y"
+# Grob for strip a_labels
+ggstrip <- function(text, horizontal = TRUE, a_theme) {
+  text_a_theme <- if (horizontal) "strip.text.x" else "strip.text.y"
   if (is.list(text)) text <- text[[1]]
 
-  element <- calc_element(text_theme, theme)
-  if (inherits(element, "element_blank"))
-    return(zeroGrob())
+  a_element <- calc_element(text_a_theme, a_theme)
+  if (inherits(a_element, "a_element_blank"))
+    return(a_zeroGrob())
 
-  gp <- gpar(fontsize = element$size, col = element$colour,
-    fontfamily = element$family, fontface = element$face,
-    lineheight = element$lineheight)
+  gp <- gpar(fontsize = a_element$size, col = a_element$colour,
+    fontfamily = a_element$family, fontface = a_element$face,
+    lineheight = a_element$lineheight)
 
-  label <- stripGrob(text, element$hjust, element$vjust, element$angle,
-    margin = element$margin, gp = gp, debug = element$debug)
+  a_label <- stripGrob(text, a_element$hjust, a_element$vjust, a_element$angle,
+    margin = a_element$margin, gp = gp, debug = a_element$debug)
 
   ggname("strip", absoluteGrob(
     gList(
-      element_render(theme, "strip.background"),
-      label
+      a_element_render(a_theme, "strip.background"),
+      a_label
     ),
-    width = grobWidth(label),
-    height = grobHeight(label)
+    width = grobWidth(a_label),
+    height = grobHeight(a_label)
   ))
 
 }
@@ -571,8 +571,8 @@ check_labeller <- function(labeller) {
 
   if (is_deprecated) {
     old_labeller <- labeller
-    labeller <- function(labels) {
-      Map(old_labeller, names(labels), labels)
+    labeller <- function(a_labels) {
+      Map(old_labeller, names(a_labels), a_labels)
     }
     warning("The labeller API has been updated. Labellers taking `variable`",
       "and `value` arguments are now deprecated. See labellers documentation.",

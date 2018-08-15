@@ -5,7 +5,7 @@
 #' a list of data frames (one for each layer), and a panel object, which
 #' contain all information about axis limits, breaks etc.
 #'
-#' \code{layer_data}, \code{layer_grob}, and \code{layer_scales} are helper
+#' \code{a_layer_data}, \code{a_layer_grob}, and \code{a_layer_scales} are helper
 #' functions that returns the data, grob, or scales associated with a given
 #' layer. These are useful for tests.
 #'
@@ -18,18 +18,18 @@
 a_plot_build <- function(plot) {
   plot <- a_plot_clone(plot)
   if (length(plot$layers) == 0) {
-    plot <- plot + geom_blank()
+    plot <- plot + a_geom_blank()
   }
 
   layers <- plot$layers
-  layer_data <- lapply(layers, function(y) y$layer_data(plot$data))
+  a_layer_data <- lapply(layers, function(y) y$a_layer_data(plot$data))
 
   scales <- plot$scales
   # Apply function to layer and matching data
-  by_layer <- function(f) {
+  by_layer <- function(ff) {
     out <- vector("list", length(data))
     for (i in seq_along(data)) {
-      out[[i]] <- f(l = layers[[i]], d = data[[i]])
+      out[[i]] <- ff(l = layers[[i]], d = data[[i]])
     }
     out
   }
@@ -38,8 +38,8 @@ a_plot_build <- function(plot) {
   # variables, and add on a PANEL variable to data
 
   panel <- new_panel()
-  panel <- a_train_layout(panel, plot$a_facet, layer_data, plot$data)
-  data <- map_layout(panel, plot$a_facet, layer_data)
+  panel <- a_train_layout(panel, plot$a_facet, a_layer_data, plot$data)
+  data <- map_layout(panel, plot$a_facet, a_layer_data)
 
   # Compute aesthetics to produce data with generalised variable names
   data <- by_layer(function(l, d) l$compute_aesthetics(d, plot))
@@ -93,13 +93,13 @@ a_plot_build <- function(plot) {
 
 #' @export
 #' @rdname a_plot_build
-layer_data <- function(plot, i = 1L) {
+a_layer_data <- function(plot, i = 1L) {
   a_plot_build(plot)$data[[i]]
 }
 
 #' @export
 #' @rdname a_plot_build
-layer_scales <- function(plot, i = 1L, j = 1L) {
+a_layer_scales <- function(plot, i = 1L, j = 1L) {
   b <- a_plot_build(plot)
 
   layout <- b$panel$layout
@@ -113,7 +113,7 @@ layer_scales <- function(plot, i = 1L, j = 1L) {
 
 #' @export
 #' @rdname a_plot_build
-layer_grob <- function(plot, i = 1L) {
+a_layer_grob <- function(plot, i = 1L) {
   b <- a_plot_build(plot)
 
   b$plot$layers[[i]]$draw_geom(b$data[[i]], b$panel, b$plot$coordinates)
@@ -139,21 +139,21 @@ a_plot_gtable <- function(data) {
   plot <- data$plot
   panel <- data$panel
   data <- data$data
-  theme <- plot_theme(plot)
+  a_theme <- plot_a_theme(plot)
 
-  geom_grobs <- Map(function(l, d) l$draw_geom(d, panel, plot$coordinates),
+  a_geom_grobs <- Map(function(l, d) l$draw_geom(d, panel, plot$coordinates),
     plot$layers, data)
 
   plot_table <- a_facet_render(plot$a_facet, panel, plot$coordinates,
-    theme, geom_grobs)
+    a_theme, a_geom_grobs)
 
   # Axis labels
-  labels <- plot$coordinates$labels(list(
-    x = xlabel(panel, plot$labels),
-    y = ylabel(panel, plot$labels)
+  a_labels <- plot$coordinates$a_labels(list(
+    x = xlabel(panel, plot$a_labels),
+    y = ylabel(panel, plot$a_labels)
   ))
-  xlabel <- element_render(theme, "axis.title.x", labels$x, expand_y = TRUE)
-  ylabel <- element_render(theme, "axis.title.y", labels$y, expand_x = TRUE)
+  xlabel <- a_element_render(a_theme, "axis.title.x", a_labels$x, expand_y = TRUE)
+  ylabel <- a_element_render(a_theme, "axis.title.y", a_labels$y, expand_x = TRUE)
 
   # helper function return the position of panels in plot_table
   find_panel <- function(table) {
@@ -180,40 +180,40 @@ a_plot_gtable <- function(data) {
     l = 1, b = panel_dim$b, t = panel_dim$t, clip = "off")
 
   # Legends
-  position <- theme$legend.position
-  if (length(position) == 2) {
-    position <- "manual"
+  a_position <- a_theme$legend.a_position
+  if (length(a_position) == 2) {
+    a_position <- "manual"
   }
 
-  legend_box <- if (position != "none") {
-    build_guides(plot$scales, plot$layers, plot$mapping, position, theme, plot$guides, plot$labels)
+  legend_box <- if (a_position != "none") {
+    build_guides(plot$scales, plot$layers, plot$mapping, a_position, a_theme, plot$a_guides, plot$a_labels)
   } else {
-    zeroGrob()
+    a_zeroGrob()
   }
 
   if (is.zero(legend_box)) {
-    position <- "none"
+    a_position <- "none"
   } else {
     # these are a bad hack, since it modifies the contents of viewpoint directly...
-    legend_width  <- gtable_width(legend_box)  + theme$legend.margin
-    legend_height <- gtable_height(legend_box) + theme$legend.margin
+    legend_width  <- gtable_width(legend_box)  + a_theme$legend.margin
+    legend_height <- gtable_height(legend_box) + a_theme$legend.margin
 
     # Set the justification of the legend box
     # First value is xjust, second value is yjust
-    just <- valid.just(theme$legend.justification)
+    just <- valid.just(a_theme$legend.justification)
     xjust <- just[1]
     yjust <- just[2]
 
-    if (position == "manual") {
-      xpos <- theme$legend.position[1]
-      ypos <- theme$legend.position[2]
+    if (a_position == "manual") {
+      xpos <- a_theme$legend.a_position[1]
+      ypos <- a_theme$legend.a_position[2]
 
-      # x and y are specified via theme$legend.position (i.e., coords)
+      # x and y are specified via a_theme$legend.a_position (i.e., coords)
       legend_box <- editGrob(legend_box,
         vp = viewport(x = xpos, y = ypos, just = c(xjust, yjust),
           height = legend_height, width = legend_width))
     } else {
-      # x and y are adjusted using justification of legend box (i.e., theme$legend.justification)
+      # x and y are adjusted using justification of legend box (i.e., a_theme$legend.justification)
       legend_box <- editGrob(legend_box,
         vp = viewport(x = xjust, y = yjust, just = c(xjust, yjust)))
     }
@@ -223,39 +223,39 @@ a_plot_gtable <- function(data) {
   # for align-to-device, use this:
   # panel_dim <-  summarise(plot_table$layout, t = min(t), r = max(r), b = max(b), l = min(l))
 
-  if (position == "left") {
+  if (a_position == "left") {
     plot_table <- gtable_add_cols(plot_table, legend_width, pos = 0)
     plot_table <- gtable_add_grob(plot_table, legend_box, clip = "off",
-      t = panel_dim$t, b = panel_dim$b, l = 1, r = 1, name = "guide-box")
-  } else if (position == "right") {
+      t = panel_dim$t, b = panel_dim$b, l = 1, r = 1, name = "a_guide-box")
+  } else if (a_position == "right") {
     plot_table <- gtable_add_cols(plot_table, legend_width, pos = -1)
     plot_table <- gtable_add_grob(plot_table, legend_box, clip = "off",
-      t = panel_dim$t, b = panel_dim$b, l = -1, r = -1, name = "guide-box")
-  } else if (position == "bottom") {
+      t = panel_dim$t, b = panel_dim$b, l = -1, r = -1, name = "a_guide-box")
+  } else if (a_position == "bottom") {
     plot_table <- gtable_add_rows(plot_table, legend_height, pos = -1)
     plot_table <- gtable_add_grob(plot_table, legend_box, clip = "off",
-      t = -1, b = -1, l = panel_dim$l, r = panel_dim$r, name = "guide-box")
-  } else if (position == "top") {
+      t = -1, b = -1, l = panel_dim$l, r = panel_dim$r, name = "a_guide-box")
+  } else if (a_position == "top") {
     plot_table <- gtable_add_rows(plot_table, legend_height, pos = 0)
     plot_table <- gtable_add_grob(plot_table, legend_box, clip = "off",
-      t = 1, b = 1, l = panel_dim$l, r = panel_dim$r, name = "guide-box")
-  } else if (position == "manual") {
-    # should guide box expand whole region or region without margin?
+      t = 1, b = 1, l = panel_dim$l, r = panel_dim$r, name = "a_guide-box")
+  } else if (a_position == "manual") {
+    # should a_guide box expand whole region or region without margin?
     plot_table <- gtable_add_grob(plot_table, legend_box,
       t = panel_dim$t, b = panel_dim$b, l = panel_dim$l, r = panel_dim$r,
-      clip = "off", name = "guide-box")
+      clip = "off", name = "a_guide-box")
   }
 
   # Title
-  title <- element_render(theme, "plot.title", plot$labels$title, expand_y = TRUE)
+  title <- a_element_render(a_theme, "plot.title", plot$a_labels$title, expand_y = TRUE)
   title_height <- grobHeight(title)
 
   # Subtitle
-  subtitle <- element_render(theme, "plot.subtitle", plot$labels$subtitle, expand_y = TRUE)
+  subtitle <- a_element_render(a_theme, "plot.subtitle", plot$a_labels$subtitle, expand_y = TRUE)
   subtitle_height <- grobHeight(subtitle)
 
   # whole plot annotation
-  caption <- element_render(theme, "plot.caption", plot$labels$caption, expand_y = TRUE)
+  caption <- a_element_render(a_theme, "plot.caption", plot$a_labels$caption, expand_y = TRUE)
   caption_height <- grobHeight(caption)
 
   pans <- plot_table$layout[grepl("^panel", plot_table$layout$name), ,
@@ -274,14 +274,14 @@ a_plot_gtable <- function(data) {
     t = -1, b = -1, l = min(pans$l), r = max(pans$r), clip = "off")
 
   # Margins
-  plot_table <- gtable_add_rows(plot_table, theme$plot.margin[1], pos = 0)
-  plot_table <- gtable_add_cols(plot_table, theme$plot.margin[2])
-  plot_table <- gtable_add_rows(plot_table, theme$plot.margin[3])
-  plot_table <- gtable_add_cols(plot_table, theme$plot.margin[4], pos = 0)
+  plot_table <- gtable_add_rows(plot_table, a_theme$plot.margin[1], pos = 0)
+  plot_table <- gtable_add_cols(plot_table, a_theme$plot.margin[2])
+  plot_table <- gtable_add_rows(plot_table, a_theme$plot.margin[3])
+  plot_table <- gtable_add_cols(plot_table, a_theme$plot.margin[4], pos = 0)
 
-  if (inherits(theme$plot.background, "element")) {
+  if (inherits(a_theme$plot.background, "a_element")) {
     plot_table <- gtable_add_grob(plot_table,
-      element_render(theme, "plot.background"),
+      a_element_render(a_theme, "plot.background"),
       t = 1, l = 1, b = -1, r = -1, name = "background", z = -Inf)
     plot_table$layout <- plot_table$layout[c(nrow(plot_table$layout), 1:(nrow(plot_table$layout) - 1)),]
     plot_table$grobs <- plot_table$grobs[c(nrow(plot_table$layout), 1:(nrow(plot_table$layout) - 1))]

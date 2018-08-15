@@ -62,22 +62,22 @@ data_error$clickVar <- with(data_error,
 viz <- list(
   auc=a_plot()+
     ggtitle("Performance on 3 test folds")+
-    theme_bw()+
-    theme_animint(height=500)+
-    theme(panel.margin=grid::unit(0, "cm"))+
+    a_theme_bw()+
+    a_theme_animint(height=500)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
     a_facet_grid(.~metric.name, scales="free", space="fixed")+
-    scale_y_discrete("method . weights")+
-    scale_x_continuous("")+
-    scale_color_manual(values=method.colors, guide="none")+
-    scale_fill_manual("threshold", values=thresh.colors, guide="none")+
-    geom_point(aes(metric.value, filterVar.fac, color=method,
+    a_scale_y_discrete("method . weights")+
+    a_scale_x_continuous("")+
+    a_scale_color_manual(values=method.colors, a_guide="none")+
+    a_scale_fill_manual("threshold", values=thresh.colors, a_guide="none")+
+    a_geom_point(a_aes(metric.value, filterVar.fac, color=method,
                    fill=thresh.type),
                clickSelects="test.fold",
                showSelected=c("method", "thresh.type"),
                size=5,
                pch=21,
                data=add.filterVar.rev(VariantModels$auc))+
-    geom_point(aes(
+    a_geom_point(a_aes(
       error.or.Inf,
       filterVar.fac,
       key=filterVar,
@@ -89,38 +89,38 @@ viz <- list(
                data=data_auc),
   roc=a_plot()+
     ggtitle("ROC curves by weights and test fold")+
-    scale_y_continuous("True positive rate")+
-    scale_x_continuous("False positive rate",
+    a_scale_y_continuous("True positive rate")+
+    a_scale_x_continuous("False positive rate",
                        breaks=c(0, 0.25, 0.5, 0.75, 1),
-                       labels=c("0", "0.25", "0.5", "0.75", "1"))+
-    scale_color_manual(values=method.colors)+
-    coord_equal()+
-    theme_bw()+
-    theme_animint(width=500, height=500)+
-    theme(panel.margin=grid::unit(0, "cm"))+
-    a_facet_grid(test.fold ~ type, labeller=function(label_df){
-      if(names(label_df)=="test.fold"){
-        label_names <- mapply(paste, "test fold", label_df, SIMPLIFY = FALSE)
-        label_context(labels = label_names)
+                       a_labels=c("0", "0.25", "0.5", "0.75", "1"))+
+    a_scale_color_manual(values=method.colors)+
+    a_coord_equal()+
+    a_theme_bw()+
+    a_theme_animint(width=500, height=500)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
+    a_facet_grid(test.fold ~ type, labeller=function(a_label_df){
+      if(names(a_label_df)=="test.fold"){
+        a_label_names <- mapply(paste, "test fold", a_label_df, SIMPLIFY = FALSE)
+        a_label_context(a_labels = a_label_names)
       }else{
-        lapply(label_df, paste)
+        lapply(a_label_df, paste)
       }
     })+
-    geom_path(aes(FPR, TPR,
+    a_geom_path(a_aes(FPR, TPR,
                   ##showSelected=method, #not needed!
                   group=method, tooltip=method, color=method),
               clickSelects="test.fold",
               size=5,
               data=VariantModels$roc)+
-    scale_fill_manual("threshold", values=thresh.colors)+
-    geom_point(aes(FPR, TPR, color=method,
+    a_scale_fill_manual("threshold", values=thresh.colors)+
+    a_geom_point(a_aes(FPR, TPR, color=method,
                    ##showSelected=method, #not needed!
                    fill=thresh.type),
                clickSelects="test.fold",
                pch=21,
                size=4,
                data=subset(VariantModels$auc, metric.name=="auc"))+
-    geom_point(aes(
+    a_geom_point(a_aes(
       FPR, TPR,
       key=method,
       ##showSelected=method, #not needed!
@@ -132,30 +132,30 @@ viz <- list(
                pch=21,
                data=data_roc),
   error=a_plot()+
-    geom_hline(aes(yintercept=min.errors),
+    a_geom_hline(a_aes(yintercept=min.errors),
                showSelected=c("test.fold", "thresh.type"),
                data=minima.df,
                color="grey50")+
-    geom_vline(aes(xintercept=threshold),
+    a_geom_vline(a_aes(xintercept=threshold),
                showSelected=c("test.fold", "thresh.type", "method"),
                data=add.filterVar.fac(auc.min.error),
                color="grey50")+
-    theme_bw()+
-    theme_animint(width=1800, height=500)+
-    theme(panel.margin=grid::unit(0, "cm"))+
-    theme(axis.text.x=element_text(angle=90))+
-    a_facet_grid(. ~ filterVar.fac, labeller=function(label_df){
-      label_df <- mapply(sub, "balanced", "b", label_df, SIMPLIFY = FALSE)
-      label_df <- mapply(sub, "one", "1", label_df, SIMPLIFY = FALSE)
-      label_value(label_df)
+    a_theme_bw()+
+    a_theme_animint(width=1800, height=500)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
+    a_theme(axis.text.x=a_element_text(angle=90))+
+    a_facet_grid(. ~ filterVar.fac, labeller=function(a_label_df){
+      a_label_df <- mapply(sub, "balanced", "b", a_label_df, SIMPLIFY = FALSE)
+      a_label_df <- mapply(sub, "one", "1", a_label_df, SIMPLIFY = FALSE)
+      a_label_value(a_label_df)
     }, scales="free", space="fixed")+
-    scale_color_manual(values=fp.fn.colors)+
-    geom_line(aes(threshold, error.value,
+    a_scale_color_manual(values=fp.fn.colors)+
+    a_geom_line(a_aes(threshold, error.value,
                   group=error.type, color=error.type),
               showSelected=c("test.fold", "thresh.type", "method"),
               data=add.filterVar.fac(VariantModels$error))+
-    scale_fill_manual(values=method.colors, guide="none")+
-    geom_tallrect(aes(
+    a_scale_fill_manual(values=method.colors, a_guide="none")+
+    a_geom_tallrect(a_aes(
       xmin=xmin, xmax=xmax,
       fill=method),
       showSelected=c("test.fold", "thresh.type", "method"),
@@ -175,39 +175,39 @@ viz <- list(
 info <- animint2HTML(viz)
 
 viz$error+
-  a_facet_grid(test.fold ~ filterVar.fac, labeller=function(label_df){
-    if(names(label_df)=="test.fold"){
-      label_names <- mapply(paste, "test fold", label_df, SIMPLIFY = FALSE)
-      label_context(labels = label_names)
+  a_facet_grid(test.fold ~ filterVar.fac, labeller=function(a_label_df){
+    if(names(a_label_df)=="test.fold"){
+      a_label_names <- mapply(paste, "test fold", a_label_df, SIMPLIFY = FALSE)
+      a_label_context(a_labels = a_label_names)
     }else{
-      lapply(label_df, paste)
+      lapply(a_label_df, paste)
     }
   }, scales="free", space="fixed")
 
 test_that("no duplicated rows in common data", {
-  common.tsv <- file.path("animint-htmltest", "geom8_line_error_chunk_common.tsv")
+  common.tsv <- file.path("animint-htmltest", "a_geom8_line_error_chunk_common.tsv")
   common.df <- read.table(common.tsv, comment.char="", header=TRUE)
   common.unique <- unique(common.df)
   expect_identical(common.unique, common.df)
 })
 
 test_that("error lines rendered in all panels", {
-  panel.list <- getNodeSet(info$html, '//g[@class="geom8_line_error"]//g')
+  panel.list <- getNodeSet(info$html, '//g[@class="a_geom8_line_error"]//g')
   computed.counts <- sapply(panel.list, function(x)length(xmlChildren(x)))
   expected.counts <- rep(3, 20)
   expect_equal(computed.counts, expected.counts)
 })
 
 xpath.vec <- 
-  c('//g[@class="geom1_point_auc"]//circle',
-    '//g[@class="geom2_point_auc"]//circle',
-    '//g[@class="geom3_path_roc"]//path',
-    '//g[@class="geom4_point_roc"]//circle',
-    '//g[@class="geom5_point_roc"]//circle',
-    '//g[@class="geom6_hline_error"]//line',
-    '//g[@class="geom7_vline_error"]//line',
-    '//g[@class="geom8_line_error"]//path',
-    '//g[@class="geom9_tallrect_error"]//rect')
+  c('//g[@class="a_geom1_point_auc"]//circle',
+    '//g[@class="a_geom2_point_auc"]//circle',
+    '//g[@class="a_geom3_path_roc"]//path',
+    '//g[@class="a_geom4_point_roc"]//circle',
+    '//g[@class="a_geom5_point_roc"]//circle',
+    '//g[@class="a_geom6_hline_error"]//line',
+    '//g[@class="a_geom7_vline_error"]//line',
+    '//g[@class="a_geom8_line_error"]//path',
+    '//g[@class="a_geom9_tallrect_error"]//rect')
 
 countGeoms <- function(html=getHTML()){
   count.vec <- c()
@@ -220,7 +220,7 @@ countGeoms <- function(html=getHTML()){
 
 thresh.fold2 <- subset(VariantModels$thresholds, test.fold==2)
 
-test_that("initial geom counts", {
+test_that("initial a_geom counts", {
   expected.counts <- c(120, 20, 60, 60, 20, 20, 20, 60, nrow(thresh.fold2))
   computed.counts <- countGeoms()
   expect_equal(expected.counts, as.numeric(computed.counts))

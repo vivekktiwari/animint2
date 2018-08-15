@@ -20,62 +20,62 @@
 #' @inheritParams a_facet_grid
 #' @export
 #' @examples
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
 #'   a_facet_wrap(~class)
 #'
 #' # Control the number of rows and columns with nrow and ncol
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
 #'   a_facet_wrap(~class, nrow = 4)
 #'
 #' \donttest{
 #' # You can facet by multiple variables
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
 #'   a_facet_wrap(~ cyl + drv)
 #' # Or use a character vector:
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
 #'   facet_wrap(c("cyl", "drv"))
 #'
 #' # Use the `labeller` option to control how labels are printed:
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
-#'   facet_wrap(c("cyl", "drv"), labeller = "label_both")
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
+#'   facet_wrap(c("cyl", "drv"), labeller = "a_label_both")
 #'
 #' # To change the order in which the panels appear, change the levels
 #' # of the underlying factor.
 #' mpg$class2 <- reorder(mpg$class, mpg$displ)
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
 #'   facet_wrap(~class2)
 #'
 #' # By default, the same scales are used for all panels. You can allow
 #' # scales to vary across the panels with the `scales` argument.
 #' # Free scales make it easier to see patterns within each panel, but
 #' # harder to compare across panels.
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point() +
 #'   facet_wrap(~class, scales = "free")
 #'
 #' # To repeat the same data in every panel, simply construct a data frame
 #' # that does not contain the facetting variable.
-#' a_plot(mpg, aes(displ, hwy)) +
-#'   geom_point(data = transform(mpg, class = NULL), colour = "grey85") +
-#'   geom_point() +
+#' a_plot(mpg, a_aes(displ, hwy)) +
+#'   a_geom_point(data = transform(mpg, class = NULL), colour = "grey85") +
+#'   a_geom_point() +
 #'   facet_wrap(~class)
 #'
 #' # Use `switch` to display the facet labels near an axis, acting as
 #' # a subtitle for this axis. This is typically used with free scales
-#' # and a theme without boxes around strip labels.
-#' a_plot(economics_long, aes(date, value)) +
-#'   geom_line() +
+#' # and a a_theme without boxes around strip labels.
+#' a_plot(economics_long, a_aes(date, value)) +
+#'   a_geom_line() +
 #'   facet_wrap(~variable, scales = "free_y", nrow = 2, switch = "x") +
-#'   theme(strip.background = element_blank())
+#'   a_theme(strip.background = a_element_blank())
 #' }
 a_facet_wrap <- function(facets, nrow = NULL, ncol = NULL, scales = "fixed",
-                       shrink = TRUE, labeller = "label_value", as.table = TRUE,
+                       shrink = TRUE, labeller = "a_label_value", as.table = TRUE,
                        switch = NULL, drop = TRUE, dir = "h") {
   scales <- match.arg(scales, c("fixed", "free_x", "free_y", "free"))
   dir <- match.arg(dir, c("h", "v"))
@@ -138,20 +138,20 @@ a_facet_map_layout.wrap <- function(a_facet, data, layout) {
 #  * combine panels, strips and axes, then wrap into 2d
 #  * finally: add title, labels and legend
 #' @export
-a_facet_render.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
+a_facet_render.wrap <- function(a_facet, panel, a_coord, a_theme, a_geom_grobs) {
 
-  # If coord is (non-cartesian or flip) and (x is free or y is free)
+  # If a_coord is (non-cartesian or flip) and (x is free or y is free)
   # then print a warning
-  if ((!inherits(coord, "a_CoordCartesian") || inherits(coord, "a_CoordFlip")) &&
+  if ((!inherits(a_coord, "a_CoordCartesian") || inherits(a_coord, "a_CoordFlip")) &&
     (a_facet$free$x || a_facet$free$y)) {
     stop("ggplot2 does not currently support free scales with a non-cartesian coord or coord_flip.\n")
   }
 
   # If user hasn't set aspect ratio, and we have fixed scales, then
   # ask the coordinate system if it wants to specify one
-  aspect_ratio <- theme$aspect.ratio
+  aspect_ratio <- a_theme$aspect.ratio
   if (is.null(aspect_ratio) && !a_facet$free$x && !a_facet$free$y) {
-    aspect_ratio <- coord$aspect(panel$ranges[[1]])
+    aspect_ratio <- a_coord$aspect(panel$ranges[[1]])
   }
 
   if (is.null(aspect_ratio)) {
@@ -178,9 +178,9 @@ a_facet_render.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
     a_facet$switch <- NULL
   }
 
-  panels <- a_facet_panels(a_facet, panel, coord, theme, geom_grobs)
-  axes <- a_facet_axes(a_facet, panel, coord, theme)
-  strips <- a_facet_strips(a_facet, panel, theme)
+  panels <- a_facet_panels(a_facet, panel, a_coord, a_theme, a_geom_grobs)
+  axes <- a_facet_axes(a_facet, panel, a_coord, a_theme)
+  strips <- a_facet_strips(a_facet, panel, a_theme)
 
 
   # Should become facet_arrange_grobs
@@ -232,7 +232,7 @@ a_facet_render.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
 
   # If strips are switched, add padding
   if (switch_to_x) {
-    padding <- convertUnit(theme$strip.switch.pad.wrap, "cm")
+    padding <- convertUnit(a_theme$strip.switch.pad.wrap, "cm")
 
     add_padding <- function(strip) {
       gt_t <- gtable_row("strip_t", list(strip),
@@ -253,7 +253,7 @@ a_facet_render.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
     size <- c(3, 4)
 
   } else if (switch_to_y) {
-    padding <- convertUnit(theme$strip.switch.pad.wrap, "cm")
+    padding <- convertUnit(a_theme$strip.switch.pad.wrap, "cm")
 
     add_padding <- function(strip) {
       gt_t <- gtable_col("strip_t", list(strip),
@@ -287,13 +287,13 @@ a_facet_render.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
   widths <- list(
     axis_l = width_cm(grobs$axis_l),
     strip_t = strip_width,
-    vspace = ifelse(layout$COL == ncol, 0, width_cm(theme$panel.margin.x %||% theme$panel.margin))
+    vspace = ifelse(layout$COL == ncol, 0, width_cm(a_theme$panel.margin.x %||% a_theme$panel.margin))
   )
   heights <- list(
     panel = unit(aspect_ratio, "null"),
     strip_t = strip_height,
     axis_b = height_cm(grobs$axis_b),
-    hspace = ifelse(layout$ROW == nrow, 0, height_cm(theme$panel.margin.y %||% theme$panel.margin))
+    hspace = ifelse(layout$ROW == nrow, 0, height_cm(a_theme$panel.margin.y %||% a_theme$panel.margin))
   )
 
   # Remove strip_t according to which strips are switched
@@ -318,18 +318,18 @@ a_facet_render.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
 }
 
 #' @export
-a_facet_panels.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
+a_facet_panels.wrap <- function(a_facet, panel, a_coord, a_theme, a_geom_grobs) {
   panels <- panel$layout$PANEL
   lapply(panels, function(i) {
-    fg <- coord$render_fg(panel$ranges[[i]], theme)
-    bg <- coord$render_bg(panel$ranges[[i]], theme)
+    fg <- a_coord$render_fg(panel$ranges[[i]], a_theme)
+    bg <- a_coord$render_bg(panel$ranges[[i]], a_theme)
 
-    geom_grobs <- lapply(geom_grobs, "[[", i)
+    a_geom_grobs <- lapply(a_geom_grobs, "[[", i)
 
-    if (theme$panel.ontop) {
-      panel_grobs <- c(geom_grobs, list(bg), list(fg))
+    if (a_theme$panel.ontop) {
+      panel_grobs <- c(a_geom_grobs, list(bg), list(fg))
     } else {
-      panel_grobs <- c(list(bg), geom_grobs, list(fg))
+      panel_grobs <- c(list(bg), a_geom_grobs, list(fg))
     }
 
     ggname(paste("panel", i, sep = "-"),
@@ -338,21 +338,21 @@ a_facet_panels.wrap <- function(a_facet, panel, coord, theme, geom_grobs) {
 }
 
 #' @export
-a_facet_strips.wrap <- function(a_facet, panel, theme) {
-  labels_df <- panel$layout[names(a_facet$facets)]
+a_facet_strips.wrap <- function(a_facet, panel, a_theme) {
+  a_labels_df <- panel$layout[names(a_facet$facets)]
 
-  # Adding labels metadata, useful for labellers
-  attr(labels_df, "a_facet") <- "wrap"
+  # Adding a_labels metadata, useful for labellers
+  attr(a_labels_df, "a_facet") <- "wrap"
   if (is.null(a_facet$switch) || a_facet$switch == "x") {
     dir <- "b"
-    attr(labels_df, "type") <- "rows"
+    attr(a_labels_df, "type") <- "rows"
   } else {
     dir <- "l"
-    attr(labels_df, "type") <- "cols"
+    attr(a_labels_df, "type") <- "cols"
   }
 
-  strips_table <- a_build_strip(panel, labels_df, a_facet$labeller,
-    theme, dir, switch = a_facet$switch)
+  strips_table <- a_build_strip(panel, a_labels_df, a_facet$labeller,
+    a_theme, dir, switch = a_facet$switch)
 
   # While grid a_facetting works with a whole gtable, wrap processes the
   # strips separately. So we turn the gtable into a list
@@ -375,24 +375,24 @@ a_facet_strips.wrap <- function(a_facet, panel, theme) {
 
 
 #' @export
-a_facet_axes.wrap <- function(a_facet, panel, coord, theme) {
+a_facet_axes.wrap <- function(a_facet, panel, a_coord, a_theme) {
   panels <- panel$layout$PANEL
 
   axes <- list()
   axes$b <- lapply(panels, function(i) {
     if (panel$layout$AXIS_X[i]) {
-      grob <- coord$render_axis_h(panel$ranges[[i]], theme)
+      grob <- a_coord$render_axis_h(panel$ranges[[i]], a_theme)
     } else {
-      grob <- zeroGrob()
+      grob <- a_zeroGrob()
     }
     ggname(paste("axis-b-", i, sep = ""), grob)
   })
 
   axes$l <- lapply(panels, function(i) {
     if (panel$layout$AXIS_Y[i]) {
-      grob <- coord$render_axis_v(panel$ranges[[i]], theme)
+      grob <- a_coord$render_axis_v(panel$ranges[[i]], a_theme)
     } else {
-      grob <- zeroGrob()
+      grob <- a_zeroGrob()
     }
     ggname(paste("axis-l-", i, sep = ""), grob)
   })

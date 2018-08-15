@@ -1,7 +1,7 @@
 #' Empirical Cumulative Density Function
 #'
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @param na.rm If \code{FALSE} (the default), removes missing values with
 #'    a warning.  If \code{TRUE} silently removes missing values.
 #' @param n if NULL, do not interpolate. If not NULL, this is the number
@@ -17,29 +17,29 @@
 #' @examples
 #' \donttest{
 #' df <- data.frame(x = rnorm(1000))
-#' a_plot(df, aes(x)) + stat_ecdf(geom = "step")
+#' a_plot(df, a_aes(x)) + a_stat_ecdf(a_geom = "step")
 #'
 #' df <- data.frame(x = c(rnorm(100, 0, 3), rnorm(100, 0, 10)),
 #'                  g = gl(2, 100))
 #'
-#' a_plot(df, aes(x, colour = g)) + stat_ecdf()
+#' a_plot(df, a_aes(x, colour = g)) + a_stat_ecdf()
 #' }
-stat_ecdf <- function(mapping = NULL, data = NULL,
-                      geom = "step", position = "identity",
+a_stat_ecdf <- function(mapping = NULL, data = NULL,
+                      a_geom = "step", a_position = "identity",
                       ...,
                       n = NULL,
                       pad = TRUE,
                       na.rm = FALSE,
                       show.legend = NA,
-                      inherit.aes = TRUE) {
-  layer(
+                      inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatEcdf,
-    geom = geom,
-    position = position,
+    a_stat = a_StatEcdf,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       n = n,
       na.rm = na.rm,
@@ -70,7 +70,7 @@ a_StatEcdf <- a_ggproto("a_StatEcdf", a_Stat,
     data.frame(x = x, y = y)
   },
 
-  default_aes = aes(y = ..y..),
+  default_aes = a_aes(y = ..y..),
 
   required_aes = c("x")
 )

@@ -11,20 +11,20 @@ addShowSelectedForLegend <- function(meta, legend, L){
     ## the name of the selection variable used in this legend.
     s.name <- one.legend$selector
     is.variable.name <- is.character(s.name) && length(s.name) == 1
-    layer.has.variable <- s.name %in% names(L$data)
+    a_layer.has.variable <- s.name %in% names(L$data)
     
-    if(is.variable.name && layer.has.variable) {
+    if(is.variable.name && a_layer.has.variable) {
       ## grabbing the variable from the data
       var <- L$data[, s.name]
-      is.interactive.aes <-
+      is.interactive.a_aes <-
         grepl("showSelected|clickSelects", names(L$mapping))
       is.legend.var <- L$mapping == s.name
-      ## If s.name is used with another interactive aes, then do
+      ## If s.name is used with another interactive a_aes, then do
       ## not add any showSelected aesthetic for it.
-      var.is.interactive <- any(is.interactive.aes & is.legend.var)
+      var.is.interactive <- any(is.interactive.a_aes & is.legend.var)
       if(!var.is.interactive){
         ## only add showSelected aesthetic if the variable is
-        ## used by the geom
+        ## used by the a_geom
         type.vec <- one.legend$legend_type
         if(any(type.vec %in% names(L$mapping))){
           type.str <- paste(type.vec, collapse="")
@@ -60,14 +60,14 @@ addShowSelectedForLegend <- function(meta, legend, L){
 }
 
 
-## extract panel background and borders from theme.pars
-get_bg <- function(pars, theme.pars) {
-  # if pars is not an empty list - occurs when using element_blank()
+## extract panel background and borders from a_theme.pars
+get_bg <- function(pars, a_theme.pars) {
+  # if pars is not an empty list - occurs when using a_element_blank()
   if(length(pars) > 0) {
     
-    ## if elements are not specified, they inherit from theme.pars$rect
+    ## if elements are not specified, they inherit from a_theme.pars$rect
     for(i in 1:length(pars)) {
-      if(is.null(pars[[i]])) pars[[i]] <- unname(theme.pars$rect[[i]])
+      if(is.null(pars[[i]])) pars[[i]] <- unname(a_theme.pars$rect[[i]])
     }
     
     # convert fill to RGB if necessary
@@ -84,18 +84,18 @@ get_bg <- function(pars, theme.pars) {
 
 
 ### function to extract grid info
-get_grid <- function(pars, theme.pars, plot.meta, meta, built, major = T) {
-  # if pars is not an empty list - occurs when using element_blank()
+get_grid <- function(pars, a_theme.pars, plot.meta, meta, built, major = T) {
+  # if pars is not an empty list - occurs when using a_element_blank()
   if(length(pars) > 0) {
     
     ## if elements are not specified, they inherit from 
-    ##    theme.pars$panel.grid then from theme.pars$line
+    ##    a_theme.pars$panel.grid then from a_theme.pars$line
     for(i in names(pars)) {
       if(is.null(pars[[i]])) pars[[i]] <- 
-          if(!is.null(theme.pars$panel.grid[[i]])) {
-            theme.pars$panel.grid[[i]]
+          if(!is.null(a_theme.pars$panel.grid[[i]])) {
+            a_theme.pars$panel.grid[[i]]
           } else {
-            theme.pars$line[[i]]
+            a_theme.pars$line[[i]]
           }
     }
     # convert colour to RGB if necessary
@@ -136,7 +136,7 @@ getUniqueAxisLabels <- function(plot.meta){
 
 
 getPlotTitle <- function(plot.title, meta.title){
-  if("element_blank"%in%attr(plot.title, "class")){
+  if("a_element_blank"%in%attr(plot.title, "class")){
     return("")
   } else {
     return(meta.title)
@@ -144,12 +144,12 @@ getPlotTitle <- function(plot.title, meta.title){
 }
 
 
-getWidthAndHeight <- function(theme){
+getWidthAndHeight <- function(a_theme){
   options_list <- list()
   for(wh in c("width", "height")){
     awh <- paste0("animint.", wh)
-    options_list[[wh]] <- if(awh %in% names(theme)){
-      theme[[awh]]
+    options_list[[wh]] <- if(awh %in% names(a_theme)){
+      a_theme[[awh]]
     }else{
       400
     }
@@ -158,10 +158,10 @@ getWidthAndHeight <- function(theme){
 }
 
 
-setUpdateAxes <- function(theme, options_list){
+setUpdateAxes <- function(a_theme, options_list){
   update_axes <- "animint.update_axes"
-  if(update_axes %in% names(theme)){
-    options_list$update_axes <- theme[[update_axes]]
+  if(update_axes %in% names(a_theme)){
+    options_list$update_axes <- a_theme[[update_axes]]
   }
   options_list
 }
@@ -191,7 +191,7 @@ hjust2anchor <- function(hjust){
 #' @param l A single layer of the plot
 #' @return All parameters in the layer
 getLayerParams <- function(l){
-  params <- c(l$geom_params, l$stat_params, l$aes_params, l$extra_params)
+  params <- c(l$a_geom_params, l$a_stat_params, l$a_aes_params, l$extra_params)
   if("chunk_vars" %in% names(params) && is.null(params[["chunk_vars"]])){
     params[["chunk_vars"]] <- character()
   }
@@ -209,13 +209,13 @@ getLayerParams <- function(l){
 #' Filter out columns that do not need to be copied
 #' 
 #' @param g Geom with columns
-#' @param s.aes Selector aesthetics
+#' @param s.a_aes Selector aesthetics
 #' @return Character vector of columns not to be copied
-colsNotToCopy <- function(g, s.aes){
-  group.not.specified <- ! "group" %in% names(g$aes)
+colsNotToCopy <- function(g, s.a_aes){
+  group.not.specified <- ! "group" %in% names(g$a_aes)
   n.groups <- length(unique(NULL))
   need.group <- c("violin", "step", "hex")
-  group.meaningless <- g$geom %in% c(
+  group.meaningless <- g$a_geom %in% c(
     "abline", "blank",
     ##"crossbar", "pointrange", #documented as unsupported
     ## "rug", "dotplot", "quantile", "smooth", "boxplot",
@@ -226,7 +226,7 @@ colsNotToCopy <- function(g, s.aes){
     "jitter", "linerange",
     "point", 
     "rect", "segment")
-  dont.need.group <- ! g$geom %in% need.group
+  dont.need.group <- ! g$a_geom %in% need.group
   remove.group <- group.meaningless ||
     group.not.specified && 1 < n.groups && dont.need.group
   do.not.copy <- c(
@@ -236,25 +236,25 @@ colsNotToCopy <- function(g, s.aes){
 }
 
 
-## Generate error for non-Identity Stat + showSelected
-checkForNonIdentityAndSS <- function(stat.type, has.show, is.show, l,
+## Generate error for non-Identity a_stat + showSelected
+checkForNonIdentityAndSS <- function(a_stat.type, has.show, is.show, l,
                                      g_classed, g_data_names,
-                                     aes_names){
-  if(has.show && stat.type != "a_StatIdentity"){
-    show.names <- aes_names[is.show]
+                                     a_aes_names){
+  if(has.show && a_stat.type != "a_StatIdentity"){
+    show.names <- a_aes_names[is.show]
     data.has.show <- show.names %in% g_data_names
     signal <- if(all(data.has.show))warning else stop
     print(l)
     signal(
       "showSelected does not work with ",
-      stat.type,
+      a_stat.type,
       ", problem: ",
       g_classed)
   }
 }
 
 
-#' Flip axes in case of coord_flip
+#' Flip axes in case of a_coord_flip
 #' Switches column names. Eg. xmin to ymin, yntercept to xintercept etc.
 #' @param col.names Column names which need to be switched
 #' @return Column names with x and y axes switched
@@ -286,8 +286,8 @@ is.linetype <- function(x){
 ## Remove PANEL column from data if it has a single unique value
 removeUniquePanelValue <- function(g.data, plot.has.panels){
   PANEL_vals <- unique(g.data[["PANEL"]])
-  geom.has.one.panel <- length(PANEL_vals) == 1
-  if(geom.has.one.panel && (!plot.has.panels)) {
+  a_geom.has.one.panel <- length(PANEL_vals) == 1
+  if(a_geom.has.one.panel && (!plot.has.panels)) {
     g.data <- g.data[names(g.data) != "PANEL"]
   }
   g.data
@@ -296,7 +296,7 @@ removeUniquePanelValue <- function(g.data, plot.has.panels){
 
 #' Check plot.list for errors
 #' 
-#' Check that plot.list is a list and every element is named
+#' Check that plot.list is a list and every a_element is named
 #' @param plot.list from \code{animint2dir} to check for errors
 #' @return Throws an error for invalid values
 checkPlotList <- function(plot.list){
@@ -376,10 +376,10 @@ checkPlotForAnimintExtensions <- function(p, plot_name){
     ## Add SS and CS as aesthetics before checking for interactive aes
     ## TODO: We are doing this twice. Once in parsePlot too. Restructure
     ## to avoid this
-    aesthetics_added <- addSSandCSasAesthetics(L$mapping, L$extra_params)
-    iaes <- selectSSandCS(aesthetics_added)
+    a_aesthetics_added <- addSSandCSasAesthetics(L$mapping, L$extra_params)
+    iaes <- selectSSandCS(a_aesthetics_added)
     one.names <- with(iaes, c(clickSelects$one, showSelected$one))
-    update.vars <- as.character(aesthetics_added[one.names])
+    update.vars <- as.character(a_aesthetics_added[one.names])
     # if the layer has a defined data set
     if(length(L$data) > 0) {
       # check whether the variable is in that layer
@@ -391,7 +391,7 @@ checkPlotForAnimintExtensions <- function(p, plot_name){
     
     if(!all(has.var)){
       print(L)
-      print(list(problem.aes=update.vars[!has.var],
+      print(list(problem.a_aes=update.vars[!has.var],
                  data.variables=names(L$data)))
       stop("data does not have interactive variables")
     }
@@ -421,8 +421,8 @@ compute_domains <- function(built_data, axes, geom_name,
   
   names(built_data)[names_present] <- sapply(names(built_data)[names_present], return_names, rev(mapping))
   # Different geoms will use diff columns to calculate domains for
-  # showSelected subsets. Eg. geom_bar will use 'xmin', 'xmax', 'ymin',
-  # 'ymax' etc. while geom_point will use 'x', 'y'
+  # showSelected subsets. Eg. a_geom_bar will use 'xmin', 'xmax', 'ymin',
+  # 'ymax' etc. while a_geom_point will use 'x', 'y'
   domain_cols <- list(bar=c(paste0(axes, "min"), paste0(axes, "max")),
                       ribbon=if(axes=="x"){c(axes)}
                       else{c(paste0(axes, "min"), paste0(axes, "max"))},
@@ -437,7 +437,7 @@ compute_domains <- function(built_data, axes, geom_name,
                       segment=c(axes, paste0(axes, "end")))
   use_cols <- domain_cols[[geom_name]]
   if(is.null(use_cols)){
-    warning(paste0("axis updates have not yet been implemented for geom_",
+    warning(paste0("axis updates have not yet been implemented for a_geom_",
                    geom_name), call. = FALSE)
     return(NULL)
   }else if(!all(use_cols %in% names(built_data))){
@@ -569,17 +569,17 @@ get_ticks_gridlines <- function(use_domain){
 
 #' Issue warnings for selectors
 #' @param geoms \code{geoms} to check for warnings
-#' @param selector.aes selectors for each geom
+#' @param selector.a_aes selectors for each geom
 #' @param duration animation variable information to check for \code{key} value
 #' @return \code{NULL}
-issueSelectorWarnings <- function(geoms, selector.aes, duration){
+issueSelectorWarnings <- function(geoms, selector.a_aes, duration){
   for(g.name in names(geoms)){
     g.info <- geoms[[g.name]]
-    g.selectors <- selector.aes[[g.name]]
-    show.vars <- g.info$aes[g.selectors$showSelected$one]
+    g.selectors <- selector.a_aes[[g.name]]
+    show.vars <- g.info$a_aes[g.selectors$showSelected$one]
     duration.vars <- names(duration)
     show.with.duration <- show.vars[show.vars %in% duration.vars]
-    no.key <- ! "key" %in% names(g.info$aes)
+    no.key <- ! "key" %in% names(g.info$a_aes)
     if(length(show.with.duration) && no.key){
       warning(
         "to ensure that smooth transitions are interpretable, ",
@@ -598,12 +598,12 @@ issueSelectorWarnings <- function(geoms, selector.aes, duration){
 #' @return a unique name for the layer
 getLayerName <- function(L, geom_num, p.name){
   # carson's approach to getting layer types
-  ggtype <- function (x, y = "geom") {
+  ggtype <- function (x, y = "a_geom") {
     sub(y, "", tolower(class(x[[y]])[1]))
   }
-  layer_name <- sprintf("geom%d_%s_%s",
+  a_layer_name <- sprintf("a_geom%d_%s_%s",
                         geom_num, ggtype(L), p.name)
-  layer_name
+  a_layer_name
 }
 
 
@@ -640,7 +640,7 @@ setPlotSizes <- function(meta, AllPlotsInfo){
     size <- meta[[d]]
     if(is.list(size)){
       warning("option ", d, " is deprecated, ",
-              "use a_plot()+theme_animint(", d,
+              "use a_plot()+a_theme_animint(", d,
               "=", size[[1]],
               ") instead")
       if(is.null(names(size))){ #use this size for all plots.
@@ -667,12 +667,12 @@ setPlotSizes <- function(meta, AllPlotsInfo){
 #' @param dfs list of data frames
 #' @return data frame
 merge_recurse <- function(dfs){
-  label.vec <- unique(unlist(lapply(dfs, function(df)paste(df$label))))
-  result <- data.frame(row.names=label.vec)
+  a_label.vec <- unique(unlist(lapply(dfs, function(df)paste(df$a_label))))
+  result <- data.frame(row.names=a_label.vec)
   for(df in dfs){
-    df.label <- paste(df$label)
+    df.a_label <- paste(df$a_label)
     for(col.name in names(df)){
-      result[df.label, col.name] <- df[[col.name]]
+      result[df.a_label, col.name] <- df[[col.name]]
     }
   }
   result
@@ -680,10 +680,10 @@ merge_recurse <- function(dfs){
 
 
 #' Function to get legend information for each scale
-#' @param mb single entry from guides_merge() list of legend data
-#' @return list of legend information, NULL if guide=FALSE.
+#' @param mb single entry from a_guides_merge() list of legend data
+#' @return list of legend information, NULL if a_guide=FALSE.
 getLegend <- function(mb){
-  guidetype <- mb$name
+  a_guidetype <- mb$name
   
   ## The main idea of legends:
   
@@ -693,48 +693,48 @@ getLegend <- function(mb){
   ## 2. In add_legend in the JS code I create a <table> for every
   ## legend, and then I bind the legend entries to <tr>, <td>, and
   ## <svg> elements.
-  cleanData <- function(data, key, geom, params) {
+  cleanData <- function(data, key, a_geom, params) {
     nd <- nrow(data)
     nk <- nrow(key)
     if (nd == 0) return(data.frame()); # if no rows, return an empty df.
-    if ("guide" %in% names(params)) {
-      if (params[["guide"]] == "none") return(data.frame()); # if no guide, return an empty df
+    if ("a_guide" %in% names(params)) {
+      if (params[["a_guide"]] == "none") return(data.frame()); # if no a_guide, return an empty df
     }
     if (nd != nk) warning("key and data have different number of rows")
-    if (!".label" %in% names(key)) return(data.frame()); # if there are no labels, return an empty df.
-    data$`.label` <- key$`.label`
+    if (!".a_label" %in% names(key)) return(data.frame()); # if there are no a_labels, return an empty df.
+    data$`.a_label` <- key$`.a_label`
     data <- data[, which(colSums(!is.na(data)) > 0)] # remove cols that are entirely na
     if("colour" %in% names(data)) data[["colour"]] <- toRGB(data[["colour"]]) # color hex values
     if("fill" %in% names(data)) data[["fill"]] <- toRGB(data[["fill"]]) # fill hex values
-    names(data) <- paste0(geom, names(data))# aesthetics by geom
-    names(data) <- gsub(paste0(geom, "."), "", names(data), fixed=TRUE) # label isn't geom-specific
-    data$label <- paste(data$label) # otherwise it is AsIs.
+    names(data) <- paste0(a_geom, names(data))# a_aesthetics by a_geom
+    names(data) <- gsub(paste0(a_geom, "."), "", names(data), fixed=TRUE) # a_label isn't geom-specific
+    data$a_label <- paste(data$a_label) # otherwise it is AsIs.
     data
   }
   dataframes <- mapply(function(i, j) cleanData(i$data, mb$key, j, i$params),
-                       mb$geoms, mb$geom.legend.list, SIMPLIFY = FALSE)
+                       mb$geoms, mb$a_geom.legend.list, SIMPLIFY = FALSE)
   dataframes <- dataframes[which(sapply(dataframes, nrow)>0)]
   # Check to make sure datframes is non-empty. If it is empty, return NULL.
   if(length(dataframes)>0) {
     data <- merge_recurse(dataframes)
   } else return(NULL)
-  label.num <- suppressWarnings({
-    as.numeric(data$label)
+  a_label.num <- suppressWarnings({
+    as.numeric(data$a_label)
   })
   ## mb$breaks could be a vector of values to use, NULL, or an empty
   ## list with class "waiver"
   breaks.specified <- length(mb$breaks)
-  entry.order <- if(breaks.specified || anyNA(label.num)){
+  entry.order <- if(breaks.specified || anyNA(a_label.num)){
     1:nrow(data)
   }else{
     nrow(data):1
   }
   data <- lapply(entry.order, function(i) as.list(data[i,]))
-  if(guidetype=="none"){
+  if(a_guidetype=="none"){
     NULL
   }else{
-    list(guide = guidetype,
-         geoms = unlist(mb$geom.legend.list),
+    list(a_guide = a_guidetype,
+         geoms = unlist(mb$a_geom.legend.list),
          title = mb$title,
          class = if(mb$is.discrete)mb$selector else mb$title,
          selector = mb$selector,
@@ -748,14 +748,14 @@ getLegend <- function(mb){
 ##' Save the common columns for each tsv to one chunk
 ##' @param built data.frame of built data.
 ##' @param vars character vector of chunk variable names to split on.
-##' @param aes.list a character vector of aesthetics.
+##' @param a_aes.list a character vector of a_aesthetics.
 ##' @return a list of common and varied data to save, or NULL if there is
 ##' no common data.
-getCommonChunk <- function(built, chunk.vars, aes.list){
+getCommonChunk <- function(built, chunk.vars, a_aes.list){
   if(length(chunk.vars) == 0){
     return(NULL)
   }
-  if(! "group" %in% names(aes.list)){
+  if(! "group" %in% names(a_aes.list)){
     ## user did not specify group, so do not use any ggplot2-computed
     ## group for deciding common data.
     built$group <- NULL
@@ -858,7 +858,7 @@ getCommonChunk <- function(built, chunk.vars, aes.list){
     }
     group.info.common <- do.call(rbind, group.info.list)
     common.unique <- unique(group.info.common)
-    ## For geom_polygon and geom_path we may have two rows that should
+    ## For a_geom_polygon and a_geom_path we may have two rows that should
     ## both be kept (the start and the end of each group may be the
     ## same if the shape is closed), so we define common.data as all
     ## of the rows (common.not.na) in that case, and just the unique
@@ -953,20 +953,20 @@ saveChunks <- function(x, meta){
 }
 
 
-##' Check if showSelected and clickSelects have been used as aesthetics
+##' Check if showSelected and clickSelects have been used as a_aesthetics
 ##' as in old syntax. If yes, raise error
-##' @param aesthetics list. aesthetics mapping of the layer
+##' @param a_aesthetics list. aesthetics mapping of the layer
 ##' @param plot_name character vector of the plot the layer belongs to
 ##' @return \code{NULL} Throws error if used as aesthetics
-checkForSSandCSasAesthetics <- function(aesthetics, plot_name){
-  for(i in seq_along(aesthetics)){
-    aes_has_ss_cs <- grepl("^showSelected", names(aesthetics)[[i]]) ||
-      grepl("^clickSelects$", names(aesthetics)[[i]])
+checkForSSandCSasAesthetics <- function(a_aesthetics, plot_name){
+  for(i in seq_along(a_aesthetics)){
+    a_aes_has_ss_cs <- grepl("^showSelected", names(a_aesthetics)[[i]]) ||
+      grepl("^clickSelects$", names(a_aesthetics)[[i]])
     
     ## Show error only if showSelected is not added by animint code for legends
     ## TODO: Better check this before adding showSelectedlegend...
-    ss_added_by_legend <- grepl("^showSelectedlegend", names(aesthetics)[[i]])
-    if(aes_has_ss_cs && !ss_added_by_legend){
+    ss_added_by_legend <- grepl("^showSelectedlegend", names(a_aesthetics)[[i]])
+    if(a_aes_has_ss_cs && !ss_added_by_legend){
       stop(paste("Use of clickSelects and showSelected as",
                  "aesthetics has been deprecated. Please use",
                  "as parameters. Problem:", "\nPlot: ",
@@ -978,13 +978,13 @@ checkForSSandCSasAesthetics <- function(aesthetics, plot_name){
 
 
 ##' Add the showSelected/clickSelects params to the aesthetics mapping
-##' @param aesthetics list. Original aesthetics mapping of the layer
+##' @param a_aesthetics list. Original aesthetics mapping of the layer
 ##' @param extra_params named list containing the details of showSelected
 ##' and clickSelects values of the layer
 ##' @return Modified aesthetics list with showSelected/clickSelects params added
 ##' @details Used before calling ggplot_build in parsePlot and while checking
 ##' animint extensions to raise error 
-addSSandCSasAesthetics <- function(aesthetics, extra_params){
+addSSandCSasAesthetics <- function(a_aesthetics, extra_params){
   for(i in seq_along(extra_params)){
     if(names(extra_params)[[i]] == "showSelected"){
       if(is.null(names(extra_params[[i]]))){
@@ -995,19 +995,19 @@ addSSandCSasAesthetics <- function(aesthetics, extra_params){
         
         ## If .variable/.value have been specified
         if(names(extra_params[[i]])[[j]] != ""){
-          aesthetics[[length(aesthetics)+1]] <-
+          a_aesthetics[[length(a_aesthetics)+1]] <-
             as.symbol(names(extra_params[[i]])[[j]])
-          names(aesthetics)[[length(aesthetics)]] <-
+          names(a_aesthetics)[[length(a_aesthetics)]] <-
             paste0("showSelected.variable")
-          aesthetics[[length(aesthetics)+1]] <-
+          a_aesthetics[[length(a_aesthetics)+1]] <-
             as.symbol(extra_params[[i]][[j]])
-          names(aesthetics)[[length(aesthetics)]] <-
+          names(a_aesthetics)[[length(a_aesthetics)]] <-
             paste0("showSelected.value")
         }else{
-          ss_added_by_legend <- aesthetics[ grepl("^showSelectedlegend", names(aesthetics)) ]
+          ss_added_by_legend <- a_aesthetics[ grepl("^showSelectedlegend", names(a_aesthetics)) ]
           if(!extra_params[[i]][[j]] %in% ss_added_by_legend){
-            aesthetics[[length(aesthetics)+1]] <- as.symbol(extra_params[[i]][[j]])
-            names(aesthetics)[[length(aesthetics)]] <-
+            a_aesthetics[[length(a_aesthetics)+1]] <- as.symbol(extra_params[[i]][[j]])
+            names(a_aesthetics)[[length(a_aesthetics)]] <-
               paste0("showSelected", j)
           }
         }
@@ -1021,31 +1021,31 @@ addSSandCSasAesthetics <- function(aesthetics, extra_params){
       }
       for(j in seq_along(extra_params[[i]])){
         if(names(extra_params[[i]])[[j]] != ""){
-          aesthetics[[length(aesthetics)+1]] <-
+          a_aesthetics[[length(a_aesthetics)+1]] <-
             as.symbol(names(extra_params[[i]])[[j]])
-          names(aesthetics)[[length(aesthetics)]] <-
+          names(a_aesthetics)[[length(a_aesthetics)]] <-
             paste0("clickSelects.variable")
-          aesthetics[[length(aesthetics)+1]] <-
+          a_aesthetics[[length(a_aesthetics)+1]] <-
             as.symbol(extra_params[[i]][[j]])
-          names(aesthetics)[[length(aesthetics)]] <-
+          names(a_aesthetics)[[length(a_aesthetics)]] <-
             paste0("clickSelects.value")
         }else{
-          aesthetics[[length(aesthetics)+1]] <- as.symbol(extra_params[[i]][[j]])
-          names(aesthetics)[[length(aesthetics)]] <-
+          a_aesthetics[[length(a_aesthetics)+1]] <- as.symbol(extra_params[[i]][[j]])
+          names(a_aesthetics)[[length(a_aesthetics)]] <-
             paste0("clickSelects")
         }
       }
     }
   }
-  return(aesthetics)
+  return(a_aesthetics)
 }
 
 ##' Check \code{extra_params} argument for duplicates, non-named list
 ##' @param extra_params named list containing the details of showSelected
 ##' and clickSelects values of the layer
-##' @param aes_mapping aesthetics mapping of the layer
+##' @param a_aes_mapping aesthetics mapping of the layer
 ##' @return Modified \code{extra_params} list
-checkExtraParams <- function(extra_params, aes_mapping){
+checkExtraParams <- function(extra_params, a_aes_mapping){
   for(i in seq_along(extra_params)){
     if(names(extra_params)[[i]] %in% c("showSelected", "clickSelects")){
       if(is.null(names(extra_params[[i]]))){
@@ -1059,7 +1059,7 @@ checkExtraParams <- function(extra_params, aes_mapping){
       
       ## Remove from extra_params if already added by legend
       if(names(extra_params)[[i]] %in% c("showSelected")){
-        ss_added_by_legend <- aes_mapping[grepl("^showSelectedlegend", names(aes_mapping))]
+        ss_added_by_legend <- a_aes_mapping[grepl("^showSelectedlegend", names(a_aes_mapping))]
         extra_params[[i]] <- extra_params[[i]][ !extra_params[[i]] %in% ss_added_by_legend ]
       }
     }
@@ -1068,29 +1068,29 @@ checkExtraParams <- function(extra_params, aes_mapping){
 }
 
 ##' Separate .variable/.value selectors
-##' @param aesthetics_list aesthetics mapping of the layer
-##' @return Modified \code{aes.list} list with separated
+##' @param a_aesthetics_list aesthetics mapping of the layer
+##' @return Modified \code{a_aes.list} list with separated
 ##' showSelected.variable/value
-selectSSandCS <- function(aesthetics_list){
-  aes.list <- list(showSelected=list(one=NULL, several=data.frame()),
+selectSSandCS <- function(a_aesthetics_list){
+  a_aes.list <- list(showSelected=list(one=NULL, several=data.frame()),
                    clickSelects=list(one=NULL, several=data.frame()))
-  for(i in seq_along(aesthetics_list)){
-    if(names(aesthetics_list)[[i]] == "showSelected.variable"){
-      aes.list$showSelected$several <- data.frame(variable="showSelected.variable",
+  for(i in seq_along(a_aesthetics_list)){
+    if(names(a_aesthetics_list)[[i]] == "showSelected.variable"){
+      a_aes.list$showSelected$several <- data.frame(variable="showSelected.variable",
                                                   value="showSelected.value")
-    }else if(grepl("^showSelected", names(aesthetics_list)[[i]]) &&
-             !grepl("^showSelected.value", names(aesthetics_list)[[i]])){
-      aes.list$showSelected$one <- c(aes.list$showSelected$one,
-                                       names(aesthetics_list)[[i]])
-    }else if(names(aesthetics_list)[[i]] == "clickSelects.variable"){
-      aes.list$clickSelects$several <- data.frame(variable="clickSelects.variable",
+    }else if(grepl("^showSelected", names(a_aesthetics_list)[[i]]) &&
+             !grepl("^showSelected.value", names(a_aesthetics_list)[[i]])){
+      a_aes.list$showSelected$one <- c(a_aes.list$showSelected$one,
+                                       names(a_aesthetics_list)[[i]])
+    }else if(names(a_aesthetics_list)[[i]] == "clickSelects.variable"){
+      a_aes.list$clickSelects$several <- data.frame(variable="clickSelects.variable",
                                                   value="clickSelects.value")
-    }else if(grepl("^clickSelects", names(aesthetics_list)[[i]])&&
-             !grepl("^clickSelects.value", names(aesthetics_list)[[i]])){
-      aes.list$clickSelects$one <- c(aes.list$clickSelects$one,
-                                     names(aesthetics_list)[[i]])
+    }else if(grepl("^clickSelects", names(a_aesthetics_list)[[i]])&&
+             !grepl("^clickSelects.value", names(a_aesthetics_list)[[i]])){
+      a_aes.list$clickSelects$one <- c(a_aes.list$clickSelects$one,
+                                     names(a_aesthetics_list)[[i]])
     }
   }
   ## TODO: how to handle showSelected$ignored in prev animint code??
-  return(aes.list)
+  return(a_aes.list)
 }

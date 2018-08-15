@@ -2,16 +2,16 @@
 #' @param formula formula relating y variables to x variables
 #' @param method Quantile regression method to use.  Currently only supports
 #'    \code{\link[quantreg]{rq}}.
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @section Computed variables:
 #' \describe{
 #'   \item{quantile}{quantile of distribution}
 #' }
 #' @export
-#' @rdname geom_quantile
-stat_quantile <- function(mapping = NULL, data = NULL,
-                          geom = "quantile", position = "identity",
+#' @rdname a_geom_quantile
+a_stat_quantile <- function(mapping = NULL, data = NULL,
+                          a_geom = "quantile", a_position = "identity",
                           ...,
                           quantiles = c(0.25, 0.5, 0.75),
                           formula = NULL,
@@ -19,15 +19,15 @@ stat_quantile <- function(mapping = NULL, data = NULL,
                           method.args = list(),
                           na.rm = FALSE,
                           show.legend = NA,
-                          inherit.aes = TRUE) {
-  layer(
+                          inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatQuantile,
-    geom = geom,
-    position = position,
+    a_stat = a_StatQuantile,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       quantiles = quantiles,
       formula = formula,
@@ -50,11 +50,11 @@ a_StatQuantile <- a_ggproto("a_StatQuantile", a_Stat,
   compute_group = function(data, scales, quantiles = c(0.25, 0.5, 0.75),
                            formula = NULL, xseq = NULL, method = "rq",
                            method.args = list(), lambda = 1, na.rm = FALSE) {
-    try_require("quantreg", "stat_quantile")
+    try_require("quantreg", "a_stat_quantile")
 
     if (is.null(formula)) {
       if (method == "rqss") {
-        try_require("MatrixModels", "stat_quantile")
+        try_require("MatrixModels", "a_stat_quantile")
         formula <- eval(substitute(y ~ qss(x, lambda = lambda)),
           list(lambda = lambda))
       } else {

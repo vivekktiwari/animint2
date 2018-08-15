@@ -6,33 +6,33 @@ data(WorldBank, package = "animint2")
 ## http://bost.ocks.org/mike/constancy/
 no.time <-
   list(scatter=a_plot()+
-       geom_point(aes(life.expectancy, fertility.rate,
+       a_geom_point(a_aes(life.expectancy, fertility.rate,
                       colour=region, size=population,
                       tooltip=paste(country, "population", population),
                       key=country), # key aesthetic for animated transitions!
                   showSelected="year",
                   clickSelects="country",
                   data=WorldBank)+
-       geom_text(aes(life.expectancy, fertility.rate, label=country,
+       a_geom_text(a_aes(life.expectancy, fertility.rate, a_label=country,
                      key=country), # also use key here!
                  showSelected=c("country", "year"),
                  data=WorldBank)+
-       scale_size_animint(breaks=10^(5:9))+
+       a_scale_size_animint(breaks=10^(5:9))+
        make_text(WorldBank, 55, 9, "year"),
        
        ts=a_plot()+
        make_tallrect(WorldBank, "year")+
-       geom_line(aes(year, life.expectancy, group=country, colour=region),
+       a_geom_line(a_aes(year, life.expectancy, group=country, colour=region),
                  clickSelects="country",
                  data=WorldBank, size=4, alpha=3/5),
 
        bar=a_plot()+
-       theme_animint(height=2400)+
-       geom_bar(aes(country, life.expectancy, fill=region,
+       a_theme_animint(height=2400)+
+       a_geom_bar(a_aes(country, life.expectancy, fill=region,
                     key=country),
                 showSelected="year", clickSelects="country",
-                data=WorldBank, stat="identity", position="identity")+
-       coord_flip(),
+                data=WorldBank, a_stat="identity", a_position="identity")+
+       a_coord_flip(),
        
        duration=list(year=1000),
        
@@ -42,13 +42,13 @@ no.time <-
 
 bar.attributes <- function(html){
   node.set <-
-    getNodeSet(info$html, '//g[@class="geom6_bar_bar"]//rect')
+    getNodeSet(info$html, '//g[@class="a_geom6_bar_bar"]//rect')
   sapply(node.set, xmlAttrs)
 }
 
 info <- animint2HTML(no.time)
 
-chunk1.tsv <- file.path("animint-htmltest", "geom6_bar_bar_chunk1.tsv")
+chunk1.tsv <- file.path("animint-htmltest", "a_geom6_bar_bar_chunk1.tsv")
 chunk1 <- read.table(chunk1.tsv, sep="\t", header=TRUE,
                      comment.char="", quote="")
 
@@ -61,7 +61,7 @@ test_that("chunk1 does not contain NA", {
   expect_true(all(not.missing))
 })
 
-common.tsv <- file.path("animint-htmltest", "geom6_bar_bar_chunk_common.tsv")
+common.tsv <- file.path("animint-htmltest", "a_geom6_bar_bar_chunk_common.tsv")
 common <- read.table(common.tsv, sep="\t", header=TRUE,
                      comment.char="", quote="")
 

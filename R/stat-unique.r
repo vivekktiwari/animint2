@@ -4,25 +4,25 @@
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_stat", "unique")}
 #'
 #' @export
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @examples
-#' a_plot(mtcars, aes(vs, am)) + geom_point(alpha = 0.1)
-#' a_plot(mtcars, aes(vs, am)) + geom_point(alpha = 0.1, stat="unique")
-stat_unique <- function(mapping = NULL, data = NULL,
-                        geom = "point", position = "identity",
+#' a_plot(mtcars, a_aes(vs, am)) + a_geom_point(alpha = 0.1)
+#' a_plot(mtcars, a_aes(vs, am)) + a_geom_point(alpha = 0.1, a_stat="unique")
+a_stat_unique <- function(mapping = NULL, data = NULL,
+                        a_geom = "point", a_position = "identity",
                         ...,
                         na.rm = FALSE,
                         show.legend = NA,
-                        inherit.aes = TRUE) {
-  layer(
+                        inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatUnique,
-    geom = geom,
-    position = position,
+    a_stat = a_StatUnique,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...

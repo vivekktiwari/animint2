@@ -3,89 +3,89 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "violin")}
 #'
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @param draw_quantiles If \code{not(NULL)} (default), draw horizontal lines
 #'   at the given quantiles of the density estimate.
 #' @param trim If \code{TRUE} (default), trim the tails of the violins
 #'   to the range of the data. If \code{FALSE}, don't trim the tails.
-#' @param geom,stat Use to override the default connection between
-#'   \code{geom_violin} and \code{stat_ydensity}.
+#' @param a_geom,a_stat Use to override the default connection between
+#'   \code{a_geom_violin} and \code{a_stat_ydensity}.
 #' @export
 #' @references Hintze, J. L., Nelson, R. D. (1998) Violin Plots: A Box
 #' Plot-Density Trace Synergism. The American Statistician 52, 181-184.
 #' @examples
-#' p <- a_plot(mtcars, aes(factor(cyl), mpg))
-#' p + geom_violin()
+#' p <- a_plot(mtcars, a_aes(factor(cyl), mpg))
+#' p + a_geom_violin()
 #'
 #' \donttest{
-#' p + geom_violin() + geom_jitter(height = 0)
-#' p + geom_violin() + coord_flip()
+#' p + a_geom_violin() + a_geom_jitter(height = 0)
+#' p + a_geom_violin() + a_coord_flip()
 #'
 #' # Scale maximum width proportional to sample size:
-#' p + geom_violin(scale = "count")
+#' p + a_geom_violin(a_scale = "count")
 #'
 #' # Scale maximum width to 1 for all violins:
-#' p + geom_violin(scale = "width")
+#' p + a_geom_violin(a_scale = "width")
 #'
 #' # Default is to trim violins to the range of the data. To disable:
-#' p + geom_violin(trim = FALSE)
+#' p + a_geom_violin(trim = FALSE)
 #'
 #' # Use a smaller bandwidth for closer density fit (default is 1).
-#' p + geom_violin(adjust = .5)
+#' p + a_geom_violin(adjust = .5)
 #'
 #' # Add aesthetic mappings
 #' # Note that violins are automatically dodged when any aesthetic is
 #' # a factor
-#' p + geom_violin(aes(fill = cyl))
-#' p + geom_violin(aes(fill = factor(cyl)))
-#' p + geom_violin(aes(fill = factor(vs)))
-#' p + geom_violin(aes(fill = factor(am)))
+#' p + a_geom_violin(a_aes(fill = cyl))
+#' p + a_geom_violin(a_aes(fill = factor(cyl)))
+#' p + a_geom_violin(a_aes(fill = factor(vs)))
+#' p + a_geom_violin(a_aes(fill = factor(am)))
 #'
 #' # Set aesthetics to fixed value
-#' p + geom_violin(fill = "grey80", colour = "#3366FF")
+#' p + a_geom_violin(fill = "grey80", colour = "#3366FF")
 #'
 #' # Show quartiles
-#' p + geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
+#' p + a_geom_violin(draw_quantiles = c(0.25, 0.5, 0.75))
 #'
 #' # Scales vs. coordinate transforms -------
 #' if (require("ggplot2movies")) {
 #' # Scale transformations occur before the density statistics are computed.
 #' # Coordinate transformations occur afterwards.  Observe the effect on the
 #' # number of outliers.
-#' m <- a_plot(movies, aes(y = votes, x = rating, group = cut_width(rating, 0.5)))
-#' m + geom_violin()
-#' m + geom_violin() + scale_y_log10()
-#' m + geom_violin() + coord_trans(y = "log10")
-#' m + geom_violin() + scale_y_log10() + coord_trans(y = "log10")
+#' m <- a_plot(movies, a_aes(y = votes, x = rating, group = cut_width(rating, 0.5)))
+#' m + a_geom_violin()
+#' m + a_geom_violin() + a_scale_y_log10()
+#' m + a_geom_violin() + a_coord_trans(y = "log10")
+#' m + a_geom_violin() + a_scale_y_log10() + a_coord_trans(y = "log10")
 #'
 #' # Violin plots with continuous x:
 #' # Use the group aesthetic to group observations in violins
-#' a_plot(movies, aes(year, budget)) + geom_violin()
-#' a_plot(movies, aes(year, budget)) +
-#'   geom_violin(aes(group = cut_width(year, 10)), scale = "width")
+#' a_plot(movies, a_aes(year, budget)) + a_geom_violin()
+#' a_plot(movies, a_aes(year, budget)) +
+#'   a_geom_violin(a_aes(group = cut_width(year, 10)), a_scale = "width")
 #' }
 #' }
-geom_violin <- function(mapping = NULL, data = NULL,
-                        stat = "ydensity", position = "dodge",
+a_geom_violin <- function(mapping = NULL, data = NULL,
+                        a_stat = "ydensity", a_position = "dodge",
                         ...,
                         draw_quantiles = NULL,
                         trim = TRUE,
-                        scale = "area",
+                        a_scale = "area",
                         na.rm = FALSE,
                         show.legend = NA,
-                        inherit.aes = TRUE) {
-  layer(
+                        inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomViolin,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomViolin,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       trim = trim,
-      scale = scale,
+      a_scale = a_scale,
       draw_quantiles = draw_quantiles,
       na.rm = na.rm,
       ...
@@ -123,7 +123,7 @@ a_GeomViolin <- a_ggproto("a_GeomViolin", a_Geom,
     )
 
     # Close the polygon: set first and last point the same
-    # Needed for coord_polar and such
+    # Needed for a_coord_polar and such
     newdata <- rbind(newdata, newdata[1,])
 
     # Draw quantiles if requested
@@ -132,12 +132,12 @@ a_GeomViolin <- a_ggproto("a_GeomViolin", a_Geom,
 
       # Compute the quantile segments and combine with existing aesthetics
       quantiles <- create_quantile_segment_frame(data, draw_quantiles)
-      aesthetics <- data[
+      a_aesthetics <- data[
         rep(1, nrow(quantiles)),
         setdiff(names(data), c("x", "y")),
         drop = FALSE
       ]
-      both <- cbind(quantiles, aesthetics)
+      both <- cbind(quantiles, a_aesthetics)
       quantile_grob <- a_GeomPath$draw_panel(both, ...)
 
       ggname("geom_violin", grobTree(
@@ -151,7 +151,7 @@ a_GeomViolin <- a_ggproto("a_GeomViolin", a_Geom,
 
   draw_key = a_draw_key_polygon,
 
-  default_aes = aes(weight = 1, colour = "grey20", fill = "white", size = 0.5,
+  default_aes = a_aes(weight = 1, colour = "grey20", fill = "white", size = 0.5,
     alpha = NA, linetype = "solid"),
 
   required_aes = c("x", "y")

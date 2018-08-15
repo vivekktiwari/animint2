@@ -1,8 +1,8 @@
-#' @rdname stat_summary
-#' @inheritParams stat_bin
+#' @rdname a_stat_summary
+#' @inheritParams a_stat_bin
 #' @export
-stat_summary_bin <- function(mapping = NULL, data = NULL,
-                             geom = "pointrange", position = "identity",
+a_stat_summary_bin <- function(mapping = NULL, data = NULL,
+                             a_geom = "pointrange", a_position = "identity",
                              ...,
                              fun.data = NULL,
                              fun.y = NULL,
@@ -11,15 +11,15 @@ stat_summary_bin <- function(mapping = NULL, data = NULL,
                              fun.args = list(),
                              na.rm = FALSE,
                              show.legend = NA,
-                             inherit.aes = TRUE) {
-  layer(
+                             inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatSummaryBin,
-    geom = geom,
-    position = position,
+    a_stat = a_StatSummaryBin,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       fun.data = fun.data,
       fun.y = fun.y,
@@ -44,7 +44,7 @@ a_StatSummaryBin <- a_ggproto("a_StatSummaryBin", a_Stat,
                            bins = 30, binwidth = NULL, origin = NULL, right = FALSE,
                            na.rm = FALSE) {
 
-    fun <- make_summary_fun(fun.data, fun.y, fun.ymax, fun.ymin, fun.args)
+    fun <- a_make_summary_fun(fun.data, fun.y, fun.ymax, fun.ymin, fun.args)
 
     breaks <- bin2d_breaks(scales$x, NULL, origin, binwidth, bins, right = right)
 
@@ -58,7 +58,7 @@ a_StatSummaryBin <- a_ggproto("a_StatSummaryBin", a_Stat,
   }
 )
 
-make_summary_fun <- function(fun.data, fun.y, fun.ymax, fun.ymin, fun.args) {
+a_make_summary_fun <- function(fun.data, fun.y, fun.ymax, fun.ymin, fun.args) {
   if (!is.null(fun.data)) {
     # Function that takes complete data frame as input
     fun.data <- match.fun(fun.data)
@@ -81,9 +81,9 @@ make_summary_fun <- function(fun.data, fun.y, fun.ymax, fun.ymin, fun.args) {
       )
     }
   } else {
-    message("No summary function supplied, defaulting to `mean_se()")
+    message("No summary function supplied, defaulting to `a_mean_se()")
     function(df) {
-      mean_se(df$y)
+      a_mean_se(df$y)
     }
   }
 }

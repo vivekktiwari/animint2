@@ -4,24 +4,24 @@
 #'   horizontal directions. Overrides \code{bins} if both set.
 #' @param drop if \code{TRUE} removes all cells with 0 counts.
 #' @export
-#' @rdname geom_bin2d
-stat_bin_2d <- function(mapping = NULL, data = NULL,
-                        geom = "tile", position = "identity",
+#' @rdname a_geom_bin2d
+a_stat_bin_2d <- function(mapping = NULL, data = NULL,
+                        a_geom = "tile", a_position = "identity",
                         ...,
                         bins = 30,
                         binwidth = NULL,
                         drop = TRUE,
                         na.rm = FALSE,
                         show.legend = NA,
-                        inherit.aes = TRUE) {
-  layer(
+                        inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatBin2d,
-    geom = geom,
-    position = position,
+    a_stat = a_StatBin2d,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       bins = bins,
       binwidth = binwidth,
@@ -34,16 +34,16 @@ stat_bin_2d <- function(mapping = NULL, data = NULL,
 
 
 #' @export
-#' @rdname geom_bin2d
+#' @rdname a_geom_bin2d
 #' @usage NULL
-stat_bin2d <- stat_bin_2d
+a_stat_bin2d <- a_stat_bin_2d
 
 #' @rdname animint2-ggproto
 #' @format NULL
 #' @usage NULL
 #' @export
 a_StatBin2d <- a_ggproto("a_StatBin2d", a_Stat,
-  default_aes = aes(fill = ..count..),
+  default_aes = a_aes(fill = ..count..),
   required_aes = c("x", "y"),
 
   compute_group = function(data, scales, binwidth = NULL, bins = 30,

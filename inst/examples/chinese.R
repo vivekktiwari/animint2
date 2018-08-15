@@ -22,7 +22,7 @@ list(
 
 ts = a_plot() +
   make_tallrect( data, "time" ) +
-  geom_line( aes(time, count, group = name, colour = name),
+  a_geom_line(a_aes(time, count, group = name, colour = name),
              clickSelects = "name",
              data = data, size = 3, alpha = 0.8 ),
 
@@ -31,15 +31,15 @@ time = list( variable="time",ms = 3000 ),
 duration = list( time = 1000 ),
 
 scatter = a_plot()+
-  geom_point( aes(count_all, count, colour = name, size = count_all),
+  a_geom_point( a_aes(count_all, count, colour = name, size = count_all),
               clickSelects = "name",
               showSelected = "time",
               data = data ) +
-  geom_text( aes(time, count, label = name),
+  a_geom_text( a_aes(time, count, a_label = name),
              showSelected = c("name", "time"),
              data=data ) +
   ##make_text( data, 80, 90, "time" ) +
-  continuous_scale("size","area",palette = function(x){
+  continuous_a_scale("size","area",palette = function(x){
     scales:::rescale(sqrt(abs(x)), c(1,15), c(0,1))
   }) +
   xlim(0, 50)
@@ -47,6 +47,6 @@ scatter = a_plot()+
 )
 
 animint2dir( viz , "chinese")
-system("cat chinese/geom4_text_scatter_chunk1.tsv")
+system("cat chinese/a_geom4_text_scatter_chunk1.tsv")
 
 animint2gist(viz)

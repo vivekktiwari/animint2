@@ -9,8 +9,8 @@ centers <- c(sample(1:10, 5000, replace=TRUE),
 mix.test <- mvrnorm(10000, c(0,0), 0.2*diag(2))
 test.points <- data.table(
   mix.test + mixture.example$means[centers,],
-  label=factor(c(rep(0, 5000), rep(1, 5000))))
-pred.grid <- data.table(mixture.example$xnew, label=NA)
+  a_label=factor(c(rep(0, 5000), rep(1, 5000))))
+pred.grid <- data.table(mixture.example$xnew, a_label=NA)
 input.cols <- c("V1", "V2")
 names(pred.grid)[1:2] <- input.cols
 test.and.grid <- rbind(
@@ -20,7 +20,7 @@ test.and.grid$fold <- NA
 test.and.grid
 n.folds <- 10
 set.seed(2)
-mixture <- with(mixture.example, data.table(x, label=factor(y)))
+mixture <- with(mixture.example, data.table(x, a_label=factor(y)))
 mixture$fold <- sample(rep(1:n.folds, l=nrow(mixture)))
 OneFold <- function(validation.fold){
   require(class)
@@ -32,17 +32,17 @@ OneFold <- function(validation.fold){
   for(neighbors in seq(1, 30, by=2)){
     cat(sprintf("n.folds=%4d validation.fold=%d neighbors=%d\n",
                 n.folds, validation.fold, neighbors))
-    pred.label <- 
+    pred.a_label <- 
       knn(only.train[, input.cols, with=FALSE],
           fold.data[, input.cols, with=FALSE],
-          only.train$label,
+          only.train$a_label,
           k=neighbors,
           prob=TRUE)
-    prob.winning.class <- attr(pred.label, "prob")
+    prob.winning.class <- attr(pred.a_label, "prob")
     fold.data$probability <- ifelse(
-      pred.label=="1", prob.winning.class, 1-prob.winning.class)
-    fold.data[, pred.label := ifelse(0.5 < probability, "1", "0")]
-    fold.data[, is.error := label != pred.label]
+      pred.a_label=="1", prob.winning.class, 1-prob.winning.class)
+    fold.data[, pred.a_label := ifelse(0.5 < probability, "1", "0")]
+    fold.data[, is.error := a_label != pred.a_label]
     fold.data[, prediction := ifelse(is.error, "error", "correct")]
     data.by.neighbors[[paste(neighbors)]] <- 
       data.table(neighbors, fold.data)
@@ -56,7 +56,7 @@ data.all.folds <- foreach(validation.fold=0:n.folds, .combine=rbind) %dopar% {
   data.table(validation.fold, one.fold)
 }
 data.all.folds
-labeled.data <- data.all.folds[!is.na(label),]
+labeled.data <- data.all.folds[!is.na(a_label),]
 error.stats <- labeled.data[, list(
   error.prop=mean(is.error)
   ), by=.(set, validation.fold, neighbors)]
@@ -87,25 +87,25 @@ set.linetypes["Bayes"] <- classifier.linetypes[["Bayes"]]
 cbind(set.linetypes, set.colors)
 
 errorPlot <- a_plot()+
-  theme_bw()+
-  geom_hline(aes(yintercept=error.prop, color=set, linetype=set),
+  a_theme_bw()+
+  a_geom_hline(a_aes(yintercept=error.prop, color=set, linetype=set),
              data=Bayes.error)+
-  scale_color_manual(
+  a_scale_color_manual(
     "error type", values=set.colors, breaks=names(set.colors))+
-  scale_linetype_manual(
+  a_scale_linetype_manual(
     "error type", values=set.linetypes, breaks=names(set.linetypes))+
   ylab("Misclassification Errors")+
   xlab("Number of Neighbors")+
-  geom_linerange(aes(neighbors, ymin=mean-sd, ymax=mean+sd,
+  a_geom_linerange(a_aes(neighbors, ymin=mean-sd, ymax=mean+sd,
                      color=set),
                  data=validation.error)+
-  geom_line(aes(neighbors, mean, linetype=set, color=set),
+  a_geom_line(a_aes(neighbors, mean, linetype=set, color=set),
             data=validation.error)+
-  geom_line(aes(neighbors, error.prop, group=set, linetype=set, color=set),
+  a_geom_line(a_aes(neighbors, error.prop, group=set, linetype=set, color=set),
             data=other.error)+
-  geom_point(aes(neighbors, mean, color=set),
+  a_geom_point(a_aes(neighbors, mean, color=set),
              data=validation.error)+
-  geom_point(aes(neighbors, error.prop, color=set),
+  a_geom_point(a_aes(neighbors, error.prop, color=set),
              data=other.error)
 errorPlot
 show.neighbors <- 7
@@ -136,7 +136,7 @@ getBoundaryDF <- function(prob.vec){
   do.call(rbind, contour.list)
 }
 boundary.grid <- show.data[set=="grid",]
-boundary.grid[, label := pred.label]
+boundary.grid[, a_label := pred.a_label]
 pred.boundary <- getBoundaryDF(boundary.grid$probability)
 pred.boundary$classifier <- "KNN"
 Bayes.boundary <- getBoundaryDF(mixture.example$prob)
@@ -147,36 +147,36 @@ on.text <- function(V1, V2){
 }
 show.grid <- boundary.grid[!on.text(V1, V2),]
 show.grid
-label.colors <- c(
+a_label.colors <- c(
   "0"="#377EB8",
   "1"="#FF7F00")
 scatterPlot <- a_plot()+
-  theme_bw()+
-  theme(axis.text=element_blank(),
-        axis.ticks=element_blank(),
-        axis.title=element_blank())+
+  a_theme_bw()+
+  a_theme(axis.text=a_element_blank(),
+        axis.ticks=a_element_blank(),
+        axis.title=a_element_blank())+
   ggtitle("7-Nearest Neighbors")+
-  scale_color_manual(values=label.colors)+
-  scale_linetype_manual(values=classifier.linetypes)+
-  geom_point(aes(V1, V2, color=label),
+  a_scale_color_manual(values=a_label.colors)+
+  a_scale_linetype_manual(values=classifier.linetypes)+
+  a_geom_point(a_aes(V1, V2, color=a_label),
              size=0.2,
              data=show.grid)+
-  geom_path(aes(V1, V2, group=path.i, linetype=classifier),
+  a_geom_path(a_aes(V1, V2, group=path.i, linetype=classifier),
             size=1,
             data=pred.boundary)+
-  geom_path(aes(V1, V2, group=path.i, linetype=classifier),
+  a_geom_path(a_aes(V1, V2, group=path.i, linetype=classifier),
             color=set.colors[["Bayes"]],
             size=1,
             data=Bayes.boundary)+
-  geom_point(aes(V1, V2, color=label),
+  a_geom_point(a_aes(V1, V2, color=a_label),
              fill=NA,
              size=3,
              shape=21,
              data=show.points)+
-  geom_text(aes(text.V1.error, V2.bottom, label=paste(set, "Error:")),
+  a_geom_text(a_aes(text.V1.error, V2.bottom, a_label=paste(set, "Error:")),
             data=error.text,
             hjust=0)+
-  geom_text(aes(text.V1.prop, V2.bottom, label=sprintf("%.3f", error.prop)),
+  a_geom_text(a_aes(text.V1.prop, V2.bottom, a_label=sprintf("%.3f", error.prop)),
             data=error.text,
             hjust=1)
 scatterPlot
@@ -201,40 +201,40 @@ set.colors <-
     train="black")
 errorPlot <- a_plot()+
   ggtitle("Select number of neighbors")+
-  theme_bw()+
-  theme_animint(height=500)+
-  geom_text(aes(min.neighbors, error.prop,
-                color=set, label="Bayes"),
+  a_theme_bw()+
+  a_theme_animint(height=500)+
+  a_geom_text(a_aes(min.neighbors, error.prop,
+                color=set, a_label="Bayes"),
             showSelected="classifier",
             hjust=1,
             data=Bayes.segment)+
-  geom_segment(aes(min.neighbors, error.prop, 
+  a_geom_segment(a_aes(min.neighbors, error.prop, 
                    xend=max.neighbors, yend=error.prop,
                    color=set, linetype=classifier),
                showSelected="classifier",
                data=Bayes.segment)+
-  scale_color_manual(values=set.colors, breaks=names(set.colors))+
-  scale_fill_manual(values=set.colors)+
-  guides(fill="none", linetype="none")+
-  scale_linetype_manual(values=classifier.linetypes)+
+  a_scale_color_manual(values=set.colors, breaks=names(set.colors))+
+  a_scale_fill_manual(values=set.colors)+
+  a_guides(fill="none", linetype="none")+
+  a_scale_linetype_manual(values=classifier.linetypes)+
   ylab("Misclassification Errors")+
-  scale_x_continuous(
+  a_scale_x_continuous(
     "Number of Neighbors",
     limits=c(-1, 30),
     breaks=c(1, 10, 20, 29))+
-  geom_ribbon(aes(neighbors, ymin=mean-sd, ymax=mean+sd,
+  a_geom_ribbon(a_aes(neighbors, ymin=mean-sd, ymax=mean+sd,
                   fill=set),
               showSelected=c("classifier", "set"),
               alpha=0.5,
               data=validation.error)+
-  geom_line(aes(neighbors, mean, color=set, linetype=classifier),
+  a_geom_line(a_aes(neighbors, mean, color=set, linetype=classifier),
             showSelected="classifier",
             data=validation.error)+
-  geom_line(aes(neighbors, error.prop, group=set, color=set,
+  a_geom_line(a_aes(neighbors, error.prop, group=set, color=set,
                 linetype=classifier),
             showSelected="classifier",
             data=other.error)+
-  geom_tallrect(aes(xmin=neighbors-1, xmax=neighbors+1),
+  a_geom_tallrect(a_aes(xmin=neighbors-1, xmax=neighbors+1),
                 clickSelects="neighbors",
                 alpha=0.5,
                 data=validation.error)
@@ -243,7 +243,7 @@ show.data <- data.all.folds[validation.fold==0,]
 show.points <- show.data[set=="train",]
 show.points
 boundary.grid <- show.data[set=="grid",]
-boundary.grid[, label := pred.label]
+boundary.grid[, a_label := pred.a_label]
 show.grid <- boundary.grid[!on.text(V1, V2),]
 pred.boundary <- boundary.grid[, getBoundaryDF(probability), by=neighbors]
 pred.boundary$classifier <- "KNN"
@@ -256,48 +256,48 @@ Bayes.error <- data.table(
   error.prop=0.21)
 scatterPlot <- a_plot()+
   ggtitle("Mis-classification errors in train set")+
-  theme_bw()+
-  theme_animint(width=500, height=500)+
+  a_theme_bw()+
+  a_theme_animint(width=500, height=500)+
   xlab("Input feature 1")+
   ylab("Input feature 2")+
-  coord_equal()+
-  scale_color_manual(values=label.colors)+
-  scale_linetype_manual(values=classifier.linetypes)+
-  geom_point(aes(V1, V2, color=label),
+  a_coord_equal()+
+  a_scale_color_manual(values=a_label.colors)+
+  a_scale_linetype_manual(values=classifier.linetypes)+
+  a_geom_point(a_aes(V1, V2, color=a_label),
              showSelected="neighbors",
              size=0.2,
              data=show.grid)+
-  geom_path(aes(V1, V2, group=path.i, linetype=classifier),
+  a_geom_path(a_aes(V1, V2, group=path.i, linetype=classifier),
             showSelected="neighbors",
             size=1,
             data=pred.boundary)+
-  geom_path(aes(V1, V2, group=path.i, linetype=classifier),
+  a_geom_path(a_aes(V1, V2, group=path.i, linetype=classifier),
             color=set.colors[["test"]],
             size=1,
             data=Bayes.boundary)+
-  geom_point(aes(V1, V2, color=label,
+  a_geom_point(a_aes(V1, V2, color=a_label,
                  fill=prediction),
              showSelected="neighbors",
              size=3,
              shape=21,
              data=show.points)+
-  scale_fill_manual(values=c(error="black", correct="transparent"))+
-  geom_text(aes(text.V1.error, text.V2.bottom, label=paste(set, "Error:")),
+  a_scale_fill_manual(values=c(error="black", correct="transparent"))+
+  a_geom_text(a_aes(text.V1.error, text.V2.bottom, a_label=paste(set, "Error:")),
             data=Bayes.error,
             hjust=0)+
-  geom_text(aes(text.V1.prop, text.V2.bottom, label=sprintf("%.3f", error.prop)),
+  a_geom_text(a_aes(text.V1.prop, text.V2.bottom, a_label=sprintf("%.3f", error.prop)),
             data=Bayes.error,
             hjust=1)+
-  geom_text(aes(text.V1.error, V2.bottom, label=paste(set, "Error:")),
+  a_geom_text(a_aes(text.V1.error, V2.bottom, a_label=paste(set, "Error:")),
             showSelected="neighbors",
             data=other.error,
             hjust=0)+
-  geom_text(aes(text.V1.prop, V2.bottom, label=sprintf("%.3f", error.prop)),
+  a_geom_text(a_aes(text.V1.prop, V2.bottom, a_label=sprintf("%.3f", error.prop)),
             showSelected="neighbors",
             data=other.error,
             hjust=1)+
-  geom_text(aes(V1, V2,
-                label=paste0(
+  a_geom_text(a_aes(V1, V2,
+                a_label=paste0(
                   neighbors,
                   " nearest neighbor",
                   ifelse(neighbors==1, "", "s"),
@@ -306,7 +306,7 @@ scatterPlot <- a_plot()+
             data=show.text)
 scatterPlot+
   a_facet_wrap("neighbors")+
-  theme(panel.margin=grid::unit(0, "lines"))
+  a_theme(panel.margin=grid::unit(0, "lines"))
 viz.neighbors <- list(
   error=errorPlot,
   data=scatterPlot,

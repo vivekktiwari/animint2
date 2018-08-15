@@ -18,9 +18,9 @@
 #'   \item{scaled}{density estimate, scaled to maximum of 1}
 #' }
 #' @export
-#' @rdname geom_density
-stat_density <- function(mapping = NULL, data = NULL,
-                         geom = "area", position = "stack",
+#' @rdname a_geom_density
+a_stat_density <- function(mapping = NULL, data = NULL,
+                         a_geom = "area", a_position = "stack",
                          ...,
                          bw = "nrd0",
                          adjust = 1,
@@ -28,16 +28,16 @@ stat_density <- function(mapping = NULL, data = NULL,
                          trim = FALSE,
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
+                         inherit.a_aes = TRUE) {
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatDensity,
-    geom = geom,
-    position = position,
+    a_stat = a_StatDensity,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       bw = bw,
       adjust = adjust,
@@ -55,7 +55,7 @@ stat_density <- function(mapping = NULL, data = NULL,
 #' @export
 a_StatDensity <- a_ggproto("a_StatDensity", a_Stat,
   required_aes = "x",
-  default_aes = aes(y = ..density.., fill = NA),
+  default_aes = a_aes(y = ..density.., fill = NA),
 
   compute_group = function(data, scales, bw = "nrd0", adjust = 1, kernel = "gaussian",
                            trim = FALSE, na.rm = FALSE) {

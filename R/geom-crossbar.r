@@ -1,20 +1,20 @@
 #' @export
-#' @rdname geom_linerange
-geom_crossbar <- function(mapping = NULL, data = NULL,
-                          stat = "identity", position = "identity",
+#' @rdname a_geom_linerange
+a_geom_crossbar <- function(mapping = NULL, data = NULL,
+                          a_stat = "identity", a_position = "identity",
                           ...,
                           fatten = 2.5,
                           na.rm = FALSE,
                           show.legend = NA,
-                          inherit.aes = TRUE) {
-  layer(
+                          inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomCrossbar,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomCrossbar,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       fatten = fatten,
       na.rm = na.rm,
@@ -32,14 +32,14 @@ a_GeomCrossbar <- a_ggproto("a_GeomCrossbar", a_Geom,
     a_GeomErrorbar$setup_data(data, params)
   },
 
-  default_aes = aes(colour = "black", fill = NA, size = 0.5, linetype = 1,
+  default_aes = a_aes(colour = "black", fill = NA, size = 0.5, linetype = 1,
     alpha = NA),
 
   required_aes = c("x", "y", "ymin", "ymax"),
 
   draw_key = a_draw_key_crossbar,
 
-  draw_panel = function(data, panel_scales, coord, fatten = 2.5, width = NULL) {
+  draw_panel = function(data, panel_scales, a_coord, fatten = 2.5, width = NULL) {
     middle <- transform(data, x = xmin, xend = xmax, yend = y, size = size * fatten, alpha = NA)
 
     has_notch <- !is.null(data$ynotchlower) && !is.null(data$ynotchupper) &&
@@ -88,8 +88,8 @@ a_GeomCrossbar <- a_ggproto("a_GeomCrossbar", a_Geom,
     }
 
     ggname("geom_crossbar", gTree(children = gList(
-      a_GeomPolygon$draw_panel(box, panel_scales, coord),
-      a_GeomSegment$draw_panel(middle, panel_scales, coord)
+      a_GeomPolygon$draw_panel(box, panel_scales, a_coord),
+      a_GeomSegment$draw_panel(middle, panel_scales, a_coord)
     )))
   }
 )

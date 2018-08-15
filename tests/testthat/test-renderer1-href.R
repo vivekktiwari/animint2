@@ -1,4 +1,4 @@
-acontext("aes(href)")
+acontext("a_aes(href)")
 
 color.df <-
   data.frame(x=c(1, 1, 2, 1, 2),
@@ -12,10 +12,10 @@ names(university.df) <- c("university", "colors")
 test_that("clickSelects and href is an error", {
   viz <-
     list(colors=a_plot()+
-         geom_point(aes(x, university, color=color, href=color),
+         a_geom_point(a_aes(x, university, color=color, href=color),
                     clickSelects="university",
                     data=color.df)+
-         scale_color_identity())
+         a_scale_color_identity())
   expect_error({
     animint2dir(viz, open.browser=FALSE)
   }, "clickSelects can not be used with aes(href)", fixed=TRUE)
@@ -24,16 +24,16 @@ test_that("clickSelects and href is an error", {
 test_that("aes(href) becomes <a href>", {
   viz <-
     list(universities=a_plot()+
-         geom_bar(aes(university, colors,
+         a_geom_bar(a_aes(university, colors,
                       id=university),
                   clickSelects="university",
-                  data=university.df, stat="identity"),
+                  data=university.df, a_stat="identity"),
          colors=a_plot()+
-         geom_point(aes(x, university, color=color,
+         a_geom_point(a_aes(x, university, color=color,
                         href=paste0("http://en.wikipedia.org/wiki/", color)),
                     showSelected="university",
                     data=color.df, size=5)+
-         scale_color_identity(),
+         a_scale_color_identity(),
          first=list(university="UC Berkeley"))
   info <- animint2HTML(viz)
   expect_links(info$html,
@@ -53,15 +53,15 @@ test_that("clicking updates href (again)", {
                  "http://en.wikipedia.org/wiki/black"))
 })
 
-test_that("aes(href) works with geom_polygon", {
+test_that("a_aes(href) works with a_geom_polygon", {
   USpolygons <- map_data("state")
   USpolygons$href <- paste0("https://en.wikipedia.org/wiki/", USpolygons$region)
   viz.href <- list(
     map=a_plot()+
       ggtitle("click a state to read its Wikipedia page")+
-      coord_equal()+
-      geom_polygon(
-        aes(x=long, y=lat, group=group, href=href),
+      a_coord_equal()+
+      a_geom_polygon(
+        a_aes(x=long, y=lat, group=group, href=href),
         data=USpolygons, fill="black", colour="grey")
   )
   info <- animint2HTML(viz.href)

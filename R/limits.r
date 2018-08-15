@@ -8,7 +8,7 @@
 #'   character, will create a discrete scale.  For \code{lims}, every
 #'   argument must be named.
 #' @seealso For changing x or y axis limits \strong{without} dropping data
-#'   observations, see \code{\link{coord_cartesian}}.
+#'   observations, see \code{\link{a_coord_cartesian}}.
 #' @export
 #' @examples
 #' # xlim
@@ -17,17 +17,17 @@
 #' xlim(c(10, 20))
 #' xlim("a", "b", "c")
 #'
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point() +
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point() +
 #'   xlim(15, 20)
 #' # with automatic lower limit
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point() +
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point() +
 #'   xlim(NA, 20)
 #'
 #' # Change both xlim and ylim
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point() +
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point() +
 #'   lims(x = c(10, 20), y = c(3, 5))
 lims <- function(...) {
   args <- list(...)
@@ -72,61 +72,61 @@ limits.numeric <- function(lims, var) {
     trans <- "identity"
   }
 
-  make_scale("continuous", var, limits = lims, trans = trans)
+  make_a_scale("continuous", var, limits = lims, trans = trans)
 }
 
-make_scale <- function(type, var, ...) {
-  scale <- match.fun(paste("scale_", var, "_", type, sep = ""))
-  scale(...)
+make_a_scale <- function(type, var, ...) {
+  a_scale <- match.fun(paste("a_scale_", var, "_", type, sep = ""))
+  a_scale(...)
 }
 
 #' @export
 limits.character <- function(lims, var) {
-  make_scale("discrete", var, limits = lims)
+  make_a_scale("discrete", var, limits = lims)
 }
 #' @export
 limits.factor <- function(lims, var) {
-  make_scale("discrete", var, limits = as.character(lims))
+  make_a_scale("discrete", var, limits = as.character(lims))
 }
 #' @export
 limits.Date <- function(lims, var) {
   stopifnot(length(lims) == 2)
-  make_scale("date", var, limits = lims)
+  make_a_scale("date", var, limits = lims)
 }
 #' @export
 limits.POSIXct <- function(lims, var) {
   stopifnot(length(lims) == 2)
-  make_scale("datetime", var, limits = lims)
+  make_a_scale("datetime", var, limits = lims)
 }
 #' @export
 limits.POSIXlt <- function(lims, var) {
   stopifnot(length(lims) == 2)
-  make_scale("datetime", var, limits = as.POSIXct(lims))
+  make_a_scale("datetime", var, limits = as.POSIXct(lims))
 }
 
 #' Expand the plot limits with data.
 #'
 #. Sometimes you may want to ensure limits include a single value, for all
 #' panels or all plots.  This function is a thin wrapper around
-#' \code{\link{geom_blank}} that makes it easy to add such values.
+#' \code{\link{a_geom_blank}} that makes it easy to add such values.
 #'
 #' @param ... named list of aesthetics specifying the value (or values) that
 #'   should be included in each scale.
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(mpg, wt)) + geom_point()
+#' p <- a_plot(mtcars, a_aes(mpg, wt)) + a_geom_point()
 #' p + expand_limits(x = 0)
 #' p + expand_limits(y = c(1, 9))
 #' p + expand_limits(x = 0, y = 0)
 #'
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point(aes(colour = cyl)) +
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point(a_aes(colour = cyl)) +
 #'   expand_limits(colour = seq(2, 10, by = 2))
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point(aes(colour = factor(cyl))) +
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point(a_aes(colour = factor(cyl))) +
 #'   expand_limits(colour = factor(seq(2, 10, by = 2)))
 expand_limits <- function(...) {
   data <- data.frame(..., stringsAsFactors = FALSE)
 
-  geom_blank(aes_all(names(data)), data, inherit.aes = FALSE)
+  a_geom_blank(a_aes_all(names(data)), data, inherit.a_aes = FALSE)
 }

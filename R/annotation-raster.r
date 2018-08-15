@@ -4,7 +4,7 @@ NULL
 
 #' Annotation: High-performance rectangular tiling.
 #'
-#' This is a special version of \code{\link{geom_raster}} optimised for static
+#' This is a special version of \code{\link{a_geom_raster}} optimised for static
 #' annotations that are the same in every panel. These annotations will not
 #' affect scales (i.e. the x and y axes will not grow to cover the range
 #' of the raster, and the raster must already have its own colours).
@@ -22,33 +22,33 @@ NULL
 #' @examples
 #' # Generate data
 #' rainbow <- matrix(hcl(seq(0, 360, length.out = 50 * 50), 80, 70), nrow = 50)
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   geom_point() +
-#'   annotation_raster(rainbow, 15, 20, 3, 4)
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_geom_point() +
+#'   a_annotation_raster(rainbow, 15, 20, 3, 4)
 #' # To fill up whole plot
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   annotation_raster(rainbow, -Inf, Inf, -Inf, Inf) +
-#'   geom_point()
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_annotation_raster(rainbow, -Inf, Inf, -Inf, Inf) +
+#'   a_geom_point()
 #'
 #' rainbow2 <- matrix(hcl(seq(0, 360, length.out = 10), 80, 70), nrow = 1)
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   annotation_raster(rainbow2, -Inf, Inf, -Inf, Inf) +
-#'   geom_point()
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_annotation_raster(rainbow2, -Inf, Inf, -Inf, Inf) +
+#'   a_geom_point()
 #' rainbow2 <- matrix(hcl(seq(0, 360, length.out = 10), 80, 70), nrow = 1)
-#' a_plot(mtcars, aes(mpg, wt)) +
-#'   annotation_raster(rainbow2, -Inf, Inf, -Inf, Inf, interpolate = TRUE) +
-#'   geom_point()
-annotation_raster <- function(raster, xmin, xmax, ymin, ymax,
+#' a_plot(mtcars, a_aes(mpg, wt)) +
+#'   a_annotation_raster(rainbow2, -Inf, Inf, -Inf, Inf, interpolate = TRUE) +
+#'   a_geom_point()
+a_annotation_raster <- function(raster, xmin, xmax, ymin, ymax,
                               interpolate = FALSE) {
   raster <- grDevices::as.raster(raster)
 
-  layer(
+  a_layer(
     data = NULL,
     mapping = NULL,
-    stat = a_StatIdentity,
-    position = a_PositionIdentity,
-    geom = a_GeomRasterAnn,
-    inherit.aes = TRUE,
+    a_stat = a_StatIdentity,
+    a_position = a_PositionIdentity,
+    a_geom = a_GeomRasterAnn,
+    inherit.a_aes = TRUE,
     params = list(
       raster = raster,
       xmin = xmin,
@@ -71,14 +71,14 @@ a_GeomRasterAnn <- a_ggproto("a_GeomRasterAnn", a_Geom,
     data
   },
 
-  draw_panel = function(data, panel_scales, coord, raster, xmin, xmax,
+  draw_panel = function(data, panel_scales, a_coord, raster, xmin, xmax,
                         ymin, ymax, interpolate = FALSE) {
-    if (!inherits(coord, "a_CoordCartesian")) {
-      stop("annotation_raster only works with Cartesian coordinates",
+    if (!inherits(a_coord, "a_CoordCartesian")) {
+      stop("a_annotation_raster only works with Cartesian coordinates",
         call. = FALSE)
     }
     corners <- data.frame(x = c(xmin, xmax), y = c(ymin, ymax))
-    data <- coord$transform(corners, panel_scales)
+    data <- a_coord$transform(corners, panel_scales)
 
     x_rng <- range(data$x, na.rm = TRUE)
     y_rng <- range(data$y, na.rm = TRUE)

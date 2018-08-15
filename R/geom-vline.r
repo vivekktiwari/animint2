@@ -2,8 +2,8 @@
 NULL
 
 #' @export
-#' @rdname geom_abline
-geom_vline <- function(mapping = NULL, data = NULL,
+#' @rdname a_geom_abline
+a_geom_vline <- function(mapping = NULL, data = NULL,
                        ...,
                        xintercept,
                        na.rm = FALSE,
@@ -12,18 +12,18 @@ geom_vline <- function(mapping = NULL, data = NULL,
   # Act like an annotation
   if (!missing(xintercept)) {
     data <- data.frame(xintercept = xintercept)
-    mapping <- aes(xintercept = xintercept)
+    mapping <- a_aes(xintercept = xintercept)
     show.legend <- FALSE
   }
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatIdentity,
-    geom = a_GeomVline,
-    position = a_PositionIdentity,
+    a_stat = a_StatIdentity,
+    a_geom = a_GeomVline,
+    a_position = a_PositionIdentity,
     show.legend = show.legend,
-    inherit.aes = FALSE,
+    inherit.a_aes = FALSE,
     params = list(
       na.rm = na.rm,
       ...
@@ -36,18 +36,18 @@ geom_vline <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomVline <- a_ggproto("a_GeomVline", a_Geom,
-  draw_panel = function(data, panel_scales, coord) {
-    ranges <- coord$range(panel_scales)
+  draw_panel = function(data, panel_scales, a_coord) {
+    ranges <- a_coord$range(panel_scales)
 
     data$x    <- data$xintercept
     data$xend <- data$xintercept
     data$y    <- ranges$y[1]
     data$yend <- ranges$y[2]
 
-    a_GeomSegment$draw_panel(unique(data), panel_scales, coord)
+    a_GeomSegment$draw_panel(unique(data), panel_scales, a_coord)
   },
 
-  default_aes = aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
+  default_aes = a_aes(colour = "black", size = 0.5, linetype = 1, alpha = NA),
   required_aes = "xintercept",
 
   draw_key = a_draw_key_vline

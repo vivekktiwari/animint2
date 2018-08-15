@@ -4,7 +4,7 @@
 \alias{as_labeller}
 \title{Coerce to labeller function}
 \usage{
-as_labeller(x, default = label_value, multi_line = TRUE)
+as_labeller(x, default = a_label_value, multi_line = TRUE)
 }
 \arguments{
 \item{x}{Object to coerce to a labeller function. If a named
@@ -24,7 +24,7 @@ This transforms objects to labeller functions. Used internally by
 \code{\link{labeller}()}.
 }
 \examples{
-p <- a_plot(mtcars, aes(disp, drat)) + geom_point()
+p <- a_plot(mtcars, a_aes(disp, drat)) + a_geom_point()
 p + a_facet_wrap(~am)
 
 # Rename labels on the fly with a lookup character vector

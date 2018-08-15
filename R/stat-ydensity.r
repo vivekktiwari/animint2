@@ -1,7 +1,7 @@
-#' @inheritParams layer
-#' @inheritParams geom_point
-#' @inheritParams stat_density
-#' @param scale if "area" (default), all violins have the same area (before trimming
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
+#' @inheritParams a_stat_density
+#' @param a_scale if "area" (default), all violins have the same area (before trimming
 #'   the tails). If "count", areas are scaled proportionally to the number of
 #'   observations. If "width", all violins have the same maximum width.
 #' @section Computed variables:
@@ -14,37 +14,37 @@
 #'   \item{n}{number of points}
 #'   \item{width}{width of violin bounding box}
 #' }
-#' @seealso \code{\link{geom_violin}} for examples, and \code{\link{stat_density}}
+#' @seealso \code{\link{a_geom_violin}} for examples, and \code{\link{a_stat_density}}
 #'   for examples with data along the x axis.
 #' @export
-#' @rdname geom_violin
-stat_ydensity <- function(mapping = NULL, data = NULL,
-                          geom = "violin", position = "dodge",
+#' @rdname a_geom_violin
+a_stat_ydensity <- function(mapping = NULL, data = NULL,
+                          a_geom = "violin", a_position = "dodge",
                           ...,
                           bw = "nrd0",
                           adjust = 1,
                           kernel = "gaussian",
                           trim = TRUE,
-                          scale = "area",
+                          a_scale = "area",
                           na.rm = FALSE,
                           show.legend = NA,
-                          inherit.aes = TRUE) {
-  scale <- match.arg(scale, c("area", "count", "width"))
+                          inherit.a_aes = TRUE) {
+  a_scale <- match.arg(a_scale, c("area", "count", "width"))
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatYdensity,
-    geom = geom,
-    position = position,
+    a_stat = a_StatYdensity,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       bw = bw,
       adjust = adjust,
       kernel = kernel,
       trim = trim,
-      scale = scale,
+      a_scale = a_scale,
       na.rm = na.rm,
       ...
     )
@@ -86,15 +86,15 @@ a_StatYdensity <- a_ggproto("a_StatYdensity", a_Stat,
 
   compute_panel = function(self, data, scales, width = NULL, bw = "nrd0", adjust = 1,
                            kernel = "gaussian", trim = TRUE, na.rm = FALSE,
-                           scale = "area") {
+                           a_scale = "area") {
     data <- a_ggproto_parent(a_Stat, self)$compute_panel(
       data, scales, width = width, bw = bw, adjust = adjust, kernel = kernel,
       trim = trim, na.rm = na.rm
     )
 
     # choose how violins are scaled relative to each other
-    data$violinwidth <- switch(scale,
-      # area : keep the original densities but scale them to a max width of 1
+    data$violinwidth <- switch(a_scale,
+      # area : keep the original densities but a_scale them to a max width of 1
       #        for plotting purposes only
       area = data$density / max(data$density),
       # count: use the original densities scaled to a maximum of 1 (as above)

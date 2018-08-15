@@ -50,27 +50,27 @@ grad.desc.viz <- function(hjust) {
   objective2$hjust <- hjust
   
   contour.plot <- a_plot() + 
-    geom_contour(data = contour, aes(x = x, y = y, z = z, colour = ..level..), size = .5) + 
-    scale_colour_continuous(name = "z value") + 
-    geom_path(data = objective, aes(x = x, y = y), 
+    a_geom_contour(data = contour, a_aes(x = x, y = y, z = z, colour = ..level..), size = .5) + 
+    a_scale_colour_continuous(name = "z value") + 
+    a_geom_path(data = objective, a_aes(x = x, y = y), 
               showSelected = "iteration2", colour = "red", size = 1) + 
-    geom_point(data = objective, aes(x = x, y = y), showSelected = "iteration2", colour = "green", 
+    a_geom_point(data = objective, a_aes(x = x, y = y), showSelected = "iteration2", colour = "green", 
                size = 2) + 
-    geom_text(data = objective2, aes(x = x, y = y - 0.2, label = round(z, 2)), showSelected = "iteration2") + 
-    scale_x_continuous(expand = c(0, 0)) + 
-    scale_y_continuous(expand = c(0, 0)) + 
+    a_geom_text(data = objective2, a_aes(x = x, y = y - 0.2, a_label = round(z, 2)), showSelected = "iteration2") + 
+    a_scale_x_continuous(expand = c(0, 0)) + 
+    a_scale_y_continuous(expand = c(0, 0)) + 
     ggtitle("contour of function value") + 
-    theme_animint(width = 600, height = 600)
+    a_theme_animint(width = 600, height = 600)
   
   objective.plot <- a_plot() +
-    geom_line(data = objective2, aes(x = iteration, y = z), colour = "red") + 
-    geom_point(data = objective2, aes(x = iteration, y = z), colour = "red") + 
-    geom_tallrect(data = objective2, aes(xmin = iteration - 1 / 2, xmax = iteration + 1 / 2), 
+    a_geom_line(data = objective2, a_aes(x = iteration, y = z), colour = "red") + 
+    a_geom_point(data = objective2, a_aes(x = iteration, y = z), colour = "red") + 
+    a_geom_tallrect(data = objective2, a_aes(xmin = iteration - 1 / 2, xmax = iteration + 1 / 2), 
                   clickSelects = "iteration2", alpha = .3) + 
-    geom_text(data = objective2, aes(x = iteration, y = z + 0.3, 
-                                     label = iteration), showSelected = "iteration2", hjust = hjust) + 
+    a_geom_text(data = objective2, a_aes(x = iteration, y = z + 0.3, 
+                                     a_label = iteration), showSelected = "iteration2", hjust = hjust) + 
     ggtitle("objective value vs. iteration") + 
-    theme_animint(width = 600, height = 600)
+    a_theme_animint(width = 600, height = 600)
   
   viz <- list(contour = contour.plot, objective = objective.plot, 
               time = list(variable = "iteration2", ms = 2000), 
@@ -82,14 +82,14 @@ info <- animint2HTML(viz)
 
 test_that("unspecified hjust means text-anchor: middle (other hjust=0)", {
   style.value <-
-    getStyleValue(info$html, '//g[@class="geom4_text_contour"]//text', 
+    getStyleValue(info$html, '//g[@class="a_geom4_text_contour"]//text', 
                   "text-anchor")
   expect_match(style.value, "middle")
 })  
 
-test_that('geom_text(hjust=0) => <text style="text-anchor: start">', {
+test_that('a_geom_text(hjust=0) => <text style="text-anchor: start">', {
   style.value <-
-    getStyleValue(info$html, '//g[@class="geom8_text_objective"]//text', 
+    getStyleValue(info$html, '//g[@class="a_geom8_text_objective"]//text', 
                   "text-anchor")
   expect_match(style.value, "start")
 })
@@ -99,14 +99,14 @@ info <- animint2HTML(viz)
 
 test_that("unspecified hjust means text-anchor: middle (other hjust=1)", {
   style.value <-
-    getStyleValue(info$html, '//g[@class="geom4_text_contour"]//text', 
+    getStyleValue(info$html, '//g[@class="a_geom4_text_contour"]//text', 
                   "text-anchor")
   expect_match(style.value, "middle")
 })  
 
-test_that('geom_text(hjust=1) => <text style="text-anchor: end">', {
+test_that('a_geom_text(hjust=1) => <text style="text-anchor: end">', {
   style.value <-
-    getStyleValue(info$html, '//g[@class="geom8_text_objective"]//text', 
+    getStyleValue(info$html, '//g[@class="a_geom8_text_objective"]//text', 
                   "text-anchor")
   expect_match(style.value, "end")
 })
@@ -116,19 +116,19 @@ info <- animint2HTML(viz)
 
 test_that("unspecified hjust means text-anchor: middle (other hjust=0.5)", {
   style.value <-
-    getStyleValue(info$html, '//g[@class="geom4_text_contour"]//text', 
+    getStyleValue(info$html, '//g[@class="a_geom4_text_contour"]//text', 
                   "text-anchor")
   expect_match(style.value, "middle")
 })  
 
 test_that('geom_text(hjust=0.5) => <text style="text-anchor: middle">', {
   style.value <-
-    getStyleValue(info$html, '//g[@class="geom8_text_objective"]//text', 
+    getStyleValue(info$html, '//g[@class="a_geom8_text_objective"]//text', 
                   "text-anchor")
   expect_match(style.value, "middle")
 })
 
-test_that('geom_text(hjust=other) => unsupported value error', {
+test_that('a_geom_text(hjust=other) => unsupported value error', {
   viz <- grad.desc.viz(hjust = 0.8)
   expect_error(animint2HTML(viz), "animint only supports hjust values 0, 0.5, 1")
 })
@@ -137,50 +137,50 @@ hjust.df <- data.frame(
   hjust=c(0,0.5,1),
   anchor=c("start", "middle", "end"),
   stringsAsFactors=FALSE)
-hjust.df$label <- paste0("hjust=",hjust.df$hjust)
-rownames(hjust.df) <- hjust.df$label
+hjust.df$a_label <- paste0("hjust=",hjust.df$hjust)
+rownames(hjust.df) <- hjust.df$a_label
 viz <- list(
   text=a_plot()+
-    geom_text(aes(hjust, hjust, label=label, hjust=hjust),
+    a_geom_text(a_aes(hjust, hjust, a_label=a_label, hjust=hjust),
               data=hjust.df)
   )
 
-test_that("aes(hjust) works fine for 0, 0.5, 1", {
+test_that("a_aes(hjust) works fine for 0, 0.5, 1", {
   info <- animint2HTML(viz)
-  xpath <- '//g[@class="geom1_text_text"]//text'
+  xpath <- '//g[@class="a_geom1_text_text"]//text'
   text.list <- getNodeSet(info$html, xpath)
   computed.anchor <- getStyleValue(info$html, xpath, "text-anchor")
-  label.vec <- sapply(text.list, xmlValue)
-  expected.anchor <- hjust.df[label.vec, "anchor"]
+  a_label.vec <- sapply(text.list, xmlValue)
+  expected.anchor <- hjust.df[a_label.vec, "anchor"]
   expect_identical(computed.anchor, expected.anchor)
 })
 
 hjust.df <- data.frame(hjust=c(0,0.5,1,1.5),
                        anchor=c("start", "middle", "end", "unknown"))
-hjust.df$label <- paste0("hjust=",hjust.df$hjust)
-rownames(hjust.df) <- hjust.df$label
+hjust.df$a_label <- paste0("hjust=",hjust.df$hjust)
+rownames(hjust.df) <- hjust.df$a_label
 viz <- list(
   text=a_plot()+
-    geom_text(aes(hjust, hjust, label=label, hjust=hjust),
+    a_geom_text(a_aes(hjust, hjust, a_label=a_label, hjust=hjust),
               data=hjust.df)
   )
 
-test_that("error if aes(hjust) not in 0, 0.5, 1", {
+test_that("error if a_aes(hjust) not in 0, 0.5, 1", {
   expect_error({
     info <- animint2HTML(viz)
   }, "animint only supports hjust values 0, 0.5, 1")
 })
 
 vjust.df <- data.frame(vjust=c(0,0.5,1))
-vjust.df$label <- paste0("vjust=",vjust.df$vjust)
-rownames(vjust.df) <- vjust.df$label
+vjust.df$a_label <- paste0("vjust=",vjust.df$vjust)
+rownames(vjust.df) <- vjust.df$a_label
 viz <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label=label, vjust=vjust),
+    a_geom_text(a_aes(vjust, vjust, a_label=a_label, vjust=vjust),
               data=vjust.df)
   )
 
-test_that("aes(vjust!=0) raises warning", {
+test_that("a_aes(vjust!=0) raises warning", {
   expect_warning({
     animint2HTML(viz)
   }, "animint only supports vjust=0")
@@ -188,11 +188,11 @@ test_that("aes(vjust!=0) raises warning", {
 
 viz <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label=0, vjust=0),
+    a_geom_text(a_aes(vjust, vjust, a_label=0, vjust=0),
               data=vjust.df)
   )
 
-test_that("aes(vjust=0) does not raise warning", {
+test_that("a_aes(vjust=0) does not raise warning", {
   expect_no_warning({
     animint2HTML(viz)
   })
@@ -200,7 +200,7 @@ test_that("aes(vjust=0) does not raise warning", {
 
 viz <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label="no vjust"),
+    a_geom_text(a_aes(vjust, vjust, a_label="no vjust"),
               data=vjust.df)
   )
 
@@ -213,24 +213,24 @@ test_that("unspecified vjust does not raise warning", {
 
 viz.1 <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label=1),
+    a_geom_text(a_aes(vjust, vjust, a_label=1),
               vjust=1,
               data=vjust.df)
   )
 viz.0.5 <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label=0),
+    a_geom_text(a_aes(vjust, vjust, a_label=0),
               vjust=0.5,
               data=vjust.df)
   )
 viz.0.7 <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label=0.7),
+    a_geom_text(a_aes(vjust, vjust, a_label=0.7),
               vjust=0.7,
               data=vjust.df)
   )
 
-test_that("geom_text(vjust!=0) raises warning", {
+test_that("a_geom_text(vjust!=0) raises warning", {
   expect_warning({
     animint2HTML(viz.1)
   }, "animint only supports vjust=0")
@@ -244,12 +244,12 @@ test_that("geom_text(vjust!=0) raises warning", {
 
 viz <- list(
   text=a_plot()+
-    geom_text(aes(vjust, vjust, label=0),
+    a_geom_text(a_aes(vjust, vjust, a_label=0),
               vjust=0,
               data=vjust.df)
   )
 
-test_that("geom_text(vjust=0) does not raise warning", {
+test_that("a_geom_text(vjust=0) does not raise warning", {
   expect_no_warning({
     animint2HTML(viz)
   })

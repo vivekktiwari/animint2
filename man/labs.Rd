@@ -5,31 +5,31 @@
 \alias{xlab}
 \alias{ylab}
 \alias{ggtitle}
-\title{Change axis labels, legend titles, plot title/subtitle and below-plot
+\title{Change axis a_labels, legend titles, plot title/subtitle and below-plot
 caption.}
 \usage{
 labs(...)
 
-xlab(label)
+xlab(a_label)
 
-ylab(label)
+ylab(a_label)
 
-ggtitle(label, subtitle = NULL)
+ggtitle(a_label, subtitle = NULL)
 }
 \arguments{
 \item{...}{a list of new names in the form aesthetic = "new name"}
 
-\item{label}{The text for the axis, plot title or caption below the plot.}
+\item{a_label}{The text for the axis, plot title or caption below the plot.}
 
 \item{subtitle}{the text for the subtitle for the plot which will be
 displayed below the title. Leave \code{NULL} for no subtitle.}
 }
 \description{
-Change axis labels, legend titles, plot title/subtitle and below-plot
+Change axis a_labels, legend titles, plot title/subtitle and below-plot
 caption.
 }
 \examples{
-p <- a_plot(mtcars, aes(mpg, wt)) + geom_point()
+p <- a_plot(mtcars, a_aes(mpg, wt)) + a_geom_point()
 p + labs(title = "New plot title")
 p + labs(x = "New x label")
 p + xlab("New x label")
@@ -51,7 +51,7 @@ p + ylab("New y label") + ylim(2, 4)
 p + ylim(2, 4) + ylab("New y label")
 
 # The labs function also modifies legend labels
-p <- a_plot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
+p <- a_plot(mtcars, a_aes(mpg, wt, colour = cyl)) + a_geom_point()
 p + labs(colour = "Cylinders")
 
 # Can also pass in a list, if that is more convenient

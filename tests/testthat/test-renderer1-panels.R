@@ -1,40 +1,40 @@
 acontext("Panel background")
 
 p1 <- a_plot() +
-  geom_point(aes(Sepal.Length, Sepal.Width,
+  a_geom_point(a_aes(Sepal.Length, Sepal.Width,
                  colour = Species, size = Species), data = iris) +
-  theme_grey() + 
-  theme(panel.background = element_rect(fill = "lightblue"),
-        panel.border = element_rect(fill = NA,
+  a_theme_grey() + 
+  a_theme(panel.background = a_element_rect(fill = "lightblue"),
+        panel.border = a_element_rect(fill = NA,
                                     color = "black",
                                     size = 2,
                                     linetype = "dashed"),
         panel.margin = grid::unit(0.1, "cm")) +
   a_facet_wrap(~Species, nrow = 2)
 p2 <- a_plot() +
-  geom_point(aes(Petal.Length, Petal.Width,
+  a_geom_point(a_aes(Petal.Length, Petal.Width,
                  colour = Species, size = Species), data = iris) +
   ggtitle("Petal Data") +
-  theme_bw()
+  a_theme_bw()
 p3 <- p2 + 
-  theme(panel.background = element_blank(), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank())
+  a_theme(panel.background = a_element_blank(), 
+        panel.grid.major = a_element_blank(), 
+        panel.grid.minor = a_element_blank())
 p4 <- p2 + 
-  ## recreating theme_fivethirtyeight from ggthemes package
-  theme(rect = element_rect(fill = "#F0F0F0", colour = NA,
+  ## recreating a_theme_fivethirtyeight from gga_themes package
+  a_theme(rect = a_element_rect(fill = "#F0F0F0", colour = NA,
                             size = 0.5, linetype = 0),
-        line = element_line(colour = "#D2D2D2", size = 0.5, linetype = 1,
+        line = a_element_line(colour = "#D2D2D2", size = 0.5, linetype = 1,
                             lineend = "butt"),
-        text = element_text(family = "sans", face = "plain",
+        text = a_element_text(family = "sans", face = "plain",
                             colour = "#3C3C3C", size = 12,
                             hjust = 0.5, vjust = 0.5, angle = 0,
                             lineheight = 0.9, margin = c(0, 0, 0, 0),
                             debug = FALSE),
-        panel.background = element_rect(), 
-        panel.grid = element_line(), 
-        panel.grid.major = element_line(), 
-        panel.grid.minor = element_blank(), 
+        panel.background = a_element_rect(), 
+        panel.grid = a_element_line(), 
+        panel.grid.major = a_element_line(), 
+        panel.grid.minor = a_element_blank(), 
         complete = T)
 
 info <- animint2HTML(list(sepal = p1, petal = p2, blank = p3, gg538 = p4))
@@ -122,7 +122,7 @@ test_that("panel backgrounds render correctly", {
   # testing that there are the correct number of panels
   expect_equal(length(background_sepal), 3)
   expect_equal(length(background_petal), 1)
-  expect_equal(length(blank_petal), 0)  # no rectangle for element_blank()
+  expect_equal(length(blank_petal), 0)  # no rectangle for a_element_blank()
   expect_equal(length(gg538), 1)
 
   # test background fills
@@ -181,13 +181,13 @@ test_that("grid lines are drawn correctly", {
 data(tips, package = "reshape2")
 tips$sex_smoker <- with(tips, interaction(sex, smoker))
 ss.viz <- list(
-  p1 = a_plot() + theme(legend.position = "none") +
-    geom_point(data = tips, position = "jitter", 
-               aes(x = sex, y = smoker, colour = sex_smoker),
+  p1 = a_plot() + a_theme(legend.a_position = "none") +
+    a_geom_point(data = tips, a_position = "jitter", 
+               a_aes(x = sex, y = smoker, colour = sex_smoker),
                clickSelects = "sex_smoker"), 
   p2 = a_plot() +
-    geom_point(data = tips,
-               aes(x = total_bill, y = tip, colour = sex_smoker),
+    a_geom_point(data = tips,
+               a_aes(x = total_bill, y = tip, colour = sex_smoker),
                showSelected = "sex_smoker")
   )
 
@@ -212,7 +212,7 @@ test_that("multiple selection sex_smoker plot", {
 
 test_that("renderer can handle only one grid line", {
   info <- animint2HTML(list(
-    petal = p2 + scale_y_log10()
+    petal = p2 + a_scale_y_log10()
   ))
   # extract grids
   grid_minor_hor <- getNodeSet(info$html, '//svg//g[@class="grid_minor"]//g[@class="hor"]//line')
@@ -225,13 +225,13 @@ test_that("no minor grid lines is handed correctly", {
   data(geyser, package = "MASS")
   info <- animint2HTML(list(
     g = a_plot() +  
-      geom_point(data = geyser, 
-                 aes(x = duration, y = waiting)) + 
-      geom_contour(data = geyser, 
-                   aes(x = duration, y = waiting), 
-                   colour = "blue", size = .5, stat = "density2d") + 
-      xlim(0.5, 6) + scale_y_log10(limits = c(40,110)) +
-      ggtitle("geom_contour 2d density")
+      a_geom_point(data = geyser, 
+                 a_aes(x = duration, y = waiting)) + 
+      a_geom_contour(data = geyser, 
+                   a_aes(x = duration, y = waiting), 
+                   colour = "blue", size = .5, a_stat = "density2d") + 
+      xlim(0.5, 6) + a_scale_y_log10(limits = c(40,110)) +
+      ggtitle("a_geom_contour 2d density")
   ))
   # extract grids
   grid_major_hor <- getNodeSet(info$html, '//svg//g[@class="grid_major"]//g[@class="hor"]//line')

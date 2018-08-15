@@ -8,20 +8,20 @@ transition <- data.frame(ChromHMMiterations$transition, parameters="transition")
 viz <- list(
   parameters=a_plot()+
     ggtitle("parameters at selected iteration")+
-    scale_fill_gradient(low="white", high="blue")+
-    geom_tile(aes(state, experiment, fill=frequency,
+    a_scale_fill_gradient(low="white", high="blue")+
+    a_geom_tile(a_aes(state, experiment, fill=frequency,
                   key=paste(state, experiment)),
               showSelected="iteration",
               data=emission)+
-    scale_color_gradient(low="white", high="red")+
-    theme_bw()+
-    theme_animint(height=600, width=350)+
-    theme(panel.margin=grid::unit(0, "cm"))+
+    a_scale_color_gradient(low="white", high="red")+
+    a_theme_bw()+
+    a_theme_animint(height=600, width=350)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
     a_facet_grid(parameters ~ .,
                space="free",
                scales="free_y")+
-    scale_y_discrete(drop=FALSE)+
-    geom_point(aes(state.to, state.from, color=probability,
+    a_scale_y_discrete(drop=FALSE)+
+    a_geom_point(a_aes(state.to, state.from, color=probability,
                   key=paste(state.from, state.to)),
                showSelected="iteration",
                size=10,
@@ -29,11 +29,11 @@ viz <- list(
   metrics=a_plot()+
     ggtitle("convergence metrics, select iteration")+
     make_tallrect(ChromHMMiterations$metrics, "iteration")+
-    geom_line(aes(iteration, metric.value),
+    a_geom_line(a_aes(iteration, metric.value),
               data=ChromHMMiterations$metrics)+
-    theme_bw()+
-    theme_animint(height=500)+
-    theme(panel.margin=grid::unit(0, "cm"))+
+    a_theme_bw()+
+    a_theme_animint(height=500)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
     a_facet_grid(metric.name ~ ., scales="free_y"),
   duration=list(iteration=500),
   first=list(iteration=100),

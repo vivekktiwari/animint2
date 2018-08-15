@@ -5,7 +5,7 @@
 #' The scatterplot is useful for displaying the relationship between two
 #' continuous variables, although it can also be used with one continuous
 #' and one categorical variable, or two categorical variables.  See
-#' \code{\link{geom_jitter}} for possibilities.
+#' \code{\link{a_geom_jitter}} for possibilities.
 #'
 #' The \emph{bubblechart} is a scatterplot with a third variable mapped to
 #' the size of points.  There are no special names for scatterplots where
@@ -16,94 +16,94 @@
 #' another. This can severely distort the visual appearance of the plot.
 #' There is no one solution to this problem, but there are some techniques
 #' that can help.  You can add additional information with
-#' \code{\link{geom_smooth}}, \code{\link{geom_quantile}} or
-#' \code{\link{geom_density_2d}}.  If you have few unique x values,
-#' \code{\link{geom_boxplot}} may also be useful.  Alternatively, you can
+#' \code{\link{a_geom_smooth}}, \code{\link{a_geom_quantile}} or
+#' \code{\link{a_geom_density_2d}}.  If you have few unique x values,
+#' \code{\link{a_geom_boxplot}} may also be useful.  Alternatively, you can
 #' summarise the number of points at each location and display that in some
-#' way, using \code{\link{stat_sum}}. Another technique is to use transparent
-#' points, e.g. \code{geom_point(alpha = 0.05)}.
+#' way, using \code{\link{a_stat_sum}}. Another technique is to use transparent
+#' points, e.g. \code{a_geom_point(alpha = 0.05)}.
 #'
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "point")}
 #'
-#' @seealso \code{\link{scale_size}} to see scale area of points, instead of
-#'   radius, \code{\link{geom_jitter}} to jitter points to reduce (mild)
+#' @seealso \code{\link{a_scale_size}} to see scale area of points, instead of
+#'   radius, \code{\link{a_geom_jitter}} to jitter points to reduce (mild)
 #'   overplotting
-#' @inheritParams layer
+#' @inheritParams a_layer
 #' @param na.rm If \code{FALSE} (the default), removes missing values with
 #'    a warning.  If \code{TRUE} silently removes missing values.
-#' @param ... other arguments passed on to \code{\link{layer}}. These are
+#' @param ... other arguments passed on to \code{\link{a_layer}}. These are
 #'   often aesthetics, used to set an aesthetic to a fixed value, like
 #'   \code{color = "red"} or \code{size = 3}. They may also be parameters
-#'   to the paired geom/stat.
-#' @inheritParams layer
+#'   to the paired a_geom/a_stat.
+#' @inheritParams a_layer
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(wt, mpg))
-#' p + geom_point()
+#' p <- a_plot(mtcars, a_aes(wt, mpg))
+#' p + a_geom_point()
 #'
-#' # Add aesthetic mappings
-#' p + geom_point(aes(colour = factor(cyl)))
-#' p + geom_point(aes(shape = factor(cyl)))
-#' p + geom_point(aes(size = qsec))
+#' # Add a_aesthetic mappings
+#' p + a_geom_point(a_aes(colour = factor(cyl)))
+#' p + a_geom_point(a_aes(shape = factor(cyl)))
+#' p + a_geom_point(a_aes(size = qsec))
 #'
 #' # Change scales
-#' p + geom_point(aes(colour = cyl)) + scale_colour_gradient(low = "blue")
-#' p + geom_point(aes(shape = factor(cyl))) + scale_shape(solid = FALSE)
+#' p + a_geom_point(a_aes(colour = cyl)) + a_scale_colour_gradient(low = "blue")
+#' p + a_geom_point(a_aes(shape = factor(cyl))) + a_scale_shape(solid = FALSE)
 #'
-#' # Set aesthetics to fixed value
-#' a_plot(mtcars, aes(wt, mpg)) + geom_point(colour = "red", size = 3)
+#' # Set a_aesthetics to fixed value
+#' a_plot(mtcars, a_aes(wt, mpg)) + a_geom_point(colour = "red", size = 3)
 #'
 #' \donttest{
 #' # Varying alpha is useful for large datasets
-#' d <- a_plot(diamonds, aes(carat, price))
-#' d + geom_point(alpha = 1/10)
-#' d + geom_point(alpha = 1/20)
-#' d + geom_point(alpha = 1/100)
+#' d <- a_plot(diamonds, a_aes(carat, price))
+#' d + a_geom_point(alpha = 1/10)
+#' d + a_geom_point(alpha = 1/20)
+#' d + a_geom_point(alpha = 1/100)
 #' }
 #'
 #' # For shapes that have a border (like 21), you can colour the inside and
 #' # outside separately. Use the stroke aesthetic to modify the width of the
 #' # border
-#' a_plot(mtcars, aes(wt, mpg)) +
-#'   geom_point(shape = 21, colour = "black", fill = "white", size = 5, stroke = 5)
+#' a_plot(mtcars, a_aes(wt, mpg)) +
+#'   a_geom_point(shape = 21, colour = "black", fill = "white", size = 5, stroke = 5)
 #'
 #' \donttest{
 #' # You can create interesting shapes by layering multiple points of
 #' # different sizes
-#' p <- a_plot(mtcars, aes(mpg, wt, shape = factor(cyl)))
-#' p + geom_point(aes(colour = factor(cyl)), size = 4) +
-#'   geom_point(colour = "grey90", size = 1.5)
-#' p + geom_point(colour = "black", size = 4.5) +
-#'   geom_point(colour = "pink", size = 4) +
-#'   geom_point(aes(shape = factor(cyl)))
+#' p <- a_plot(mtcars, a_aes(mpg, wt, shape = factor(cyl)))
+#' p + a_geom_point(a_aes(colour = factor(cyl)), size = 4) +
+#'   a_geom_point(colour = "grey90", size = 1.5)
+#' p + a_geom_point(colour = "black", size = 4.5) +
+#'   a_geom_point(colour = "pink", size = 4) +
+#'   a_geom_point(a_aes(shape = factor(cyl)))
 #'
 #' # These extra layers don't usually appear in the legend, but we can
 #' # force their inclusion
-#' p + geom_point(colour = "black", size = 4.5, show.legend = TRUE) +
-#'   geom_point(colour = "pink", size = 4, show.legend = TRUE) +
-#'   geom_point(aes(shape = factor(cyl)))
+#' p + a_geom_point(colour = "black", size = 4.5, show.legend = TRUE) +
+#'   a_geom_point(colour = "pink", size = 4, show.legend = TRUE) +
+#'   a_geom_point(a_aes(shape = factor(cyl)))
 #'
-#' # geom_point warns when missing values have been dropped from the data set
+#' # a_geom_point warns when missing values have been dropped from the data set
 #' # and not plotted, you can turn this off by setting na.rm = TRUE
 #' mtcars2 <- transform(mtcars, mpg = ifelse(runif(32) < 0.2, NA, mpg))
-#' a_plot(mtcars2, aes(wt, mpg)) + geom_point()
-#' a_plot(mtcars2, aes(wt, mpg)) + geom_point(na.rm = TRUE)
+#' a_plot(mtcars2, a_aes(wt, mpg)) + a_geom_point()
+#' a_plot(mtcars2, a_aes(wt, mpg)) + a_geom_point(na.rm = TRUE)
 #' }
-geom_point <- function(mapping = NULL, data = NULL,
-                       stat = "identity", position = "identity",
+a_geom_point <- function(mapping = NULL, data = NULL,
+                       a_stat = "identity", a_position = "identity",
                        ...,
                        na.rm = FALSE,
                        show.legend = NA,
-                       inherit.aes = TRUE) {
-  layer(
+                       inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomPoint,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomPoint,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...
@@ -118,13 +118,13 @@ geom_point <- function(mapping = NULL, data = NULL,
 a_GeomPoint <- a_ggproto("a_GeomPoint", a_Geom,
   required_aes = c("x", "y"),
   non_missing_aes = c("size", "shape"),
-  default_aes = aes(
+  default_aes = a_aes(
     shape = 19, colour = "black", size = 1.5, fill = NA,
     alpha = NA, stroke = 0.5
   ),
 
-  draw_panel = function(data, panel_scales, coord, na.rm = FALSE) {
-    coords <- coord$transform(data, panel_scales)
+  draw_panel = function(data, panel_scales, a_coord, na.rm = FALSE) {
+    coords <- a_coord$transform(data, panel_scales)
     ggname("geom_point",
       pointsGrob(
         coords$x, coords$y,

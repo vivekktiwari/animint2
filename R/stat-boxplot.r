@@ -1,6 +1,6 @@
-#' @rdname geom_boxplot
+#' @rdname a_geom_boxplot
 #' @param coef length of the whiskers as multiple of IQR.  Defaults to 1.5
-#' @inheritParams stat_identity
+#' @inheritParams a_stat_identity
 #' @section Computed variables:
 #' \describe{
 #'   \item{width}{width of boxplot}
@@ -13,21 +13,21 @@
 #'   \item{ymax}{upper whisker = largest observation less than or equal to upper hinge + 1.5 * IQR}
 #' }
 #' @export
-stat_boxplot <- function(mapping = NULL, data = NULL,
-                         geom = "boxplot", position = "dodge",
+a_stat_boxplot <- function(mapping = NULL, data = NULL,
+                         a_geom = "boxplot", a_position = "dodge",
                          ...,
                          coef = 1.5,
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
-  layer(
+                         inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatBoxplot,
-    geom = geom,
-    position = position,
+    a_stat = a_StatBoxplot,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       coef = coef,

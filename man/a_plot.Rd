@@ -6,11 +6,11 @@
 \alias{a_plot.data.frame}
 \title{Create a new a_plot plot.}
 \usage{
-a_plot(data = NULL, mapping = aes(), ..., environment = parent.frame())
+a_plot(data = NULL, mapping = a_aes(), ..., environment = parent.frame())
 }
 \arguments{
 \item{data}{Default dataset to use for plot. If not already a data.frame,
-will be converted to one by \code{\link{fortify}}. If not specified,
+will be converted to one by \code{\link{a_fortify}}. If not specified,
 must be suppled in each layer added to the plot.}
 
 \item{mapping}{Default list of aesthetic mappings to use for plot.
@@ -38,7 +38,7 @@ layers, initialization with \code{a_plot} is recommended.
 
 There are three common ways to invoke \code{a_plot}:
 \itemize{
-   \item \code{a_plot(df, aes(x, y, <other aesthetics>))}
+   \item \code{a_plot(df, a_aes(x, y, <other a_aesthetics>))}
    \item \code{a_plot(df)}
    \item \code{a_plot()}
   }
@@ -63,26 +63,26 @@ ds <- plyr::ddply(df, "gp", plyr::summarise, mean = mean(y), sd = sd(y))
 
 # Declare the data frame and common aesthetics.
 # The summary data frame ds is used to plot
-# larger red points in a second geom_point() layer.
+# larger red points in a second a_geom_point() layer.
 # If the data = argument is not specified, it uses the
 # declared data frame from a_plot(); ditto for the aesthetics.
-a_plot(df, aes(x = gp, y = y)) +
-   geom_point() +
-   geom_point(data = ds, aes(y = mean),
+a_plot(df, a_aes(x = gp, y = y)) +
+   a_geom_point() +
+   a_geom_point(data = ds, a_aes(y = mean),
               colour = 'red', size = 3)
 # Same plot as above, declaring only the data frame in a_plot().
 # Note how the x and y aesthetics must now be declared in
-# each geom_point() layer.
+# each a_geom_point() layer.
 a_plot(df) +
-   geom_point(aes(x = gp, y = y)) +
-   geom_point(data = ds, aes(x = gp, y = mean),
+   a_geom_point(a_aes(x = gp, y = y)) +
+   a_geom_point(data = ds, a_aes(x = gp, y = mean),
                  colour = 'red', size = 3)
 # Set up a skeleton a_plot object and add layers:
 a_plot() +
-  geom_point(data = df, aes(x = gp, y = y)) +
-  geom_point(data = ds, aes(x = gp, y = mean),
+  a_geom_point(data = df, a_aes(x = gp, y = y)) +
+  a_geom_point(data = ds, a_aes(x = gp, y = mean),
                         colour = 'red', size = 3) +
-  geom_errorbar(data = ds, aes(x = gp, y = mean,
+  a_geom_errorbar(data = ds, a_aes(x = gp, y = mean,
                     ymin = mean - sd, ymax = mean + sd),
                     colour = 'red', width = 0.4)
 }

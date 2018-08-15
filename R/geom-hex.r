@@ -3,41 +3,41 @@
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_geom", "hex")}
 #'
-#' @seealso \code{\link{stat_bin2d}} for rectangular binning
-#' @param geom,stat Override the default connection between \code{geom_hex} and
-#'   \code{stat_binhex.}
+#' @seealso \code{\link{a_stat_bin2d}} for rectangular binning
+#' @param a_geom,a_stat Override the default connection between \code{a_geom_hex} and
+#'   \code{a_stat_binhex.}
 #' @export
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @export
 #' @examples
-#' d <- a_plot(diamonds, aes(carat, price))
-#' d + geom_hex()
+#' d <- a_plot(diamonds, a_aes(carat, price))
+#' d + a_geom_hex()
 #'
 #' \donttest{
 #' # You can control the size of the bins by specifying the number of
 #' # bins in each direction:
-#' d + geom_hex(bins = 10)
-#' d + geom_hex(bins = 30)
+#' d + a_geom_hex(bins = 10)
+#' d + a_geom_hex(bins = 30)
 #'
 #' # Or by specifying the width of the bins
-#' d + geom_hex(binwidth = c(1, 1000))
-#' d + geom_hex(binwidth = c(.1, 500))
+#' d + a_geom_hex(binwidth = c(1, 1000))
+#' d + a_geom_hex(binwidth = c(.1, 500))
 #' }
-geom_hex <- function(mapping = NULL, data = NULL,
-                     stat = "binhex", position = "identity",
+a_geom_hex <- function(mapping = NULL, data = NULL,
+                     a_stat = "binhex", a_position = "identity",
                      ...,
                      na.rm = FALSE,
                      show.legend = NA,
-                     inherit.aes = TRUE) {
-  layer(
+                     inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomHex,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomHex,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       na.rm = na.rm,
       ...
@@ -51,21 +51,21 @@ geom_hex <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomHex <- a_ggproto("a_GeomHex", a_Geom,
-  draw_group = function(data, panel_scales, coord) {
-    if (!inherits(coord, "a_CoordCartesian")) {
-      stop("geom_hex() only works with Cartesian coordinates", call. = FALSE)
+  draw_group = function(data, panel_scales, a_coord) {
+    if (!inherits(a_coord, "a_CoordCartesian")) {
+      stop("a_geom_hex() only works with Cartesian coordinates", call. = FALSE)
     }
 
-    coord <- coord$transform(data, panel_scales)
+    a_coord <- a_coord$transform(data, panel_scales)
     ggname("geom_hex", hexGrob(
-      coord$x, coord$y, colour = coord$colour,
-      fill = alpha(coord$fill, coord$alpha)
+      a_coord$x, a_coord$y, colour = a_coord$colour,
+      fill = alpha(a_coord$fill, a_coord$alpha)
     ))
   },
 
   required_aes = c("x", "y"),
 
-  default_aes = aes(colour = NA, fill = "grey50", size = 0.5, alpha = NA),
+  default_aes = a_aes(colour = NA, fill = "grey50", size = 0.5, alpha = NA),
 
   draw_key = a_draw_key_polygon
 )

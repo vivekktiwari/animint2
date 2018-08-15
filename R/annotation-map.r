@@ -4,7 +4,7 @@ NULL
 #' Annotation: maps.
 #'
 #' @param map data frame representing a map.  Most map objects can be
-#'   converted into the right format by using \code{\link{fortify}}
+#'   converted into the right format by using \code{\link{a_fortify}}
 #' @param ... other arguments used to modify aesthetics
 #' @export
 #' @examples
@@ -12,20 +12,20 @@ NULL
 #' usamap <- map_data("state")
 #'
 #' seal.sub <- subset(seals, long > -130 & lat < 45 & lat > 40)
-#' a_plot(seal.sub, aes(x = long, y = lat)) +
-#'   annotation_map(usamap, fill = "NA", colour = "grey50") +
-#'   geom_segment(aes(xend = long + delta_long, yend = lat + delta_lat))
+#' a_plot(seal.sub, a_aes(x = long, y = lat)) +
+#'   a_annotation_map(usamap, fill = "NA", colour = "grey50") +
+#'   a_geom_segment(a_aes(xend = long + delta_long, yend = lat + delta_lat))
 #'
 #' seal2 <- transform(seal.sub,
 #'   latr = cut(lat, 2),
 #'   longr = cut(long, 2))
 #'
-#' a_plot(seal2,  aes(x = long, y = lat)) +
-#'   annotation_map(usamap, fill = "NA", colour = "grey50") +
-#'   geom_segment(aes(xend = long + delta_long, yend = lat + delta_lat)) +
+#' a_plot(seal2,  a_aes(x = long, y = lat)) +
+#'   a_annotation_map(usamap, fill = "NA", colour = "grey50") +
+#'   a_geom_segment(a_aes(xend = long + delta_long, yend = lat + delta_lat)) +
 #'   a_facet_grid(latr ~ longr, scales = "free", space = "free")
 #' }
-annotation_map <- function(map, ...) {
+a_annotation_map <- function(map, ...) {
   # Get map input into correct form
   stopifnot(is.data.frame(map))
   if (!is.null(map$lat)) map$y <- map$lat
@@ -33,12 +33,12 @@ annotation_map <- function(map, ...) {
   if (!is.null(map$region)) map$id <- map$region
   stopifnot(all(c("x", "y", "id") %in% names(map)))
 
-  layer(
+  a_layer(
     data = NULL,
-    stat = a_StatIdentity,
-    geom = a_GeomAnnotationMap,
-    position = a_PositionIdentity,
-    inherit.aes = FALSE,
+    a_stat = a_StatIdentity,
+    a_geom = a_GeomAnnotationMap,
+    a_position = a_PositionIdentity,
+    inherit.a_aes = FALSE,
     params = list(map = map, ...)
   )
 }
@@ -53,10 +53,10 @@ a_GeomAnnotationMap <- a_ggproto("a_GeomAnnotationMap", a_GeomMap,
     data
   },
 
-  draw_panel = function(data, panel_scales, coord, map) {
+  draw_panel = function(data, panel_scales, a_coord, map) {
     # Munch, then set up id variable for polygonGrob -
     # must be sequential integers
-    coords <- coord_munch(coord, map, panel_scales)
+    coords <- a_coord_munch(a_coord, map, panel_scales)
     coords$group <- coords$group %||% coords$id
     grob_id <- match(coords$group, unique(coords$group))
 

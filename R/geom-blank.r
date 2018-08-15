@@ -4,24 +4,24 @@
 #' scales between different plots.
 #'
 #' @export
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @examples
-#' a_plot(mtcars, aes(wt, mpg))
+#' a_plot(mtcars, a_aes(wt, mpg))
 #' # Nothing to see here!
-geom_blank <- function(mapping = NULL, data = NULL,
-                       stat = "identity", position = "identity",
+a_geom_blank <- function(mapping = NULL, data = NULL,
+                       a_stat = "identity", a_position = "identity",
                        ...,
                        show.legend = NA,
-                       inherit.aes = TRUE) {
-  layer(
+                       inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomBlank,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomBlank,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(...)
   )
 }
@@ -32,7 +32,7 @@ geom_blank <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomBlank <- a_ggproto("a_GeomBlank", a_Geom,
-  default_aes = aes(),
+  default_aes = a_aes(),
   handle_na = function(data, params) data,
   draw_panel = function(...) nullGrob()
 )

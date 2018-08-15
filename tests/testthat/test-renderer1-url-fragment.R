@@ -3,11 +3,11 @@ acontext("url fragment identifier")
 iris$observation <- 1:nrow(iris)
 viz <- list(
   petal=a_plot()+
-    geom_point(aes(Petal.Width, Petal.Length, fill=Species,
+    a_geom_point(a_aes(Petal.Width, Petal.Length, fill=Species,
                    id=paste0("petal", observation)),
                clickSelects="observation", data=iris),
   sepal=a_plot()+
-    geom_point(aes(Sepal.Width, Sepal.Length, fill=Species,
+    a_geom_point(a_aes(Sepal.Width, Sepal.Length, fill=Species,
                    id=paste0("sepal", observation)),
                clickSelects="observation", data=iris),
   first=list(observation=5))
@@ -15,14 +15,14 @@ viz <- list(
 info <- animint2HTML(viz)
 
 test_that("all species are selected for url with no selection", {
-  opacity.str <- getStyleValue(info$html, "//td[@class='legend_entry_label']", "opacity")
+  opacity.str <- getStyleValue(info$html, "//td[@class='legend_entry_a_label']", "opacity")
   opacity.num <- as.numeric(opacity.str)
   opacity.exp <- rep(1, 6)
   expect_equal(opacity.num, opacity.exp)
 })
 
 test_that("one observation selected for url with no selection", {
-  circle.xpath <- "//circle[@class='geom']"
+  circle.xpath <- "//circle[@class='a_geom']"
   node.list <- getNodeSet(info$html, circle.xpath)
   opacity.str <- getStyleValue(info$html, circle.xpath, "opacity")
   names(opacity.str) <- sapply(node.list, xmlAttrs)["id",]
@@ -40,7 +40,7 @@ Sys.sleep(10)
 html <- getHTML()
 
 test_that("one species is selected for url with selection", {
-  entry.xpath <- "//td[@class='legend_entry_label']"
+  entry.xpath <- "//td[@class='legend_entry_a_label']"
   node.list <- getNodeSet(html, entry.xpath)
   opacity.str <- getStyleValue(html, entry.xpath, "opacity")
   opacity.num <- as.numeric(opacity.str)

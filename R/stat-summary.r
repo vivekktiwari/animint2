@@ -1,17 +1,17 @@
 #' Summarise y values at unique/binned x x.
 #'
-#' \code{stat_summary} operates on unique \code{x}; \code{stat_summary_bin}
+#' \code{a_stat_summary} operates on unique \code{x}; \code{a_stat_summary_bin}
 #' operators on binned \code{x}. They are more flexible versions of
-#' \code{\link{stat_bin}}: instead of just counting, they can compute any
+#' \code{\link{a_stat_bin}}: instead of just counting, they can compute any
 #' aggregate.
 #'
 #' @section Aesthetics:
 #' \Sexpr[results=rd,stage=build]{animint2:::rd_aesthetics("a_stat", "summary")}
 #'
-#' @seealso \code{\link{geom_errorbar}}, \code{\link{geom_pointrange}},
-#'  \code{\link{geom_linerange}}, \code{\link{geom_crossbar}} for geoms to
+#' @seealso \code{\link{a_geom_errorbar}}, \code{\link{a_geom_pointrange}},
+#'  \code{\link{a_geom_linerange}}, \code{\link{a_geom_crossbar}} for geoms to
 #'  display summarised data
-#' @inheritParams stat_identity
+#' @inheritParams a_stat_identity
 #' @section Summary functions:
 #' You can either supply summary functions individually (\code{fun.y},
 #' \code{fun.ymax}, \code{fun.ymin}), or as a single function (\code{fun.data}):
@@ -32,7 +32,7 @@
 #' multiple values at once (e.g. ymin and ymax), use \code{fun.data}.
 #'
 #' If no aggregation functions are suppled, will default to
-#' \code{\link{mean_se}}.
+#' \code{\link{a_mean_se}}.
 #'
 #' @param fun.data A function that is given the complete data and should
 #'   return a data frame with variables \code{ymin}, \code{y}, and \code{ymax}.
@@ -42,49 +42,49 @@
 #' @param fun.args Optional additional arguments passed on to the functions.
 #' @export
 #' @examples
-#' d <- a_plot(mtcars, aes(cyl, mpg)) + geom_point()
+#' d <- a_plot(mtcars, a_aes(cyl, mpg)) + a_geom_point()
 #'
 #' # You can supply individual functions to summarise the value at
 #' # each x:
-#' d + stat_summary(fun.y = "median", colour = "red", size = 2, geom = "point")
-#' d + stat_summary(fun.y = "mean", colour = "red", size = 2, geom = "point")
-#' d + aes(colour = factor(vs)) + stat_summary(fun.y = mean, geom="line")
+#' d + a_stat_summary(fun.y = "median", colour = "red", size = 2, a_geom = "point")
+#' d + a_stat_summary(fun.y = "mean", colour = "red", size = 2, a_geom = "point")
+#' d + a_aes(colour = factor(vs)) + a_stat_summary(fun.y = mean, a_geom="line")
 #'
-#' d + stat_summary(fun.y = mean, fun.ymin = min, fun.ymax = max,
+#' d + a_stat_summary(fun.y = mean, fun.ymin = min, fun.ymax = max,
 #'   colour = "red")
 #'
-#' d <- a_plot(diamonds, aes(cut))
-#' d + geom_bar()
-#' d + stat_summary_bin(aes(y = price), fun.y = "mean", geom = "bar")
+#' d <- a_plot(diamonds, a_aes(cut))
+#' d + a_geom_bar()
+#' d + a_stat_summary_bin(a_aes(y = price), fun.y = "mean", a_geom = "bar")
 #'
 #' \donttest{
 #' # Don't use ylim to zoom into a summary plot - this throws the
 #' # data away
-#' p <- a_plot(mtcars, aes(cyl, mpg)) +
-#'   stat_summary(fun.y = "mean", geom = "point")
+#' p <- a_plot(mtcars, a_aes(cyl, mpg)) +
+#'   a_stat_summary(fun.y = "mean", a_geom = "point")
 #' p
 #' p + ylim(15, 30)
-#' # Instead use coord_cartesian
-#' p + coord_cartesian(ylim = c(15, 30))
+#' # Instead use a_coord_cartesian
+#' p + a_coord_cartesian(ylim = c(15, 30))
 #'
 #' # A set of useful summary functions is provided from the Hmisc package:
-#' stat_sum_df <- function(fun, geom="crossbar", ...) {
-#'   stat_summary(fun.data = fun, colour = "red", geom = geom, width = 0.2, ...)
+#' a_stat_sum_df <- function(fun, a_geom="crossbar", ...) {
+#'   a_stat_summary(fun.data = fun, colour = "red", a_geom = a_geom, width = 0.2, ...)
 #' }
-#' d <- a_plot(mtcars, aes(cyl, mpg)) + geom_point()
-#' # The crossbar geom needs grouping to be specified when used with
+#' d <- a_plot(mtcars, a_aes(cyl, mpg)) + a_geom_point()
+#' # The crossbar a_geom needs grouping to be specified when used with
 #' # a continuous x axis.
-#' d + stat_sum_df("mean_cl_boot", mapping = aes(group = cyl))
-#' d + stat_sum_df("mean_sdl", mapping = aes(group = cyl))
-#' d + stat_sum_df("mean_sdl", fun.args = list(mult = 1), mapping = aes(group = cyl))
-#' d + stat_sum_df("median_hilow", mapping = aes(group = cyl))
+#' d + a_stat_sum_df("a_mean_cl_boot", mapping = a_aes(group = cyl))
+#' d + a_stat_sum_df("a_mean_sdl", mapping = a_aes(group = cyl))
+#' d + a_stat_sum_df("a_mean_sdl", fun.args = list(mult = 1), mapping = a_aes(group = cyl))
+#' d + a_stat_sum_df("a_median_hilow", mapping = a_aes(group = cyl))
 #'
 #' # An example with highly skewed distributions:
 #' if (require("ggplot2movies")) {
 #' set.seed(596)
 #' mov <- movies[sample(nrow(movies), 1000), ]
-#'  m2 <- a_plot(mov, aes(x = factor(round(rating)), y = votes)) + geom_point()
-#'  m2 <- m2 + stat_summary(fun.data = "mean_cl_boot", geom = "crossbar",
+#'  m2 <- a_plot(mov, a_aes(x = factor(round(rating)), y = votes)) + a_geom_point()
+#'  m2 <- m2 + a_stat_summary(fun.data = "a_mean_cl_boot", a_geom = "crossbar",
 #'                          colour = "red", width = 0.3) + xlab("rating")
 #' m2
 #' # Notice how the overplotting skews off visual perception of the mean
@@ -94,16 +94,16 @@
 #'
 #' # Transforming the scale means the data are transformed
 #' # first, after which statistics are computed:
-#' m2 + scale_y_log10()
+#' m2 + a_scale_y_log10()
 #' # Transforming the coordinate system occurs after the
 #' # statistic has been computed. This means we're calculating the summary on the raw data
-#' # and stretching the geoms onto the log scale.  Compare the widths of the
+#' # and stretching the a_geoms onto the log scale.  Compare the widths of the
 #' # standard errors.
-#' m2 + coord_trans(y="log10")
+#' m2 + a_coord_trans(y="log10")
 #' }
 #' }
-stat_summary <- function(mapping = NULL, data = NULL,
-                         geom = "pointrange", position = "identity",
+a_stat_summary <- function(mapping = NULL, data = NULL,
+                         a_geom = "pointrange", a_position = "identity",
                          ...,
                          fun.data = NULL,
                          fun.y = NULL,
@@ -112,15 +112,15 @@ stat_summary <- function(mapping = NULL, data = NULL,
                          fun.args = list(),
                          na.rm = FALSE,
                          show.legend = NA,
-                         inherit.aes = TRUE) {
-  layer(
+                         inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatSummary,
-    geom = geom,
-    position = position,
+    a_stat = a_StatSummary,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       fun.data = fun.data,
       fun.y = fun.y,
@@ -144,7 +144,7 @@ a_StatSummary <- a_ggproto("a_StatSummary", a_Stat,
                      fun.ymax = NULL, fun.ymin = NULL, fun.args = list(),
                      na.rm = FALSE) {
 
-    fun <- make_summary_fun(fun.data, fun.y, fun.ymax, fun.ymin, fun.args)
+    fun <- a_make_summary_fun(fun.data, fun.y, fun.ymax, fun.ymin, fun.args)
     summarise_by_x(data, fun)
   }
 )
@@ -152,7 +152,7 @@ a_StatSummary <- a_ggproto("a_StatSummary", a_Stat,
 # Summarise a data.frame by parts
 # Summarise a data frame by unique value of x
 #
-# This function is used by \code{\link{stat_summary}} to break a
+# This function is used by \code{\link{a_stat_summary}} to break a
 # data.frame into pieces, summarise each piece, and join the pieces
 # back together, retaining original columns unaffected by the summary.
 #
@@ -170,7 +170,7 @@ summarise_by_x <- function(data, summary, ...) {
 }
 
 #' Wrap up a selection of summary functions from Hmisc to make it easy to use
-#' with \code{\link{stat_summary}}.
+#' with \code{\link{a_stat_summary}}.
 #'
 #' See the Hmisc documentation for details of their options.
 #'
@@ -182,7 +182,7 @@ summarise_by_x <- function(data, summary, ...) {
 #' @name hmisc
 NULL
 
-wrap_hmisc <- function(fun) {
+a_wrap_hmisc <- function(fun) {
 
   function(x, ...) {
     if (!requireNamespace("Hmisc", quietly = TRUE))
@@ -200,24 +200,24 @@ wrap_hmisc <- function(fun) {
 }
 #' @export
 #' @rdname hmisc
-mean_cl_boot <- wrap_hmisc("smean.cl.boot")
+a_mean_cl_boot <- a_wrap_hmisc("smean.cl.boot")
 #' @export
 #' @rdname hmisc
-mean_cl_normal <- wrap_hmisc("smean.cl.normal")
+a_mean_cl_normal <- a_wrap_hmisc("smean.cl.normal")
 #' @export
 #' @rdname hmisc
-mean_sdl <- wrap_hmisc("smean.sdl")
+a_mean_sdl <- a_wrap_hmisc("smean.sdl")
 #' @export
 #' @rdname hmisc
-median_hilow <- wrap_hmisc("smedian.hilow")
+a_median_hilow <- a_wrap_hmisc("smedian.hilow")
 
 #' Calculate mean and standard errors on either side.
 #'
 #' @param x numeric vector
 #' @param mult number of multiples of standard error
-#' @seealso for use with \code{\link{stat_summary}}
+#' @seealso for use with \code{\link{a_stat_summary}}
 #' @export
-mean_se <- function(x, mult = 1) {
+a_mean_se <- function(x, mult = 1) {
   x <- stats::na.omit(x)
   se <- mult * sqrt(stats::var(x) / length(x))
   mean <- mean(x)

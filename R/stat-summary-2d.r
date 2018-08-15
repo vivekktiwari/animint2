@@ -1,8 +1,8 @@
 #' Bin and summarise in 2d (rectangle & hexagons)
 #'
-#' \code{stat_summary_2d} is a 2d variation of \code{\link{stat_summary}}.
-#' \code{stat_summary_hex} is a hexagonal variation of
-#' \code{\link{stat_summary_2d}}. The data are divided into bins defined
+#' \code{a_stat_summary_2d} is a 2d variation of \code{\link{a_stat_summary}}.
+#' \code{a_stat_summary_hex} is a hexagonal variation of
+#' \code{\link{a_stat_summary_2d}}. The data are divided into bins defined
 #' by \code{x} and \code{y}, and then the values of \code{z} in each cell is
 #' are summarised with \code{fun}.
 #'
@@ -17,29 +17,29 @@
 #'   \item{x,y}{Location}
 #'   \item{value}{Value of summary statistic.}
 #' }
-#' @seealso \code{\link{stat_summary_hex}} for hexagonal summarization.
-#'   \code{\link{stat_bin2d}} for the binning options.
-#' @inheritParams layer
-#' @inheritParams geom_point
-#' @inheritParams stat_bin_2d
+#' @seealso \code{\link{a_stat_summary_hex}} for hexagonal summarization.
+#'   \code{\link{a_stat_bin2d}} for the binning options.
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
+#' @inheritParams a_stat_bin_2d
 #' @param drop drop if the output of \code{fun} is \code{NA}.
 #' @param fun function for summary.
 #' @param fun.args A list of extra arguments to pass to \code{fun}
 #' @export
 #' @examples
-#' d <- a_plot(diamonds, aes(carat, depth, z = price))
-#' d + stat_summary_2d()
+#' d <- a_plot(diamonds, a_aes(carat, depth, z = price))
+#' d + a_stat_summary_2d()
 #'
 #' # Specifying function
-#' d + stat_summary_2d(fun = function(x) sum(x^2))
-#' d + stat_summary_2d(fun = var)
-#' d + stat_summary_2d(fun = "quantile", fun.args = list(probs = 0.1))
+#' d + a_stat_summary_2d(fun = function(x) sum(x^2))
+#' d + a_stat_summary_2d(fun = var)
+#' d + a_stat_summary_2d(fun = "quantile", fun.args = list(probs = 0.1))
 #'
 #' if (requireNamespace("hexbin")) {
-#' d + stat_summary_hex()
+#' d + a_stat_summary_hex()
 #' }
-stat_summary_2d <- function(mapping = NULL, data = NULL,
-                            geom = "tile", position = "identity",
+a_stat_summary_2d <- function(mapping = NULL, data = NULL,
+                            a_geom = "tile", a_position = "identity",
                             ...,
                             bins = 30,
                             binwidth = NULL,
@@ -48,15 +48,15 @@ stat_summary_2d <- function(mapping = NULL, data = NULL,
                             fun.args = list(),
                             na.rm = FALSE,
                             show.legend = NA,
-                            inherit.aes = TRUE) {
-  layer(
+                            inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatSummary2d,
-    geom = geom,
-    position = position,
+    a_stat = a_StatSummary2d,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       bins = bins,
       binwidth = binwidth,
@@ -70,11 +70,11 @@ stat_summary_2d <- function(mapping = NULL, data = NULL,
 }
 
 #' @export
-#' @rdname stat_summary_2d
+#' @rdname a_stat_summary_2d
 #' @usage NULL
-stat_summary2d <- function(...) {
-  message("Please use stat_summary_2d() instead")
-  stat_summary_2d(...)
+a_stat_summary2d <- function(...) {
+  message("Please use a_stat_summary_2d() instead")
+  a_stat_summary_2d(...)
 }
 
 #' @rdname animint2-ggproto
@@ -82,7 +82,7 @@ stat_summary2d <- function(...) {
 #' @usage NULL
 #' @export
 a_StatSummary2d <- a_ggproto("a_StatSummary2d", a_Stat,
-  default_aes = aes(fill = ..value..),
+  default_aes = a_aes(fill = ..value..),
 
   required_aes = c("x", "y", "z"),
 

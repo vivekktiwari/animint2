@@ -2,33 +2,33 @@
 NULL
 
 #' @export
-#' @rdname geom_tile
+#' @rdname a_geom_tile
 #' @param hjust,vjust horizontal and vertical justification of the grob.  Each
 #'   justification value should be a number between 0 and 1.  Defaults to 0.5
 #'   for both, centering each pixel over its data location.
 #' @param interpolate If \code{TRUE} interpolate linearly, if \code{FALSE}
 #'   (the default) don't interpolate.
-geom_raster <- function(mapping = NULL, data = NULL,
-                        stat = "identity", position = "identity",
+a_geom_raster <- function(mapping = NULL, data = NULL,
+                        a_stat = "identity", a_position = "identity",
                         ...,
                         hjust = 0.5,
                         vjust = 0.5,
                         interpolate = FALSE,
                         na.rm = FALSE,
                         show.legend = NA,
-                        inherit.aes = TRUE)
+                        inherit.a_aes = TRUE)
 {
   stopifnot(is.numeric(hjust), length(hjust) == 1)
   stopifnot(is.numeric(vjust), length(vjust) == 1)
 
-  layer(
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = stat,
-    geom = a_GeomRaster,
-    position = position,
+    a_stat = a_stat,
+    a_geom = a_GeomRaster,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       hjust = hjust,
       vjust = vjust,
@@ -44,7 +44,7 @@ geom_raster <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_GeomRaster <- a_ggproto("a_GeomRaster", a_Geom,
-  default_aes = aes(fill = "grey20", alpha = NA),
+  default_aes = a_aes(fill = "grey20", alpha = NA),
   non_missing_aes = "fill",
   required_aes = c("x", "y"),
 
@@ -62,12 +62,12 @@ a_GeomRaster <- a_ggproto("a_GeomRaster", a_Geom,
     data
   },
 
-  draw_panel = function(data, panel_scales, coord, interpolate = FALSE,
+  draw_panel = function(data, panel_scales, a_coord, interpolate = FALSE,
                         hjust = 0.5, vjust = 0.5) {
-    if (!inherits(coord, "a_CoordCartesian")) {
-      stop("geom_raster only works with Cartesian coordinates", call. = FALSE)
+    if (!inherits(a_coord, "a_CoordCartesian")) {
+      stop("a_geom_raster only works with Cartesian coordinates", call. = FALSE)
     }
-    data <- coord$transform(data, panel_scales)
+    data <- a_coord$transform(data, panel_scales)
 
     # Convert vector of data to raster
     x_pos <- as.integer((data$x - min(data$x)) / resolution(data$x, FALSE))

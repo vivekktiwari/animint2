@@ -1,11 +1,11 @@
 #' @section a_Positions:
 #'
-#' All \code{position_*} functions (like \code{position_dodge}) return a
+#' All \code{a_position_*} functions (like \code{a_position_dodge}) return a
 #' \code{a_Position*} object (like \code{a_PositionDodge}). The \code{a_Position*}
 #' object is responsible for adjusting the position of overlapping geoms.
 #'
-#' The way that the \code{position_*} functions work is slightly different from
-#' the \code{geom_*} and \code{stat_*} functions, because a \code{position_*}
+#' The way that the \code{a_position_*} functions work is slightly different from
+#' the \code{a_geom_*} and \code{a_stat_*} functions, because a \code{a_position_*}
 #' function actually "instantiates" the \code{a_Position*} object by creating a
 #' descendant, and returns that.
 #'
@@ -80,7 +80,7 @@ a_Position <- a_ggproto("a_Position",
 #' @keywords internal
 #' @export
 transform_position <- function(df, trans_x = NULL, trans_y = NULL, ...) {
-  scales <- aes_to_scale(names(df))
+  scales <- a_aes_to_scale(names(df))
 
   if (!is.null(trans_x)) {
     df[scales == "x"] <- lapply(df[scales == "x"], trans_x, ...)

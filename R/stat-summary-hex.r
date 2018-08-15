@@ -1,8 +1,8 @@
 #' @export
-#' @rdname stat_summary_2d
-#' @inheritParams stat_bin_hex
-stat_summary_hex <- function(mapping = NULL, data = NULL,
-                             geom = "hex", position = "identity",
+#' @rdname a_stat_summary_2d
+#' @inheritParams a_stat_bin_hex
+a_stat_summary_hex <- function(mapping = NULL, data = NULL,
+                             a_geom = "hex", a_position = "identity",
                              ...,
                              bins = 30,
                              binwidth = NULL,
@@ -11,15 +11,15 @@ stat_summary_hex <- function(mapping = NULL, data = NULL,
                              fun.args = list(),
                              na.rm = FALSE,
                              show.legend = NA,
-                             inherit.aes = TRUE) {
-  layer(
+                             inherit.a_aes = TRUE) {
+  a_layer(
     data = data,
     mapping = mapping,
-    stat = a_StatSummaryHex,
-    geom = geom,
-    position = position,
+    a_stat = a_StatSummaryHex,
+    a_geom = a_geom,
+    a_position = a_position,
     show.legend = show.legend,
-    inherit.aes = inherit.aes,
+    inherit.a_aes = inherit.a_aes,
     params = list(
       bins = bins,
       binwidth = binwidth,
@@ -37,13 +37,13 @@ stat_summary_hex <- function(mapping = NULL, data = NULL,
 #' @usage NULL
 #' @export
 a_StatSummaryHex <- a_ggproto("a_StatSummaryHex", a_Stat,
-  default_aes = aes(fill = ..value..),
+  default_aes = a_aes(fill = ..value..),
 
   required_aes = c("x", "y", "z"),
 
   compute_group = function(data, scales, binwidth = NULL, bins = 30, drop = TRUE,
                            fun = "mean", fun.args = list()) {
-    try_require("hexbin", "stat_summary_hex")
+    try_require("hexbin", "a_stat_summary_hex")
 
     binwidth <- binwidth %||% hex_binwidth(bins, scales)
     hexBinSummarise(data$x, data$y, data$z, binwidth,

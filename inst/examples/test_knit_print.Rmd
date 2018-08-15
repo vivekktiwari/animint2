@@ -16,8 +16,8 @@ knit_meta()
   
 ```{r plot-1-top}
 library(animint2)
-dat <- data.frame(x = 1:10, y = 1:10, label = rep(c("a178", "b934"), 5))
-q2 <- list(q = qplot(x, y, data = dat, colour = label, 
+dat <- data.frame(x = 1:10, y = 1:10, a_label = rep(c("a178", "b934"), 5))
+q2 <- list(q = qplot(x, y, data = dat, colour = a_label, 
                      xlab = "first plot with color legend"))
 structure(q2, class = "animint")
 ```
@@ -25,7 +25,7 @@ structure(q2, class = "animint")
 Clicking on the plot above should not affect the plot below.
 
 ```{r plot.1.bottom}
-q1 <- list(q = qplot(x, y, data = dat, colour = label, 
+q1 <- list(q = qplot(x, y, data = dat, colour = a_label, 
                      xlab = "second plot with color legend"))
 structure(q1, class = "animint")
 ```
@@ -48,24 +48,24 @@ signal.colors <- c(estimate="#0adb0a",
                    latent="#0098ef")
 breakpointError <- 
   list(signal=a_plot()+
-         geom_point(aes(position, signal), showSelected="bases.per.probe",
+         a_geom_point(a_aes(position, signal), showSelected="bases.per.probe",
                     data=breakpoints$signals)+
-         geom_line(aes(position, signal), colour=signal.colors[["latent"]],
+         a_geom_line(a_aes(position, signal), colour=signal.colors[["latent"]],
                    data=breakpoints$imprecision)+
-         geom_segment(aes(first.base, mean, xend=last.base, yend=mean),
+         a_geom_segment(a_aes(first.base, mean, xend=last.base, yend=mean),
                           showSelected=c("segments", "bases.per.probe"),
                       colour=signal.colors[["estimate"]],
                       data=breakpoints$segments)+
-         geom_vline(aes(xintercept=base),
+         a_geom_vline(a_aes(xintercept=base),
                         showSelected=c("segments", "bases.per.probe"),
                     colour=signal.colors[["estimate"]],
                     linetype="dashed",
                     data=breakpoints$breaks),
        error=a_plot()+
-         geom_vline(aes(xintercept=segments),
+         a_geom_vline(a_aes(xintercept=segments),
                     clickSelects="segments",
                     data=only.segments, lwd=17, alpha=1/2)+
-         geom_line(aes(segments, error, group=bases.per.probe),
+         a_geom_line(a_aes(segments, error, group=bases.per.probe),
                    clickSelects="bases.per.probe",
                    data=only.error, lwd=4),
        first=list(segments=6))

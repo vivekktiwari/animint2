@@ -5,26 +5,26 @@ data(worldPop)
 ## inspired by polychartjs.
 
 popPlots <-list(bars=a_plot()
-                +geom_bar(aes(x=subcontinent, y=population,
+                +a_geom_bar(a_aes(x=subcontinent, y=population,
                               fill=subcontinent,alpha=.5),
                           clickSelects="subcontinent",
-                          data=worldPop, stat="identity",
-                          position="identity")+ coord_flip(),
+                          data=worldPop, a_stat="identity",
+                          a_position="identity")+ a_coord_flip(),
 
-lines=a_plot()+ geom_point(aes(year, population, colour=type),
+lines=a_plot()+ a_geom_point(a_aes(year, population, colour=type),
                            data=worldPop, size=4, alpha=1/4)+
-  geom_line(aes(year, population, group=subcontinent),
+  a_geom_line(a_aes(year, population, group=subcontinent),
             clickSelects="subcontinent", data=worldPop, size=4, alpha=3/4))
 
 animint2dir(popPlots)
 
 hide.y <- a_plot()+
-  geom_bar(aes(x=subcontinent, y=population, fill=subcontinent),
+  a_geom_bar(a_aes(x=subcontinent, y=population, fill=subcontinent),
            clickSelects="subcontinent",
            data=worldPop, 
-           stat="identity", position="identity")+ coord_flip()+
-  theme(axis.line.y=element_blank(), axis.text.y=element_blank(), 
-        axis.ticks.y=element_blank(), axis.title.y=element_blank())
+           a_stat="identity", a_position="identity")+ a_coord_flip()+
+  a_theme(axis.line.y=a_element_blank(), axis.text.y=a_element_blank(), 
+        axis.ticks.y=a_element_blank(), axis.title.y=a_element_blank())
 print(hide.y)
 pop.no.y <- popPlots
 pop.no.y$bars <- hide.y

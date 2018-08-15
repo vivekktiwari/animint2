@@ -15,21 +15,21 @@ last.iteration <- subset(ChromHMMinit$metrics, iteration==100)
 viz <- list(
   parameters=a_plot()+
     ggtitle("parameters at selected iteration")+
-    scale_fill_gradient(low="white", high="blue")+
-    geom_tile(aes(state, experiment, fill=frequency,
+    a_scale_fill_gradient(low="white", high="blue")+
+    a_geom_tile(a_aes(state, experiment, fill=frequency,
                   key=paste(state, experiment)),
               showSelected=c("repeat.fac", "iteration"),
               ##chunk_vars=c("repeat.fac"),
               data=data.frame(ChromHMMinit$emission, parameters="emission"))+
-    scale_color_gradient(low="white", high="red")+
-    theme_bw()+
-    theme_animint(height=500, width=400)+
-    theme(panel.margin=grid::unit(0, "cm"))+
+    a_scale_color_gradient(low="white", high="red")+
+    a_theme_bw()+
+    a_theme_animint(height=500, width=400)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
     a_facet_grid(parameters ~ .,
                space="free",
                scales="free_y")+
-    scale_y_discrete(drop=FALSE)+
-    geom_point(aes(state.to, state.from, color=probability,
+    a_scale_y_discrete(drop=FALSE)+
+    a_geom_point(a_aes(state.to, state.from, color=probability,
                    key=paste(state.from, state.to)),
                showSelected=c("repeat.fac", "iteration"),
                size=8,
@@ -39,28 +39,28 @@ viz <- list(
   metrics=a_plot()+
     ggtitle("convergence metrics, select iteration")+
     make_tallrect(ChromHMMinit$metrics, "iteration")+
-    geom_line(aes(iteration, metric.value,
+    a_geom_line(a_aes(iteration, metric.value,
                   group=repeat.fac),
               clickSelects="repeat.fac",
               size=3,
               alpha=0.6,
               data=subset(ChromHMMinit$metrics, metric.name != "Change"))+
-    theme_bw()+
-    theme_animint(height=500)+
-    theme(panel.margin=grid::unit(0, "cm"))+
+    a_theme_bw()+
+    a_theme_animint(height=500)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
     a_facet_grid(metric.name ~ ., scales="free_y"),
   last=a_plot()+
     ggtitle("last iteration, select initialization")+
-    theme_bw()+
-    theme_animint(height=500, width=400)+
-    theme(panel.margin=grid::unit(0, "cm"))+
+    a_theme_bw()+
+    a_theme_animint(height=500, width=400)+
+    a_theme(panel.margin=grid::unit(0, "cm"))+
     a_facet_grid(metric.name ~ ., space="fixed", scales="free")+
-    geom_point(aes(repeat.fac, metric.value),
+    a_geom_point(a_aes(repeat.fac, metric.value),
                clickSelects="repeat.fac",
                size=5,
                data=subset(last.iteration, metric.name != "Change"))+
-    scale_x_discrete("random initialization")+
-    scale_y_continuous(""),
+    a_scale_x_discrete("random initialization")+
+    a_scale_y_continuous(""),
   duration=list(iteration=500),
   first=list(iteration=100),
   time=list(variable="iteration", ms=500),
@@ -71,7 +71,7 @@ system.time({
 })
 
 getFill <- function(html=getHTML()){
-  getStyleValue(html, '//g[@class="geom2_point_parameters"]//circle', "fill")
+  getStyleValue(html, '//g[@class="a_geom2_point_parameters"]//circle', "fill")
 }
 
 test_that("animation starts by default", {

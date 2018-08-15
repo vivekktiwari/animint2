@@ -11,56 +11,56 @@
 #' set. This means that layers created with this function will never
 #' affect the legend.
 #'
-#' @param geom name of geom to use for annotation
+#' @param a_geom name of a_geom to use for annotation
 #' @param x,y,xmin,ymin,xmax,ymax,xend,yend positioning aesthetics -
 #'   you must specify at least one of these.
-#' @inheritParams layer
-#' @inheritParams geom_point
+#' @inheritParams a_layer
+#' @inheritParams a_geom_point
 #' @export
 #' @examples
-#' p <- a_plot(mtcars, aes(x = wt, y = mpg)) + geom_point()
-#' p + annotate("text", x = 4, y = 25, label = "Some text")
-#' p + annotate("text", x = 2:5, y = 25, label = "Some text")
-#' p + annotate("rect", xmin = 3, xmax = 4.2, ymin = 12, ymax = 21,
+#' p <- a_plot(mtcars, a_aes(x = wt, y = mpg)) + a_geom_point()
+#' p + a_annotate("text", x = 4, y = 25, a_label = "Some text")
+#' p + a_annotate("text", x = 2:5, y = 25, a_label = "Some text")
+#' p + a_annotate("rect", xmin = 3, xmax = 4.2, ymin = 12, ymax = 21,
 #'   alpha = .2)
-#' p + annotate("segment", x = 2.5, xend = 4, y = 15, yend = 25,
+#' p + a_annotate("segment", x = 2.5, xend = 4, y = 15, yend = 25,
 #'   colour = "blue")
-#' p + annotate("pointrange", x = 3.5, y = 20, ymin = 12, ymax = 28,
+#' p + a_annotate("pointrange", x = 3.5, y = 20, ymin = 12, ymax = 28,
 #'   colour = "red", size = 1.5)
 #'
-#' p + annotate("text", x = 2:3, y = 20:21, label = c("my label", "label 2"))
-annotate <- function(geom, x = NULL, y = NULL, xmin = NULL, xmax = NULL,
+#' p + a_annotate("text", x = 2:3, y = 20:21, a_label = c("my label", "label 2"))
+a_annotate <- function(a_geom, x = NULL, y = NULL, xmin = NULL, xmax = NULL,
                      ymin = NULL, ymax = NULL, xend = NULL, yend = NULL, ...,
                      na.rm = FALSE) {
 
-  position <- compact(list(
+  a_position <- compact(list(
     x = x, xmin = xmin, xmax = xmax, xend = xend,
     y = y, ymin = ymin, ymax = ymax, yend = yend
   ))
-  aesthetics <- c(position, list(...))
+  a_aesthetics <- c(a_position, list(...))
 
-  # Check that all aesthetic have compatible lengths
-  lengths <- vapply(aesthetics, length, integer(1))
+  # Check that all a_aesthetic have compatible lengths
+  lengths <- vapply(a_aesthetics, length, integer(1))
   unequal <- length(unique(setdiff(lengths, 1L))) > 1L
   if (unequal) {
     bad <- lengths != 1L
-    details <- paste(names(aesthetics)[bad], " (", lengths[bad], ")",
+    details <- paste(names(a_aesthetics)[bad], " (", lengths[bad], ")",
       sep = "", collapse = ", ")
     stop("Unequal parameter lengths: ", details, call. = FALSE)
   }
 
-  data <- data.frame(position)
-  layer(
-    geom = geom,
+  data <- data.frame(a_position)
+  a_layer(
+    a_geom = a_geom,
     params = list(
       na.rm = na.rm,
       ...
     ),
-    stat = a_StatIdentity,
-    position = a_PositionIdentity,
+    a_stat = a_StatIdentity,
+    a_position = a_PositionIdentity,
     data = data,
-    mapping = aes_all(names(data)),
-    inherit.aes = FALSE,
+    mapping = a_aes_all(names(data)),
+    inherit.a_aes = FALSE,
     show.legend = FALSE
   )
 }

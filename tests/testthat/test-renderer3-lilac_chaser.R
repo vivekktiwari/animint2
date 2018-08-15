@@ -20,26 +20,26 @@ vi_lilac_chaser <- function(np = 10,
     # Plot to display the points and the '+' mark in the middle
     p1 <- a_plot(data = df) +
         # Display the points
-        geom_point(data = df,
-                   aes(x = sinv, y = cosv),
+        a_geom_point(data = df,
+                   a_aes(x = sinv, y = cosv),
                    showSelected = "ptn",
                    col = col,
                    size = p.size) +
         # Display the '+' mark
-        geom_segment(aes(x=-0.1, y=0, xend=0.1, yend=0), size=c.size) +
-        geom_segment(aes(x=0, y=-0.1, xend=0, yend=0.1), size=c.size) +
+        a_geom_segment(a_aes(x=-0.1, y=0, xend=0.1, yend=0), size=c.size) +
+        a_geom_segment(a_aes(x=0, y=-0.1, xend=0, yend=0.1), size=c.size) +
         xlim(c(-1.33, 1.33)) +
         ylim(c(-1.33, 1.33)) +
         # Hide the axes, titles and others..
-        theme_bw() +
-        theme(axis.line=element_blank(),
-              axis.text.x=element_blank(), axis.text.y=element_blank(),
-              axis.ticks=element_blank(),
-              axis.title.x=element_blank(), axis.title.y=element_blank(),
-              legend.position="none",
-              panel.background=element_blank(),panel.border=element_blank(),
-              panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-              plot.background=element_blank())
+        a_theme_bw() +
+        a_theme(axis.line=a_element_blank(),
+              axis.text.x=a_element_blank(), axis.text.y=a_element_blank(),
+              axis.ticks=a_element_blank(),
+              axis.title.x=a_element_blank(), axis.title.y=a_element_blank(),
+              legend.a_position="none",
+              panel.background=a_element_blank(),panel.border=a_element_blank(),
+              panel.grid.major=a_element_blank(),panel.grid.minor=a_element_blank(),
+              plot.background=a_element_blank())
 
 
     # Automate using animint taking point number 'ptn' as variable
@@ -54,20 +54,20 @@ info <- animint2HTML(plots)
 
 test_that("axes hidden", {
     # info <- animint2HTML(viz)
-    ec <- function(element, class){
-        data.frame(element, class)
+    ec <- function(a_element, class){
+        data.frame(a_element, class)
     }
     elem.df <- rbind(
         ec("rect", paste0(c("background","border"), "_rect")),
         ec("g", "axis"),
         ec("path", "domain"),
         ec("text", paste0(c("x", "y"), "title")))
-    for(elem.i in seq_along(elem.df$element)){
+    for(elem.i in seq_along(elem.df$a_element)){
         xpath <- with(elem.df[elem.i, ], {
-            sprintf('//%s[@class="%s"]', element, class)
+            sprintf('//%s[@class="%s"]', a_element, class)
         })
-        element.list <- getNodeSet(info$html, xpath)
-        expect_equal(length(element.list), 0)
+        a_element.list <- getNodeSet(info$html, xpath)
+        expect_equal(length(a_element.list), 0)
     }
 })
 
@@ -79,8 +79,8 @@ test_that("x and y have no labels", {
 })
 
 test_that("Different points are rendered", {
-    x1_nodes <- getNodeSet(info$html, "//circle[@class='geom']/@cx")
-    y1_nodes <- getNodeSet(info$html, "//circle[@class='geom']/@cy")
+    x1_nodes <- getNodeSet(info$html, "//circle[@class='a_geom']/@cx")
+    y1_nodes <- getNodeSet(info$html, "//circle[@class='a_geom']/@cy")
     x1_pts <- sapply(x1_nodes, xmlNode)
     y1_pts <- sapply(y1_nodes, xmlNode)
 
@@ -88,8 +88,8 @@ test_that("Different points are rendered", {
 
     info$html <- getHTML()
 
-    x2_nodes <- getNodeSet(info$html, "//circle[@class='geom']/@cx")
-    y2_nodes <- getNodeSet(info$html, "//circle[@class='geom']/@cy")
+    x2_nodes <- getNodeSet(info$html, "//circle[@class='a_geom']/@cx")
+    y2_nodes <- getNodeSet(info$html, "//circle[@class='a_geom']/@cy")
     x2_pts <- sapply(x2_nodes, xmlNode)
     y2_pts <- sapply(y2_nodes, xmlNode)
     expect_false(identical(x1_pts, x2_pts))
